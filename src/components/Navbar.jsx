@@ -1,47 +1,41 @@
-import { Search, Mail, Bell, ChevronDown, Menu } from "lucide-react";
+import { Search, Menu } from "lucide-react";
 
 export default function Navbar({ onMenuClick }) {
   return (
-    <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur border-b">
-      <div className="max-w-[1500px] mx-auto  h-14 flex items-center justify-around mr-70">
+    <nav className="w-full h-16 bg-white border-b border-gray-200 flex items-center px-4 sm:px-6">
 
-        {/* Hamburger (md & sm only) */}
+      <div className="flex items-center gap-3">
         <button
           onClick={onMenuClick}
-          className="lg:hidden p-2 rounded-lg hover:bg-gray-100"
+          className="lg:hidden p-2 rounded-md hover:bg-gray-100 transition"
         >
-          <Menu className="w-6 h-6" />
+          <Menu className="w-5 h-5" />
         </button>
 
-        {/* Logo */}
-        <div className="flex items-center gap-2 font-semibold text-lg">
-          <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center">
-            T
+        <div className="flex items-center gap-2">
+          <div className="w-9 h-9 rounded-lg bg-green-500 flex items-center justify-center text-white font-bold">
+            E
           </div>
-          Threadly
+          <span className="text-lg font-semibold text-gray-800 hidden sm:block">
+            EcoSphere
+          </span>
         </div>
+      </div>
 
-        {/* Search */}
-        <div className="flex-1 max-w-xl relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+      <div className="flex-1 max-w-xl mx-auto hidden md:block">
+        <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-green-400">
+          <Search className="w-4 h-4 text-gray-500" />
           <input
-            placeholder="Search Threadly"
-            className="w-full rounded-full bg-gray-100 pl-10 pr-4 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+            type="text"
+            placeholder="Search posts, topics, communities..."
+            className="w-full bg-transparent outline-none text-sm"
           />
         </div>
+      </div>
 
-        {/* Icons */}
-        <div className="flex items-center gap-3">
-          <Mail className="w-5 h-5 text-gray-600 cursor-pointer" />
-          <Bell className="w-5 h-5 text-gray-600 cursor-pointer" />
-          <div className="flex items-center gap-2 cursor-pointer">
-            <img src="https://i.pravatar.cc/40" className="w-8 h-8 rounded-full" />
-            <ChevronDown className="w-4 h-4 text-gray-500" />
-          </div>
-        </div>
-
+      <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-semibold">
+        A
       </div>
     </nav>
   );
 }
-    
