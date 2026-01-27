@@ -1,17 +1,22 @@
-import React from 'react'
+import React, { useState } from 'react';
 import { NavLink, useLocation } from "react-router-dom";
 import { FaHandHoldingWater, FaRecycle, FaLeaf } from "react-icons/fa";
-import { MdOutlineLeaderboard, MdOutlineEnergySavingsLeaf, MdLocationCity } from "react-icons/md";
+import {
+  MdOutlineLeaderboard,
+  MdOutlineEnergySavingsLeaf,
+  MdLocationCity,
+  MdOutlineAir
+} from "react-icons/md";
 import { FiHome } from "react-icons/fi";
 import { Trash } from 'lucide-react';
 import { HiMiniSignal } from "react-icons/hi2";
 import { PiPottedPlantLight } from "react-icons/pi";
 import { GiFarmer } from "react-icons/gi";
 import { TbWorld } from "react-icons/tb";
-import { MdOutlineAir } from "react-icons/md";
 
 const Sidebars = () => {
   const { pathname } = useLocation();
+  const [showCategories, setShowCategories] = useState(false);
 
   const discover = [
     { label: "Home", icon: FiHome, path: "/" },
@@ -33,8 +38,9 @@ const Sidebars = () => {
   ];
 
   return (
-    <div className="hidden lg:block h-full w-[20%] rounded-lg bg-[#F3F4F6]">
+    <div className="hidden lg:flex h-screen w-[20%] min-w-[240px] max-w-[280px] flex-col rounded-lg bg-[#F3F4F6] overflow-hidden">
 
+      {/* Discover Section */}
       <div className="flex flex-col gap-5 p-3">
         <h2 className="font-bold">Discover</h2>
 
@@ -58,24 +64,40 @@ const Sidebars = () => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-5 p-3">
-        <h2 className="font-bold">Categories</h2>
+      {/* Categories Section */}
+      <div className="flex flex-col p-3 flex-1 overflow-hidden">
 
-        <div className="flex flex-col gap-4 px-1">
-          {categories.map((item) => {
-            const Icon = item.icon;
-
-            return (
-              <div
-                key={item.id}
-                className="flex gap-3 items-center cursor-pointer hover:text-green-600 transition"
-              >
-                <Icon size={22} />
-                <h3 className="font-semibold">{item.label}</h3>
-              </div>
-            );
-          })}
+        <div
+          className="flex items-center justify-between cursor-pointer select-none"
+          onClick={() => setShowCategories(prev => !prev)}
+        >
+          <h2 className="font-bold">Categories</h2>
+          <span className="text-xl font-bold">
+            {showCategories ? "−" : "+"}
+          </span>
         </div>
+
+        <div
+          className={`transition-all duration-300 ease-in-out overflow-y-auto 
+          ${showCategories ? "max-h-[60vh] mt-4" : "max-h-0"}`}
+        >
+          <div className="flex flex-col gap-4 px-1 pr-2">
+            {categories.map((item) => {
+              const Icon = item.icon;
+
+              return (
+                <div
+                  key={item.id}
+                  className="flex gap-3 items-center cursor-pointer hover:text-green-600 transition"
+                >
+                  <Icon size={22} />
+                  <h3 className="font-semibold">{item.label}</h3>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
       </div>
 
     </div>
