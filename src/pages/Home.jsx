@@ -9,20 +9,26 @@ export default function Home() {
   const [open, setOpen] = useState(false);
 
   return (
-    <>
-      <Navbar onMenuClick={() => setOpen(true)} />
-      <MobileSidebar open={open} onClose={() => setOpen(false)} />
+    <div className="w-full h-screen flex overflow-hidden">
+      {/* Navbar + Mobile Sidebar */}
+      {/* <Navbar onMenuClick={() => setOpen(true)} /> */}
+      {/* <MobileSidebar open={open} onClose={() => setOpen(false)} /> */}
 
-      <div className="max-w-[1500px] mx-auto px-4 py-6 flex gap-6">
+      {/* Desktop Layout */}
+      <div className="flex w-full">
+
+        {/* Sidebar */}
         <Sidebar />
 
-        <main className="flex-1 space-y-6">
+        {/* Main Feed */}
+        <main className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+          <PostCard />
+          <CommentCard />
           <PostCard />
           <CommentCard />
         </main>
 
-
       </div>
-    </>
+    </div>
   );
 }
