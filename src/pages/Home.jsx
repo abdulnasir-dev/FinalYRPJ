@@ -18,7 +18,6 @@ export default function Home() {
 
         <main className="flex-1 space-y-6">
           <PostCard />
-          <CommentCard />
         </main>
 
 

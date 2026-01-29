@@ -72,7 +72,7 @@ const Sidebars = () => {
               >
                 <Icon size={22} />
                 <h3 className="font-semibold">{item.label}</h3>
-              </div>
+              </div> 
             );
           })}
         </div>
