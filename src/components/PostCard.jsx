@@ -2,7 +2,7 @@ import { ArrowBigUp, MessageCircle, Share2 } from "lucide-react";
 
 export default function PostCard() {
     return (
-        <div className="bg-white rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow space-y-4 w-full">
+        <div className="bg-white rounded-xl px-4 pt-4 shadow-sm hover:shadow-md transition-shadow space-y-4 w-full">
 
             {/* Header */}
             <div className="flex items-center justify-between text-sm text-gray-500">
