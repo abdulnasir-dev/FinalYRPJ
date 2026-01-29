@@ -42,6 +42,7 @@ const SidebarContent = ({ onClose }) => {
     <div className="h-full bg-white rounded-lg">
       <div className="flex flex-col h-auto rounded-lg bg-gray-50 overflow-hidden">
 
+        {/* Mobile Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200 lg:hidden bg-white">
           <span className="font-bold text-lg text-gray-900">Menu</span>
           <button
@@ -53,31 +54,24 @@ const SidebarContent = ({ onClose }) => {
           </button>
         </div>
 
+        {/* Discover Section */}
         <div className="flex flex-col gap-3 p-4 lg:p-3">
-          <h2 className="font-bold text-sm uppercase tracking-wide text-gray-700">Discover</h2>
+          <h2 className="font-bold text-sm uppercase tracking-wide text-gray-700">
+            Discover
+          </h2>
 
           <div className="flex flex-col gap-1">
             {discover.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.path;
 
-            return (
-              <div
-                key={item.id}
-                className="flex gap-3 items-center cursor-pointer hover:text-green-600 transition"
-              >
-                <Icon size={22} />
-                <h3 className="font-semibold">{item.label}</h3>
-              </div> 
-            );
-          })}
               return (
                 <NavLink
                   key={item.path}
                   to={item.path}
                   onClick={onClose}
                   className={`flex gap-3 items-center px-3 py-2.5 rounded-lg transition-all duration-200 
-                ${isActive
+                    ${isActive
                       ? "bg-green-100 text-green-700 font-semibold shadow-sm"
                       : "text-gray-700 hover:bg-gray-100 hover:text-green-600"
                     }`}
@@ -86,17 +80,20 @@ const SidebarContent = ({ onClose }) => {
                   <h3 className="font-medium text-sm">{item.label}</h3>
                 </NavLink>
               );
-           
+            })}
           </div>
         </div>
 
+        {/* Categories Section */}
         <div className="flex flex-col p-4 lg:p-3 flex-1 overflow-hidden border-t border-gray-200">
           <button
             className="flex items-center justify-between cursor-pointer select-none py-2 px-1 -mx-1 rounded-md hover:bg-gray-100 transition-colors"
             onClick={() => setShowCategories((prev) => !prev)}
             aria-expanded={showCategories}
           >
-            <h2 className="font-bold text-sm uppercase tracking-wide text-gray-700">Categories</h2>
+            <h2 className="font-bold text-sm uppercase tracking-wide text-gray-700">
+              Categories
+            </h2>
             <span className="text-xl font-bold text-gray-600 w-6 h-6 flex items-center justify-center">
               {showCategories ? "−" : "+"}
             </span>
@@ -104,7 +101,10 @@ const SidebarContent = ({ onClose }) => {
 
           <div
             className={`transition-all duration-300 ease-in-out overflow-y-auto 
-          ${showCategories ? "max-h-[calc(100vh-300px)] sm:max-h-[60vh] mt-3 opacity-100" : "max-h-0 opacity-0"}`}
+              ${showCategories
+                ? "max-h-[calc(100vh-300px)] sm:max-h-[60vh] mt-3 opacity-100"
+                : "max-h-0 opacity-0"
+              }`}
           >
             <div className="flex flex-col gap-1 pr-1">
               {categories.map((item) => {
@@ -114,7 +114,7 @@ const SidebarContent = ({ onClose }) => {
                   <div
                     key={item.id}
                     className="flex gap-3 items-center px-3 py-2.5 cursor-pointer text-gray-700 
-                  hover:bg-gray-100 hover:text-green-600 rounded-lg transition-all duration-200"
+                      hover:bg-gray-100 hover:text-green-600 rounded-lg transition-all duration-200"
                   >
                     <Icon size={20} className="flex-shrink-0" />
                     <h3 className="font-medium text-sm">{item.label}</h3>
@@ -140,21 +140,21 @@ export default function Sidebars({ open, onClose }) {
 
       {/* Mobile Drawer */}
       <div
-        className={`fixed inset-0 z-40 lg:hidden transition-opacity duration-300 ${open ? "visible opacity-100" : "invisible opacity-0"
-          }`}
+        className={`fixed inset-0 z-40 lg:hidden transition-opacity duration-300 
+          ${open ? "visible opacity-100" : "invisible opacity-0"}`}
       >
         {/* Backdrop */}
         <div
           onClick={onClose}
-          className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0"
-            }`}
+          className={`absolute inset-0 bg-black/50 transition-opacity duration-300 
+            ${open ? "opacity-100" : "opacity-0"}`}
         />
 
         {/* Drawer */}
         <div
           className={`absolute left-0 top-0 h-full w-[280px] sm:w-[300px] bg-gray-50 shadow-2xl 
-          transform transition-transform duration-300 ease-in-out ${open ? "translate-x-0" : "-translate-x-full"
-            }`}
+            transform transition-transform duration-300 ease-in-out 
+            ${open ? "translate-x-0" : "-translate-x-full"}`}
         >
           <SidebarContent onClose={onClose} />
         </div>
