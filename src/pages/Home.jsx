@@ -1,27 +1,30 @@
 import { useState } from "react";
 import Sidebar from "../components/Sidebars";
-import PostCard from "../components/PostCard";
-import MobileSidebar from "../components/RightPanel";
 import Navbar from "../components/Navbar";
+import ProblemsGrid from "../components/ProblemsGrid";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="w-full h-screen flex flex-col overflow-hidden">
+    // Full viewport wrapper
+    <div className="w-full min-h-screen bg-[#dfdfdf] p-4">
 
-      <Navbar onMenuClick={() => setOpen(true)} />
-      <MobileSidebar open={open} onClose={() => setOpen(false)} />
+      {/* Main layout container */}
+      <div className="w-full h-[calc(100vh-32px)] flex flex-col gap-4 overflow-hidden">
 
-      <div className="flex flex-1 w-full overflow-hidden">
+        {/* Top Navbar */}
+        <Navbar onMenuClick={() => setOpen(true)} />
 
-        <Sidebar />
+        {/* Body Section */}
+        <div className="flex flex-1 gap-4 overflow-hidden">
+          <Sidebar />
 
-        <main className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
-          <PostCard />
-          <PostCard />
-          <PostCard />
-        </main>
+          <div className="flex-1 overflow-hidden">
+            <ProblemsGrid />
+          </div>
+
+        </div>
 
       </div>
     </div>

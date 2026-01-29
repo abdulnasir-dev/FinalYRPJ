@@ -39,84 +39,83 @@ const SidebarContent = ({ onClose }) => {
   const [showCategories, setShowCategories] = useState(true);
 
   return (
-    <div className="flex flex-col h-full bg-gray-50 overflow-hidden">
+    <div className="h-full bg-white rounded-lg">
+      <div className="flex flex-col h-auto rounded-lg bg-gray-50 overflow-hidden">
 
-      {/* Mobile Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200 lg:hidden bg-white">
-        <span className="font-bold text-lg text-gray-900">Menu</span>
-        <button
-          onClick={onClose}
-          className="p-1 hover:bg-gray-100 rounded-md transition-colors"
-          aria-label="Close menu"
-        >
-          <X className="w-5 h-5 text-gray-700" />
-        </button>
-      </div>
-
-      {/* Discover Section */}
-      <div className="flex flex-col gap-3 p-4 lg:p-3">
-        <h2 className="font-bold text-sm uppercase tracking-wide text-gray-700">Discover</h2>
-
-        <div className="flex flex-col gap-1">
-          {discover.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.path;
-
-            return (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                onClick={onClose}
-                className={`flex gap-3 items-center px-3 py-2.5 rounded-lg transition-all duration-200 
-                ${isActive
-                    ? "bg-green-100 text-green-700 font-semibold shadow-sm"
-                    : "text-gray-700 hover:bg-gray-100 hover:text-green-600"
-                  }`}
-              >
-                <Icon size={20} className="flex-shrink-0" />
-                <h3 className="font-medium text-sm">{item.label}</h3>
-              </NavLink>
-            );
-          })}
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 lg:hidden bg-white">
+          <span className="font-bold text-lg text-gray-900">Menu</span>
+          <button
+            onClick={onClose}
+            className="p-1 hover:bg-gray-100 rounded-md transition-colors"
+            aria-label="Close menu"
+          >
+            <X className="w-5 h-5 text-gray-700" />
+          </button>
         </div>
-      </div>
 
-      {/* Categories Section */}
-      <div className="flex flex-col p-4 lg:p-3 flex-1 overflow-hidden border-t border-gray-200">
-        <button
-          className="flex items-center justify-between cursor-pointer select-none py-2 px-1 -mx-1 rounded-md hover:bg-gray-100 transition-colors"
-          onClick={() => setShowCategories((prev) => !prev)}
-          aria-expanded={showCategories}
-        >
-          <h2 className="font-bold text-sm uppercase tracking-wide text-gray-700">Categories</h2>
-          <span className="text-xl font-bold text-gray-600 w-6 h-6 flex items-center justify-center">
-            {showCategories ? "−" : "+"}
-          </span>
-        </button>
+        <div className="flex flex-col gap-3 p-4 lg:p-3">
+          <h2 className="font-bold text-sm uppercase tracking-wide text-gray-700">Discover</h2>
 
-        <div
-          className={`transition-all duration-300 ease-in-out overflow-y-auto 
-          ${showCategories ? "max-h-[calc(100vh-300px)] sm:max-h-[60vh] mt-3 opacity-100" : "max-h-0 opacity-0"}`}
-        >
-          <div className="flex flex-col gap-1 pr-1">
-            {categories.map((item) => {
+          <div className="flex flex-col gap-1">
+            {discover.map((item) => {
               const Icon = item.icon;
+              const isActive = pathname === item.path;
 
               return (
-                <div
-                  key={item.id}
-                  className="flex gap-3 items-center px-3 py-2.5 cursor-pointer text-gray-700 
-                  hover:bg-gray-100 hover:text-green-600 rounded-lg transition-all duration-200"
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  onClick={onClose}
+                  className={`flex gap-3 items-center px-3 py-2.5 rounded-lg transition-all duration-200 
+                ${isActive
+                      ? "bg-green-100 text-green-700 font-semibold shadow-sm"
+                      : "text-gray-700 hover:bg-gray-100 hover:text-green-600"
+                    }`}
                 >
                   <Icon size={20} className="flex-shrink-0" />
                   <h3 className="font-medium text-sm">{item.label}</h3>
-                </div>
+                </NavLink>
               );
             })}
           </div>
         </div>
-      </div>
 
+        <div className="flex flex-col p-4 lg:p-3 flex-1 overflow-hidden border-t border-gray-200">
+          <button
+            className="flex items-center justify-between cursor-pointer select-none py-2 px-1 -mx-1 rounded-md hover:bg-gray-100 transition-colors"
+            onClick={() => setShowCategories((prev) => !prev)}
+            aria-expanded={showCategories}
+          >
+            <h2 className="font-bold text-sm uppercase tracking-wide text-gray-700">Categories</h2>
+            <span className="text-xl font-bold text-gray-600 w-6 h-6 flex items-center justify-center">
+              {showCategories ? "−" : "+"}
+            </span>
+          </button>
+
+          <div
+            className={`transition-all duration-300 ease-in-out overflow-y-auto 
+          ${showCategories ? "max-h-[calc(100vh-300px)] sm:max-h-[60vh] mt-3 opacity-100" : "max-h-0 opacity-0"}`}
+          >
+            <div className="flex flex-col gap-1 pr-1">
+              {categories.map((item) => {
+                const Icon = item.icon;
+
+                return (
+                  <div
+                    key={item.id}
+                    className="flex gap-3 items-center px-3 py-2.5 cursor-pointer text-gray-700 
+                  hover:bg-gray-100 hover:text-green-600 rounded-lg transition-all duration-200"
+                  >
+                    <Icon size={20} className="flex-shrink-0" />
+                    <h3 className="font-medium text-sm">{item.label}</h3>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 };
