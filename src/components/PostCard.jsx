@@ -2,53 +2,62 @@ import { ArrowBigUp, MessageCircle, Share2 } from "lucide-react";
 
 export default function PostCard() {
     return (
-        <div className="bg-white rounded-xl px-4 pt-4 shadow-sm hover:shadow-md transition-shadow space-y-4 w-full">
+        <div className="card relative group rounded-xl p-[1px] overflow-hidden">
 
-            {/* Header */}
-            <div className="flex items-center justify-between text-sm text-gray-500">
-                <span>
-                    <span className="font-medium text-gray-700">EcoSolutions</span> • 2 hr ago
-                </span>
+            {/* <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition">
+                <div className="absolute inset-0 rounded-xl border border-transparent bg-[conic-gradient(from_0deg,#22c55e,transparent,transparent,#22c55e)] animate-spin-slow" />
+            </div> */}
+
+            <div className="relative bg-white rounded-xl p-4 md:p-4 shadow-sm hover:shadow-md transition-shadow w-full flex flex-col md:flex-row gap-3 md:gap-4">
+
+                <div className="flex-1 space-y-2">
+
+                    <div className="flex items-center justify-between text-xs text-gray-500">
+                        <span>
+                            <span className="font-medium text-gray-700">Username</span> • 2 hr ago
+                        </span>
+                    </div>
+
+                    <h2 className="text-lg font-semibold leading-snug text-gray-900">
+                        High Water Bill Due to Leaks
+                    </h2>
+
+                    <div className="md:hidden h-36 w-full rounded-lg bg-gradient-to-r from-blue-200 to-blue-300" />
+
+                    <p className="hidden md:block text-gray-700 text-sm leading-relaxed line-clamp-2">
+                        My water bill has increased suddenly even though my daily water usage hasn’t changed.
+                        Could this be due to hidden pipe leakage? How do I detect it early?
+                    </p>
+
+                    <div className="flex items-center justify-between pt-1">
+
+                        <div className="flex gap-3">
+                            <button className="flex items-center gap-1.5 px-2.5 py-1 rounded-full 
+                bg-green-50 text-green-700 hover:bg-green-100 transition text-sm">
+                                <ArrowBigUp className="w-4 h-4" />
+                                <span className="font-medium">2.1k</span>
+                            </button>
+
+                            <button className="flex items-center gap-1.5 px-2.5 py-1 rounded-full 
+                hover:bg-gray-100 transition text-gray-600 text-sm">
+                                <MessageCircle className="w-4 h-4" />
+                                <span>375</span>
+                            </button>
+
+                            <button className="p-1.5 rounded-full hover:bg-gray-100 transition text-gray-600">
+                                <Share2 className="w-4 h-4" />
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div className="hidden md:flex items-center">
+                    <div className="w-80 h-28 rounded-lg bg-gradient-to-r from-blue-200 to-blue-300" />
+                </div>
+
+
             </div>
-
-            {/* Title */}
-            <h2 className="text-xl font-semibold leading-tight">
-                High Water Bill Due to Leaks
-            </h2>
-
-            {/* Image */}
-            <div className="h-44 rounded-lg bg-gradient-to-r from-blue-200 to-blue-300" />
-
-            {/* Content */}
-            <p className="text-gray-700 text-sm leading-relaxed">
-                My water bill has increased suddenly even though my daily water usage hasn’t changed.
-                Could this be due to hidden pipe leakage? How do I detect it early?
-            </p>
-
-            {/* Actions */}
-            <div className="flex items-center justify-between pt-2">
-
-                {/* Vote */}
-                <button className="flex items-center gap-2 px-3 py-1.5 rounded-full 
-          bg-green-50 text-green-700 hover:bg-green-100 transition">
-                    <ArrowBigUp className="w-5 h-5" />
-                    <span className="font-medium">2.1k</span>
-                </button>
-
-                {/* Comments */}
-                <button className="flex items-center gap-2 px-3 py-1.5 rounded-full 
-          hover:bg-gray-100 transition text-gray-600">
-                    <MessageCircle className="w-4 h-4" />
-                    <span>375</span>
-                </button>
-
-                {/* Share */}
-                <button className="p-2 rounded-full hover:bg-gray-100 transition text-gray-600">
-                    <Share2 className="w-4 h-4" />
-                </button>
-
-            </div>
-
         </div>
     );
 }

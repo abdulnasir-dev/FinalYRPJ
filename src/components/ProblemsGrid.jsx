@@ -1,9 +1,10 @@
 import React from 'react'
 import PostCard from './PostCard'
 
-const ProblemsGrid = () => {
+const ProblemsGrid = () => {    
     return (
-        <div className="w-full h-full p-2 lg:p-4 bg-[#d4d4d4] rounded-lg overflow-hidden">
+        <div className="w-full h-full p-2 lg:p-4 bg-[#f5f7f6]
+ rounded-lg overflow-hidden">
 
             {/* Scroll container */}
             <main className="h-full overflow-y-auto no-scrollbar space-y-6 lg:pr-2">
