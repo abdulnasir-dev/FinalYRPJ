@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import Home from "../pages/Home";
 import UserDashboard from "../pages/UserDashboard";
@@ -8,13 +8,30 @@ import MySolutions from "../components/UserDashboard/MySolutions";
 import Rewards from "../components/UserDashboard/Rewards";
 import Redemption from "../components/UserDashboard/Redemption";
 import Settings from "../components/UserDashboard/Settings";
-
-
+import SignUp from "../pages/SignUp";
+import SignIn from "../pages/SignIn";
 
 export default function AppRoutes() {
+  const token = localStorage.getItem("accessToken");
+
+  // No token? Only show auth pages
+  if (!token) {
+    return (
+      <Routes>
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="*" element={<Navigate to="/signin" replace />} />
+      </Routes>
+    );
+  }
+
+  // Has token? Show all routes except auth pages
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+
+      <Route path="/signup" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/signin" element={<Navigate to="/dashboard" replace />} />
 
       <Route path="dashboard" element={<UserDashboard />}>
         <Route index element={<Overview />} />
@@ -22,8 +39,11 @@ export default function AppRoutes() {
         <Route path="solutions" element={<MySolutions />} />
         <Route path="points" element={<Rewards />} />
         <Route path="redemption" element={<Redemption />} />
-        <Route path="settings" element={<Settings /> } />
+        <Route path="settings" element={<Settings />} />
       </Route>
+
+      {/* Catch all - redirect to home or dashboard */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

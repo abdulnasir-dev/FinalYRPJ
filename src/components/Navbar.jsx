@@ -1,54 +1,152 @@
-import { Search, Menu } from "lucide-react";
+import {
+  Search,
+  Menu,
+  Bell,
+  ChevronDown,
+  LogOut,
+  User,
+  Gift,
+  Settings as SettingsIcon,
+  FileText,
+} from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar({ onMenuClick }) {
-  return (
-    <nav className="w-full h-16 bg-white border-b border-gray-200 flex items-center px-4 rounded-lg sm:px-6 lg:px-8 shadow-sm">
+  const [openProfile, setOpenProfile] = useState(false);
+  const navigate = useNavigate();
 
+  const handleNavigate = (path) => {
+    setOpenProfile(false);
+    navigate(path);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    window.location.href = "/signin";
+  };
+
+
+  return (
+    <nav className="w-full h-16 bg-white border-b border-gray-200 flex items-center px-4 sm:px-6 lg:px-8 shadow-sm rounded-lg">
+      {/* LEFT */}
       <div className="flex items-center gap-3">
         <button
           onClick={onMenuClick}
-          className="lg:hidden p-2 rounded-md hover:bg-gray-100 transition-colors"
-          aria-label="Open menu"
+          className="lg:hidden p-2 rounded-md hover:bg-gray-100 transition"
         >
           <Menu className="w-5 h-5 text-gray-700" />
         </button>
 
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div className="w-9 h-9 rounded-lg bg-green-500 flex items-center justify-center text-white font-bold shadow-sm">
-            E
+        {/* Brand */}
+        <div
+          onClick={() => navigate("/dashboard")}
+          className="flex items-center gap-2 cursor-pointer"
+        >
+          <div className="w-9 h-9 rounded-lg bg-green-600 flex items-center justify-center text-white font-bold">
+            I
           </div>
-          <span className="text-lg sm:text-xl font-semibold text-gray-900 hidden sm:block">
-            EcoSphere
+          <span className="text-lg font-semibold text-gray-900 hidden sm:block">
+            ImpactHub
           </span>
         </div>
       </div>
 
-      {/* Desktop Search */}
-      <div className="flex-1 max-w-xl mx-auto hidden md:block px-4 lg:px-6">
-        <div className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 border border-gray-200 
-        focus-within:border-green-400 focus-within:ring-2 focus-within:ring-green-100 transition-all">
-          <Search className="w-4 h-4 text-gray-500 flex-shrink-0" />
+      {/* CENTER SEARCH */}
+      <div className="flex-1 max-w-xl mx-auto hidden md:block px-6">
+        <div className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 border border-gray-200 focus-within:border-green-500 focus-within:ring-2 focus-within:ring-green-100">
+          <Search className="w-4 h-4 text-gray-500" />
           <input
             type="text"
-            placeholder="Search posts, topics, communities..."
-            className="w-full bg-transparent outline-none text-sm text-gray-700 placeholder:text-gray-500"
+            placeholder="Search problems, solutions, communities…"
+            className="w-full bg-transparent outline-none text-sm"
           />
         </div>
       </div>
 
-      {/* Mobile Search Icon */}
-      <button
-        className="md:hidden p-2 rounded-md hover:bg-gray-100 transition-colors ml-auto mr-2"
-        aria-label="Search"
-      >
-        <Search className="w-5 h-5 text-gray-700" />
-      </button>
+      {/* RIGHT */}
+      <div className="flex items-center gap-3 ml-auto">
+        <button className="md:hidden p-2 rounded-md hover:bg-gray-100">
+          <Search className="w-5 h-5 text-gray-700" />
+        </button>
 
-      {/* User Avatar */}
-      <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-semibold 
-      cursor-pointer hover:bg-green-200 transition-colors shadow-sm">
-        A
+        <button className="p-2 rounded-md hover:bg-gray-100">
+          <Bell className="w-5 h-5 text-gray-700" />
+        </button>
+
+        {/* USER DROPDOWN */}
+        <div className="relative">
+          <button
+            onClick={() => setOpenProfile((prev) => !prev)}
+            className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100"
+          >
+            <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-semibold">
+              A
+            </div>
+            <ChevronDown className="w-4 h-4 text-gray-600 hidden sm:block" />
+          </button>
+
+          {openProfile && (
+            <div className="absolute right-0 mt-2 w-52 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+              <DropdownItem
+                icon={<User size={16} />}
+                label="Overview"
+                onClick={() => handleNavigate("/dashboard")}
+              />
+              <DropdownItem
+                icon={<FileText size={16} />}
+                label="My Problems"
+                onClick={() => handleNavigate("/dashboard/problems")}
+              />
+              <DropdownItem
+                icon={<FileText size={16} />}
+                label="My Solutions"
+                onClick={() => handleNavigate("/dashboard/solutions")}
+              />
+              <DropdownItem
+                icon={<Gift size={16} />}
+                label="Rewards"
+                onClick={() => handleNavigate("/dashboard/points")}
+              />
+              <DropdownItem
+                icon={<Gift size={16} />}
+                label="Redemption"
+                onClick={() => handleNavigate("/dashboard/redemption")}
+              />
+              <DropdownItem
+                icon={<SettingsIcon size={16} />}
+                label="Settings"
+                onClick={() => handleNavigate("/dashboard/settings")}
+              />
+
+              <div className="border-t border-gray-200 my-1" />
+
+              <DropdownItem
+                icon={<LogOut size={16} />}
+                label="Logout"
+                danger
+                onClick={handleLogout}
+              />
+            </div>
+          )}
+        </div>
       </div>
     </nav>
+  );
+}
+
+function DropdownItem({ icon, label, onClick, danger = false }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`w-full flex items-center gap-3 px-4 py-2 text-sm transition
+        ${danger
+          ? "text-red-600 hover:bg-red-50"
+          : "hover:bg-gray-50 text-gray-700"
+        }`}
+    >
+      {icon}
+      {label}
+    </button>
   );
 }
