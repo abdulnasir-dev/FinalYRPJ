@@ -1,8 +1,13 @@
 @import "tailwindcss";
 
+*{
+ 
+  font-family: 'Roboto-Condensed', sans-serif;
+}
+
 /* Hide scrollbar but allow scrolling */
 .no-scrollbar::-webkit-scrollbar {
-  display: none;
+  display: none;  
 }
 
 .no-scrollbar {
