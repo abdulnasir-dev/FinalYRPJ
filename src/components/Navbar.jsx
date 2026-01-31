@@ -26,13 +26,14 @@ export default function Navbar({ onMenuClick }) {
     window.location.href = "/signin";
   };
 
-
   return (
-    <nav className="w-full h-16 bg-white border-b border-gray-200 flex items-center px-4 sm:px-6 lg:px-8 shadow-sm rounded-lg">
+    <nav className="w-full h-16 bg-white border-b border-gray-200 flex items-center px-4 sm:px-6 lg:px-8 shadow-sm">
       {/* LEFT */}
       <div className="flex items-center gap-3">
         <button
-          onClick={onMenuClick}
+          onClick={() => {
+            onMenuClick();
+          }}
           className="lg:hidden p-2 rounded-md hover:bg-gray-100 transition"
         >
           <Menu className="w-5 h-5 text-gray-700" />
@@ -149,4 +150,4 @@ function DropdownItem({ icon, label, onClick, danger = false }) {
       {label}
     </button>
   );
-}
+} 

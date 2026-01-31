@@ -10,8 +10,10 @@ import {
     LogOut,
     Gift,
 } from "lucide-react";
+import { FiHome } from "react-icons/fi";
 
 const dashboardNav = [
+    { label: "Home", icon: FiHome, path: "/" },
     { label: "Overview", icon: LayoutDashboard, path: "/dashboard" },
     { label: "My Problems", icon: FileText, path: "/dashboard/problems" },
     { label: "My Solutions", icon: MessageSquare, path: "/dashboard/solutions" },
@@ -81,6 +83,8 @@ const SidebarContent = ({ onClose }) => {
 };
 
 export default function UserDashboardSidebar({ open, onClose }) {
+    console.log("UserDashboardSidebar render - open:", open);
+
     return (
         <>
             {/* Desktop Sidebar */}
@@ -90,20 +94,17 @@ export default function UserDashboardSidebar({ open, onClose }) {
 
             {/* Mobile Drawer */}
             <div
-                className={`fixed inset-0 z-40 lg:hidden transition-opacity duration-300 
+                className={`fixed inset-0 z-40 lg:hidden transition-opacity duration-300
           ${open ? "visible opacity-100" : "invisible opacity-0"}`}
             >
-                {/* Backdrop */}
                 <div
                     onClick={onClose}
-                    className={`absolute inset-0 bg-black/50 transition-opacity duration-300 
-            ${open ? "opacity-100" : "opacity-0"}`}
+                    className="absolute inset-0 bg-black/50"
                 />
 
-                {/* Drawer */}
                 <div
-                    className={`absolute left-0 top-0 h-full w-[280px] sm:w-[300px] bg-gray-50 shadow-2xl 
-            transform transition-transform duration-300 ease-in-out 
+                    className={`absolute left-0 top-0 h-full w-[280px] sm:w-[300px] bg-gray-50 shadow-2xl
+            transform transition-transform duration-300
             ${open ? "translate-x-0" : "-translate-x-full"}`}
                 >
                     <SidebarContent onClose={onClose} />
