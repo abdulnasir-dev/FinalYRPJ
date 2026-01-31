@@ -14,10 +14,6 @@ API.interceptors.request.use((config) => {
     return config
 })
 
-API.interceptors.response.use(
-    res => res,
-    err => err.response?.status === 401 && (localStorage.clear(), window.location.href = "/login")
-);
 
 
 export const LoginUser = (data) => API.post("/login", data)

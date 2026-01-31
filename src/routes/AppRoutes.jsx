@@ -30,7 +30,6 @@ export default function AppRoutes() {
     <Routes>
       <Route path="/" element={<Home />} />
 
-      {/* Redirect auth pages to dashboard if already logged in */}
       <Route path="/signup" element={<Navigate to="/dashboard" replace />} />
       <Route path="/signin" element={<Navigate to="/dashboard" replace />} />
 

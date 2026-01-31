@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { dashboardStats } from '../../api/user.api';
+import { dashboardStats } from '../../api/userDashboard';
 import ReusablePieChart from '../charts/ReusablePieChart';
 import ReusableLineChart from '../charts/ReusableLineChart';
 import MiniLineChart from '../charts/MiniLineChart';
-
 
 const Overview = () => {
 
@@ -16,7 +15,7 @@ const Overview = () => {
     const [latestProblems, setLatestProblems] = useState([])
     const [latestSolutions, setLatestSolutions] = useState([])
     const [solutionsOverTime, setSolutionsOverTime] = useState([]);
-
+    const [totalPoints, setTotalPoints] = useState("")
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -31,6 +30,7 @@ const Overview = () => {
                 setSolutionsOverTime(res.data.solutionsReceivedOverTime)
                 setLatestProblems(res.data.latestProblems)
                 setLatestSolutions(res.data.latestSolutions)
+                setTotalPoints(res.data.totalPoints)
             } catch (error) {
                 console.error(error)
             } finally {
@@ -58,13 +58,10 @@ const Overview = () => {
         value: item.count,
     }));
 
-
-    // Loading State
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen">
                 <div className="relative w-20 h-20">
-                    {/* Spinner */}
                     <div className="absolute inset-0 border-4 border-gray-200 rounded-full"></div>
                     <div className="absolute inset-0 border-4 border-t-blue-500 rounded-full animate-spin"></div>
                 </div>
@@ -73,14 +70,18 @@ const Overview = () => {
         );
     }
 
-    const getFakeData = (finalValue) => [
-        { value: Math.max(0, finalValue - 15) },
-        { value: Math.max(0, finalValue - 10) },
-        { value: Math.max(0, finalValue - 8) },
-        { value: Math.max(0, finalValue - 5) },
-        { value: Math.max(0, finalValue - 2) },
-        { value: finalValue },
-    ];
+    // Replace your getFakeData function with this:
+    const getFakeData = (finalValue) => {
+        const baseValue = Math.max(1, Math.floor(finalValue * 0.4)); // Start at 40% of final
+        return [
+            { value: baseValue },
+            { value: Math.floor(finalValue * 0.55) },
+            { value: Math.floor(finalValue * 0.65) },
+            { value: Math.floor(finalValue * 0.78) },
+            { value: Math.floor(finalValue * 0.90) },
+            { value: finalValue },
+        ];
+    };
 
     const problemsChartData = solutionsOverTime.length >= 3
         ? solutionsOverTime.map(item => ({ value: item.count }))
@@ -93,6 +94,10 @@ const Overview = () => {
     const solutionsReceivedChartData = solutionsOverTime.length >= 3
         ? solutionsOverTime.map(item => ({ value: item.count }))
         : getFakeData(totalSolutionsRecieved);
+
+    const totalPointsChartData = solutionsOverTime.length >= 3
+        ? solutionsOverTime.map(item => ({ value: item.count }))
+        : getFakeData(totalPoints);
 
     return (
         <div className='flex flex-col gap-5'>
@@ -136,14 +141,14 @@ const Overview = () => {
 
                 <div className='bg-white rounded-xl lg:w-1/3 h-32 py-3 px-4 flex justify-center items-center border-2 border-gray-300'>
                     <div className='w-1/2 h-full flex flex-col justify-between'>
-                        <h3 className='font-bold text-sm text-[#848484]'>Solutions Recieved</h3>
-                        <p className='text-4xl font-bold py-2 pl-2'>{totalSolutionsRecieved || 0}</p>
-                        <p className='text-sm font-bold text-[#848484]'>Past 30 Days</p>
+                        <h3 className='font-bold text-sm text-[#848484]'>Total Points Earned</h3>
+                        <p className='text-4xl font-bold py-2 pl-2'>{totalPoints || 0}</p>
+                        <p className='text-sm font-bold text-[#848484]'>Life Time</p>
                     </div>
 
                     <div className='w-1/2 h-full'>
                         <MiniLineChart
-                            data={solutionsReceivedChartData}
+                            data={totalPointsChartData}
                             stroke="#f59e0b"
                         />
                     </div>
@@ -207,32 +212,37 @@ const Overview = () => {
                             </div>
 
                             <div className="flex flex-col">
-                                {latestProblems.map((item, index) => (
-                                    <div
-                                        key={index}
-                                        className="flex gap-3 p-3 items-center border-t-2 border-gray-200"
-                                    >
-                                        {/* Serial Number */}
-
-
-                                        {/* Content */}
-                                        <div className="flex flex-col gap-1 lg:gap-2">
-                                            <div className='flex items-center h-7 gap-3'>
-                                                <p className="text-sm font-bold text-gray-500">
-                                                    {index + 1}.
-                                                </p>
-                                                <h3 className="text-md font-semibold text-gray-800">
-                                                    {item.title}
-                                                </h3>
-                                            </div>
-
-                                            <h4 className="text-sm text-gray-800">
-                                                {item.description}
-                                            </h4>
-                                        </div>
-
+                                {latestProblems.length === 0 ? (
+                                    <div className="flex flex-col items-center justify-center p-8 text-gray-400">
+                                        <p className="text-lg font-semibold">No problems posted yet</p>
+                                        <p className="text-sm mt-2">Start by posting your first problem!</p>
                                     </div>
-                                ))}
+                                ) : (
+                                    latestProblems.map((item, index) => (
+                                        <div
+                                            key={index}
+                                            className="flex gap-3 p-3 items-center border-t-2 border-gray-200"
+                                        >
+                                            {/* Serial Number */}
+
+                                            {/* Content */}
+                                            <div className="flex flex-col gap-1 lg:gap-2">
+                                                <div className='flex items-center h-7 gap-3'>
+                                                    <p className="text-sm font-bold text-gray-500">
+                                                        {index + 1}.
+                                                    </p>
+                                                    <h3 className="text-md font-semibold text-gray-800">
+                                                        {item.title}
+                                                    </h3>
+                                                </div>
+
+                                                <h4 className="text-sm text-gray-800">
+                                                    {item.description}
+                                                </h4>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
                             </div>
                         </div>
 
@@ -242,30 +252,35 @@ const Overview = () => {
                             </div>
 
                             <div className="flex flex-col">
-                                {latestSolutions.map((item, index) => (
-                                    <div
-                                        key={index}
-                                        className="flex  gap-3 p-3 items-center border-t-2 border-gray-200"
-                                    >
-
-                                        {/* Content */}
-                                        <div className="flex flex-col gap-1 lg:gap-2">
-                                            <div className='flex items-center h-7 gap-3'>
-                                                <p className="text-sm font-bold text-gray-500">
-                                                    {index + 1}.
-                                                </p>
-                                                <h3 className="text-md font-semibold text-gray-800">
-                                                    {item.problemId.title}
-                                                </h3>
-                                            </div>
-
-                                            <h4 className="text-sm text-gray-800">
-                                                {item.answer}
-                                            </h4>
-                                        </div>
-
+                                {latestSolutions.length === 0 ? (
+                                    <div className="flex flex-col items-center justify-center p-8 text-gray-400">
+                                        <p className="text-lg font-semibold">No solutions posted yet</p>
+                                        <p className="text-sm mt-2">Be the first to help solve a problem!</p>
                                     </div>
-                                ))}
+                                ) : (
+                                    latestSolutions.map((item, index) => (
+                                        <div
+                                            key={index}
+                                            className="flex gap-3 p-3 items-center border-t-2 border-gray-200"
+                                        >
+                                            {/* Content */}
+                                            <div className="flex flex-col gap-1 lg:gap-2">
+                                                <div className='flex items-center h-7 gap-3'>
+                                                    <p className="text-sm font-bold text-gray-500">
+                                                        {index + 1}.
+                                                    </p>
+                                                    <h3 className="text-md font-semibold text-gray-800">
+                                                        {item.problemId.title}
+                                                    </h3>
+                                                </div>
+
+                                                <h4 className="text-sm text-gray-800">
+                                                    {item.answer}
+                                                </h4>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
                             </div>
 
                         </div>
