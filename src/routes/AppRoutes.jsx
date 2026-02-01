@@ -14,6 +14,7 @@ import Redemption from "../components/UserDashboard/Redemption";
 import Settings from "../components/UserDashboard/Settings";
 import Problem from "../components/Problem";
 import CreateProblem from "../components/UserDashboard/createProblem";
+import Notifications from "../components/UserDashboard/Notifications";
 
 
 
@@ -58,6 +59,7 @@ export default function AppRoutes() {
           <Route path="redemption" element={<Redemption />} />
           <Route path="settings" element={<Settings />} />
           <Route path="create" element={<CreateProblem />} />
+          <Route path="notifications" element={<Notifications />} />
         </Route>
 
         {/* Fallback */}

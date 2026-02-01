@@ -1,6 +1,6 @@
     import React from "react";
     import { NavLink, useLocation } from "react-router-dom";
-    import { PlusCircle, X } from "lucide-react";
+    import { Bell, PlusCircle, X } from "lucide-react";
     import {
         LayoutDashboard,
         FileText,
@@ -20,6 +20,7 @@
         { label: "Points & Rewards", icon: Star, path: "/dashboard/points" },
         { label: "Redemption", icon: Gift, path: "/dashboard/redemption" },
         { label: "Create Problem", icon: PlusCircle, path: "/dashboard/create" },
+        { label: "Notifications", icon: Bell, path: "/dashboard/notifications" },
         { label: "Settings", icon: Settings, path: "/dashboard/settings" },
     ];
 
