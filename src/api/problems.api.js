@@ -14,9 +14,17 @@ API.interceptors.request.use((config) => {
     return config;
 });
 
+/* ===================== PROBLEMS ===================== */
 
 export const fetchAllProblems = (page = 1, limit = 10) =>
     API.get(`/?page=${page}&limit=${limit}`);
 
 export const fetchProblemById = (problemId) =>
     API.get(`/${problemId}`);
+
+export const createProblem = (formData) =>
+    API.post("/create", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });

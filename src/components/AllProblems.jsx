@@ -36,11 +36,21 @@ const AllProblems = () => {
         <div className="flex flex-col h-full p-4 gap-4 overflow-hidden">
 
             {/* Header */}
-            <div className="shrink-0">
-                <h1 className="text-2xl font-bold">ALL PROBLEMS</h1>
-                <p className="text-stone-600">
-                    Browse problems raised by the community.
-                </p>
+            <div className="shrink-0 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div className="shrink-0">
+                    <h1 className="text-xl sm:text-2xl font-bold">ALL PROBLEMS</h1>
+                    <p className="text-sm sm:text-base text-stone-600">
+                        Browse problems raised by the community.
+                    </p>
+                </div>
+                <div className="w-full sm:w-auto">
+                    <button
+                        onClick={() => navigate(`/dashboard/create`)}
+                        className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-green-600 hover:bg-green-700 text-white text-sm sm:text-base font-semibold rounded-lg shadow-md transition-colors duration-200"
+                    >
+                        Create Problem
+                    </button>
+                </div>
             </div>
 
             {/* Scrollable container */}

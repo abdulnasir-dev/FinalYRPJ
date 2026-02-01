@@ -13,6 +13,7 @@ import Rewards from "../components/UserDashboard/Rewards";
 import Redemption from "../components/UserDashboard/Redemption";
 import Settings from "../components/UserDashboard/Settings";
 import Problem from "../components/Problem";
+import CreateProblem from "../components/UserDashboard/createProblem";
 
 
 
@@ -56,6 +57,7 @@ export default function AppRoutes() {
           <Route path="points" element={<Rewards />} />
           <Route path="redemption" element={<Redemption />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="create" element={<CreateProblem />} />
         </Route>
 
         {/* Fallback */}

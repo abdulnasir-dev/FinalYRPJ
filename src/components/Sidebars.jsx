@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { X } from "lucide-react";
+import { LayoutDashboard, X } from "lucide-react";
 import { FiHome } from "react-icons/fi";
 import { MdOutlineLeaderboard, MdOutlineEnergySavingsLeaf, MdLocationCity, MdOutlineAir } from "react-icons/md";
 import { FaHandHoldingWater, FaRecycle, FaLeaf } from "react-icons/fa";
@@ -13,7 +13,7 @@ import { TbWorld } from "react-icons/tb";
 const discover = [
   { label: "Home", icon: FiHome, path: "/" },
   { label: "Leaderboard", icon: MdOutlineLeaderboard, path: "/leaderboard" },
-  { label: "Dashboard", icon: HiMiniSignal, path: "/dashboard" },
+  { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
 ];
 
 const categories = [
