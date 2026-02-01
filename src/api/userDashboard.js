@@ -27,3 +27,7 @@ export const myPoints = () => API.get("/reputations/my")
 export const fetchMyRedemptions = () => API.get("/redemptions/my")
 
 export const requestRedemption = (data) => API.post("/redemptions/request", data);
+
+// api/notifications.js
+export const getNotifications = () => API.get("/notifications");
+export const markNotificationRead = (id) => API.patch(`/notifications/${id}/read`);
