@@ -9,15 +9,9 @@ const Problem = () => {
     const [problem, setProblem] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Get current user - UPDATE THIS based on your auth setup
-    // Option 1: If you have auth context
-    // const { user } = useAuth();
-
-    // Option 2: If stored in localStorage
     const getCurrentUser = () => {
         const token = localStorage.getItem("accessToken");
         if (token) {
-            // Decode JWT to get user ID (you might need jwt-decode package)
             const payload = JSON.parse(atob(token.split('.')[1]));
             return payload._id || payload.userId || payload.id;
         }
@@ -29,6 +23,7 @@ const Problem = () => {
     useEffect(() => {
         const getProblem = async () => {
             try {
+                setLoading(true)
                 const res = await fetchProblemById(problemId);
                 setProblem(res.data.problem);
             } catch (error) {
@@ -42,7 +37,15 @@ const Problem = () => {
     }, [problemId]);
 
     if (loading) {
-        return <div className="p-4 text-gray-500">Loading problem...</div>;
+        return (
+            <div className="flex flex-col items-center justify-center min-h-screen">
+                <div className="relative w-20 h-20">
+                    <div className="absolute inset-0 border-4 border-gray-200 rounded-full"></div>
+                    <div className="absolute inset-0 border-4 border-t-blue-500 rounded-full animate-spin"></div>
+                </div>
+                <p className="mt-4 text-lg font-semibold text-gray-600">Loading Problem...</p>
+            </div>
+        );
     }
 
     if (!problem) {
