@@ -1,0 +1,189 @@
+import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { createSolution, fetchSolutionsForProblem } from "../api/solution.api";
+
+const Solutions = ({ problemId }) => {
+    const [solutions, setSolutions] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [answer, setAnswer] = useState("");
+    const [submitting, setSubmitting] = useState(false);
+
+    useEffect(() => {
+        const getSolutions = async () => {
+            try {
+                const res = await fetchSolutionsForProblem(problemId);
+                setSolutions(res.data.solutions || []);
+            } catch (err) {
+                console.error("Failed to fetch solutions", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (problemId) getSolutions();
+    }, [problemId]);
+
+    const handleSubmit = async () => {
+        // Frontend validation
+        const trimmed = answer.trim();
+        if (!trimmed) {
+            toast.error("Please enter a solution");
+            return;
+        }
+
+        if (trimmed.length < 20) {
+            toast.error("Solution must be at least 20 characters long");
+            return;
+        }
+
+        if (trimmed.length > 2000) {
+            toast.error("Solution must not exceed 2000 characters");
+            return;
+        }
+
+        try {
+            setSubmitting(true);
+
+            const res = await toast.promise(
+                createSolution(problemId, trimmed),
+                {
+                    loading: "Posting solution...",
+                    success: "Solution posted successfully! 🎉",
+                    error: "Failed to post solution",
+                }
+            );
+
+            // Prepend new solution
+            setSolutions((prev) => [res.data.solution, ...prev]);
+            setAnswer("");
+        } catch (err) {
+            console.error("Failed to add solution", err);
+
+            // Handle specific error cases with custom toasts
+            if (err.response?.status === 409) {
+                toast.error("You have already submitted a solution for this problem");
+            } else if (err.response?.status === 403) {
+                toast.error("Only experts can answer this problem");
+            } else if (err.response?.data?.message) {
+                toast.error(err.response.data.message);
+            }
+            // Generic error already handled by toast.promise
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const charCount = answer.trim().length;
+    const isValid = charCount >= 20 && charCount <= 2000;
+
+    return (
+        <div className="mt-10 flex flex-col gap-6">
+            {/* ===== Add Solution Box ===== */}
+            <div className="bg-white rounded-xl border-2 border-gray-300 p-4">
+                <h3 className="text-sm font-semibold mb-2">Add a solution</h3>
+
+                <textarea
+                    value={answer}
+                    onChange={(e) => setAnswer(e.target.value)}
+                    placeholder="Share your solution or suggestion…"
+                    className="w-full min-h-[100px] resize-none border border-gray-300 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+                />
+
+                {/* Character counter */}
+                <div className="flex justify-between items-center mt-2">
+                    <span className={`text-xs ${charCount > 0 && !isValid ? 'text-red-500' : 'text-gray-500'}`}>
+                        {charCount}/2000 characters {charCount > 0 && charCount < 20 && `(minimum 20)`}
+                    </span>
+                </div>
+
+                <div className="flex justify-end mt-3">
+                    <button
+                        onClick={handleSubmit}
+                        disabled={submitting || !answer.trim()}
+                        className={`px-4 py-2 rounded-lg text-xs font-semibold text-white
+                            ${submitting || !answer.trim()
+                                ? "bg-gray-400 cursor-not-allowed"
+                                : "bg-blue-500 hover:bg-blue-600"
+                            }`}
+                    >
+                        {submitting ? "Posting..." : "Post Solution"}
+                    </button>
+                </div>
+            </div>
+
+            {/* ===== Solutions Header ===== */}
+            <h2 className="text-lg font-bold">
+                Solutions ({solutions.length})
+            </h2>
+
+            {loading && (
+                <p className="text-sm text-gray-500">Loading solutions...</p>
+            )}
+
+            {!loading && solutions.length === 0 && (
+                <p className="text-sm text-gray-500">
+                    No solutions yet. Be the first to help!
+                </p>
+            )}
+
+            {/* ===== Solutions List ===== */}
+            <div className="flex flex-col gap-6">
+                {solutions.map((solution) => (
+                    <div
+                        key={solution._id}
+                        className="bg-white rounded-xl border-2 border-gray-300 p-4"
+                    >
+                        {/* Header */}
+                        <div className="flex justify-between items-start gap-3">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center font-bold text-green-700">
+                                    {solution.answeredBy?.fullName?.[0] ?? "U"}
+                                </div>
+
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="font-semibold text-gray-800">
+                                            {solution.answeredBy?.fullName ?? "Unknown"}
+                                        </span>
+
+                                        {solution.isAccepted && (
+                                            <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-semibold">
+                                                ACCEPTED
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    <div className="text-xs text-gray-500">
+                                        {new Date(solution.createdAt).toLocaleDateString("en-US", {
+                                            month: "short",
+                                            day: "numeric",
+                                            year: "numeric",
+                                        })}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Body */}
+                        <p className="mt-3 text-gray-800 whitespace-pre-line">
+                            {solution.answer}
+                        </p>
+
+                        {/* Footer */}
+                        <div className="mt-4 flex items-center gap-4 text-sm text-gray-600">
+                            <span>👍 {solution.votes?.upvotes ?? 0}</span>
+                            <span>👎 {solution.votes?.downvotes ?? 0}</span>
+                            {solution.isEdited && (
+                                <span className="text-xs italic text-gray-400">
+                                    Edited
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+export default Solutions;

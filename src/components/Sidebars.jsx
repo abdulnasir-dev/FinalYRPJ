@@ -118,17 +118,14 @@ export default function Sidebars({ open, onClose }) {
 
   return (
     <>
-      {/* Desktop Sidebar */}
       <div className="hidden lg:flex h-screen w-[260px] min-w-[240px] flex-col overflow-hidden shadow-sm border-r border-gray-200 bg-white">
         <SidebarContent />
       </div>
 
-      {/* Mobile Drawer */}
       <div
         className={`fixed inset-0 z-40 lg:hidden transition-opacity duration-300
         ${open ? "visible opacity-100" : "invisible opacity-0"}`}
       >
-        {/* Backdrop */}
         <div
           onClick={onClose}
           className="absolute inset-0 bg-black/50"

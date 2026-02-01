@@ -3,7 +3,7 @@ import axios from "axios";
 const getToken = () => localStorage.getItem("accessToken");
 
 const API = axios.create({
-    baseURL: "http://localhost:8080/api/v1/problems",
+    baseURL: "http://localhost:8080/api/v1/solutions",
 });
 
 API.interceptors.request.use((config) => {
@@ -15,8 +15,7 @@ API.interceptors.request.use((config) => {
 });
 
 
-export const fetchAllProblems = (page = 1, limit = 10) =>
-    API.get(`/?page=${page}&limit=${limit}`);
+export const fetchSolutionsForProblem = (problemId) => API.get(`${problemId}`)
 
-export const fetchProblemById = (problemId) =>
-    API.get(`/${problemId}`);
+export const createSolution = (problemId, answer) =>
+    API.post(`/create/${problemId}`, { answer });
