@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { createSolution, fetchSolutionsForProblem } from "../api/solution.api";
+import { createSolution, fetchSolutionsForProblem, acceptSolution } from "../api/solution.api";
 
-const Solutions = ({ problemId }) => {
+const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) => {
     const [solutions, setSolutions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [answer, setAnswer] = useState("");
     const [submitting, setSubmitting] = useState(false);
+    const [acceptingId, setAcceptingId] = useState(null);
 
     useEffect(() => {
         const getSolutions = async () => {
@@ -24,7 +25,6 @@ const Solutions = ({ problemId }) => {
     }, [problemId]);
 
     const handleSubmit = async () => {
-        // Frontend validation
         const trimmed = answer.trim();
         if (!trimmed) {
             toast.error("Please enter a solution");
@@ -53,13 +53,11 @@ const Solutions = ({ problemId }) => {
                 }
             );
 
-            // Prepend new solution
             setSolutions((prev) => [res.data.solution, ...prev]);
             setAnswer("");
         } catch (err) {
             console.error("Failed to add solution", err);
 
-            // Handle specific error cases with custom toasts
             if (err.response?.status === 409) {
                 toast.error("You have already submitted a solution for this problem");
             } else if (err.response?.status === 403) {
@@ -67,14 +65,46 @@ const Solutions = ({ problemId }) => {
             } else if (err.response?.data?.message) {
                 toast.error(err.response.data.message);
             }
-            // Generic error already handled by toast.promise
         } finally {
             setSubmitting(false);
         }
     };
 
+    const handleAcceptSolution = async (solutionId) => {
+        try {
+            setAcceptingId(solutionId);
+
+            await toast.promise(
+                acceptSolution(solutionId),
+                {
+                    loading: "Accepting solution...",
+                    success: "Solution accepted! ✅",
+                    error: "Failed to accept solution",
+                }
+            );
+
+            // Update the solution to show it's accepted
+            setSolutions((prev) =>
+                prev.map((sol) =>
+                    sol._id === solutionId ? { ...sol, isAccepted: true } : sol
+                )
+            );
+        } catch (err) {
+            console.error("Failed to accept solution", err);
+            if (err.response?.data?.message) {
+                toast.error(err.response.data.message);
+            }
+        } finally {
+            setAcceptingId(null);
+        }
+    };
+
     const charCount = answer.trim().length;
     const isValid = charCount >= 20 && charCount <= 2000;
+
+    // Check if current user is the problem owner
+    const isProblemOwner = currentUserId === problemOwnerId;
+    const isProblemOpen = problemStatus === "open";
 
     return (
         <div className="mt-10 flex flex-col gap-6">
@@ -89,7 +119,6 @@ const Solutions = ({ problemId }) => {
                     className="w-full min-h-[100px] resize-none border border-gray-300 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
                 />
 
-                {/* Character counter */}
                 <div className="flex justify-between items-center mt-2">
                     <span className={`text-xs ${charCount > 0 && !isValid ? 'text-red-500' : 'text-gray-500'}`}>
                         {charCount}/2000 characters {charCount > 0 && charCount < 20 && `(minimum 20)`}
@@ -128,59 +157,79 @@ const Solutions = ({ problemId }) => {
 
             {/* ===== Solutions List ===== */}
             <div className="flex flex-col gap-6">
-                {solutions.map((solution) => (
-                    <div
-                        key={solution._id}
-                        className="bg-white rounded-xl border-2 border-gray-300 p-4"
-                    >
-                        {/* Header */}
-                        <div className="flex justify-between items-start gap-3">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center font-bold text-green-700">
-                                    {solution.answeredBy?.fullName?.[0] ?? "U"}
-                                </div>
+                {solutions.map((solution) => {
+                    const isOwnSolution = solution.answeredBy?._id === currentUserId;
+                    const canAccept = isProblemOwner && !isOwnSolution && !solution.isAccepted && isProblemOpen;
 
-                                <div>
-                                    <div className="flex items-center gap-2">
-                                        <span className="font-semibold text-gray-800">
-                                            {solution.answeredBy?.fullName ?? "Unknown"}
-                                        </span>
+                    return (
+                        <div
+                            key={solution._id}
+                            className="bg-white rounded-xl border-2 border-gray-300 p-4"
+                        >
+                            {/* Header */}
+                            <div className="flex justify-between items-start gap-3">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center font-bold text-green-700">
+                                        {solution.answeredBy?.fullName?.[0] ?? "U"}
+                                    </div>
 
-                                        {solution.isAccepted && (
-                                            <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-semibold">
-                                                ACCEPTED
+                                    <div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="font-semibold text-gray-800">
+                                                {solution.answeredBy?.fullName ?? "Unknown"}
                                             </span>
-                                        )}
-                                    </div>
 
-                                    <div className="text-xs text-gray-500">
-                                        {new Date(solution.createdAt).toLocaleDateString("en-US", {
-                                            month: "short",
-                                            day: "numeric",
-                                            year: "numeric",
-                                        })}
+                                            {solution.isAccepted && (
+                                                <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-semibold">
+                                                    ✓ ACCEPTED
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <div className="text-xs text-gray-500">
+                                            {new Date(solution.createdAt).toLocaleDateString("en-US", {
+                                                month: "short",
+                                                day: "numeric",
+                                                year: "numeric",
+                                            })}
+                                        </div>
                                     </div>
                                 </div>
+
+                                {/* Accept Button - Only show for problem owner */}
+                                {canAccept && (
+                                    <button
+                                        onClick={() => handleAcceptSolution(solution._id)}
+                                        disabled={acceptingId === solution._id}
+                                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors
+                                            ${acceptingId === solution._id
+                                                ? "bg-gray-400 text-white cursor-not-allowed"
+                                                : "bg-green-500 text-white hover:bg-green-600"
+                                            }`}
+                                    >
+                                        {acceptingId === solution._id ? "Accepting..." : "Accept Solution"}
+                                    </button>
+                                )}
+                            </div>
+
+                            {/* Body */}
+                            <p className="mt-3 text-gray-800 whitespace-pre-line">
+                                {solution.answer}
+                            </p>
+
+                            {/* Footer */}
+                            <div className="mt-4 flex items-center gap-4 text-sm text-gray-600">
+                                <span>👍 {solution.votes?.upvotes ?? 0}</span>
+                                <span>👎 {solution.votes?.downvotes ?? 0}</span>
+                                {solution.isEdited && (
+                                    <span className="text-xs italic text-gray-400">
+                                        Edited
+                                    </span>
+                                )}
                             </div>
                         </div>
-
-                        {/* Body */}
-                        <p className="mt-3 text-gray-800 whitespace-pre-line">
-                            {solution.answer}
-                        </p>
-
-                        {/* Footer */}
-                        <div className="mt-4 flex items-center gap-4 text-sm text-gray-600">
-                            <span>👍 {solution.votes?.upvotes ?? 0}</span>
-                            <span>👎 {solution.votes?.downvotes ?? 0}</span>
-                            {solution.isEdited && (
-                                <span className="text-xs italic text-gray-400">
-                                    Edited
-                                </span>
-                            )}
-                        </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </div>
     );

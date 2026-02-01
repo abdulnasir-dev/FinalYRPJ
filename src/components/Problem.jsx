@@ -3,12 +3,28 @@ import { useParams } from "react-router-dom";
 import { fetchProblemById } from "../api/problems.api";
 import Solutions from "./Solutions";
 
-
 const Problem = () => {
     const { problemId } = useParams();
 
     const [problem, setProblem] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    // Get current user - UPDATE THIS based on your auth setup
+    // Option 1: If you have auth context
+    // const { user } = useAuth();
+
+    // Option 2: If stored in localStorage
+    const getCurrentUser = () => {
+        const token = localStorage.getItem("accessToken");
+        if (token) {
+            // Decode JWT to get user ID (you might need jwt-decode package)
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload._id || payload.userId || payload.id;
+        }
+        return null;
+    };
+
+    const currentUserId = getCurrentUser();
 
     useEffect(() => {
         const getProblem = async () => {
@@ -35,7 +51,6 @@ const Problem = () => {
 
     return (
         <div className="h-full overflow-y-auto p-4 flex flex-col gap-5">
-
             {/* ===== Header ===== */}
             <div className="flex flex-col gap-2">
                 <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
@@ -68,8 +83,7 @@ const Problem = () => {
             </div>
 
             {/* ===== Banner Image ===== */}
-            {/* ===== Banner Image / Placeholder ===== */}
-            <div className="w-full h-[250px] rounded-xl border bg-gray-100 overflow-hidden flex items-center justify-center">
+            <div className="w-full min-h-[250px] rounded-xl border bg-gray-100 overflow-hidden flex items-center justify-center">
                 {problem.bannerImage ? (
                     <img
                         src={problem.bannerImage}
@@ -102,7 +116,6 @@ const Problem = () => {
                     </div>
                 )}
             </div>
-
 
             {/* ===== Meta ===== */}
             <div className="flex justify-between flex-wrap gap-2 text-sm text-gray-500">
@@ -138,11 +151,15 @@ const Problem = () => {
                 </div>
             )}
 
-            {/* ===== COMMENTS PLACEHOLDER ===== */}
+            {/* ===== SOLUTIONS SECTION ===== */}
             <div className="">
-                <Solutions problemId={problem._id} />
+                <Solutions
+                    problemId={problem._id}
+                    problemOwnerId={problem.createdBy?._id || problem.createdBy}
+                    currentUserId={currentUserId}
+                    problemStatus={problem.status}
+                />
             </div>
-
 
             {/* ===== Bottom Padding (important) ===== */}
             <div className="h-20" />
