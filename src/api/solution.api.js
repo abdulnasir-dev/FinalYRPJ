@@ -19,3 +19,6 @@ export const fetchSolutionsForProblem = (problemId) => API.get(`${problemId}`)
 
 export const createSolution = (problemId, answer) =>
     API.post(`/create/${problemId}`, { answer });
+
+export const acceptSolution = (solutionId) =>
+    API.patch(`/accept/${solutionId}`);

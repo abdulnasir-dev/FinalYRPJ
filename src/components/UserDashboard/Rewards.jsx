@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaFilter } from "react-icons/fa6";
 import { myPoints } from "../../api/userDashboard";
+import { useNavigate } from "react-router-dom";
 
 const typeLabelMap = {
   commented: "Commented on a solution",
@@ -8,13 +9,17 @@ const typeLabelMap = {
   reported: "Reported a solution",
 };
 
+
+
 const Rewards = () => {
   const [summary, setSummary] = useState(null);
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchPoints = async () => {
       try {
         const res = await myPoints();
+        console.log(res.data)
         setSummary(res.data);
       } catch (error) {
         console.error(error);
@@ -86,14 +91,14 @@ const Rewards = () => {
             className="bg-white rounded-md w-full py-4 px-3 md:px-4 flex flex-col gap-3 border-2 border-gray-300"
           >
             <div className="flex justify-between items-start">
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1 flex-1">
                 <h2 className="text-sm md:text-base font-semibold text-gray-800">
                   {typeLabelMap[record.type] || record.type}
                 </h2>
 
                 {record.solutionId?.answer ? (
                   <p className="text-sm text-gray-600 line-clamp-2">
-                    “{record.solutionId.answer}”
+                    "{record.solutionId.answer}"
                   </p>
                 ) : (
                   <p className="text-sm text-gray-400 italic">
@@ -104,8 +109,8 @@ const Rewards = () => {
 
               <div
                 className={`text-sm md:text-base font-bold ${record.points >= 0
-                    ? "text-green-600"
-                    : "text-red-600"
+                  ? "text-green-600"
+                  : "text-red-600"
                   }`}
               >
                 {record.points > 0 ? "+" : ""}
@@ -113,12 +118,24 @@ const Rewards = () => {
               </div>
             </div>
 
-            <div className="text-xs md:text-sm text-gray-500">
-              {new Date(record.createdAt).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              })}
+            <div className="flex justify-between items-center flex-wrap gap-2">
+              <div className="text-xs md:text-sm text-gray-500">
+                {new Date(record.createdAt).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </div>
+
+              {/* View Problem Button - only show if solution has a problem */}
+              {record.solutionId?.problemId && (
+                <button
+                  onClick={() => navigate(`/problems/${record.solutionId.problemId._id || record.solutionId.problemId}`)}
+                  className="px-3 md:px-4 py-1.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-xs md:text-sm font-semibold"
+                >
+                  View Problem
+                </button>
+              )}
             </div>
           </div>
         ))}

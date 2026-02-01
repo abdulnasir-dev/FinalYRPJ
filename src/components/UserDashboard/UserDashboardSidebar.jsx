@@ -83,7 +83,6 @@ const SidebarContent = ({ onClose }) => {
 };
 
 export default function UserDashboardSidebar({ open, onClose }) {
-    console.log("UserDashboardSidebar render - open:", open);
 
     return (
         <>

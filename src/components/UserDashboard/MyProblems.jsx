@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { myProblems } from '../../api/userDashboard'
 import { FaFilter } from "react-icons/fa6";
+import { useNavigate } from 'react-router-dom';
 
 const MyProblems = () => {
   const [problems, setProblems] = useState([])
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchMyProblems = async () => {
@@ -72,8 +74,8 @@ const MyProblems = () => {
                 </span>
 
                 <span className={`px-2 md:px-3 py-1 rounded-full text-xs font-semibold ${problem.status === 'open' ? 'bg-amber-100 text-amber-700' :
-                    problem.status === 'solved' ? 'bg-green-100 text-green-700' :
-                      'bg-gray-100 text-gray-700'
+                  problem.status === 'solved' ? 'bg-green-100 text-green-700' :
+                    'bg-gray-100 text-gray-700'
                   }`}>
                   {problem.status.charAt(0).toUpperCase() + problem.status.slice(1)}
                 </span>
@@ -82,7 +84,7 @@ const MyProblems = () => {
 
             {/* Right side - Actions */}
             <div className='flex items-center gap-2 md:gap-3 flex-wrap'>
-              <button className='px-3 md:px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-xs md:text-sm font-semibold whitespace-nowrap'>
+              <button onClick={() => navigate(`/problems/${problem._id}`)} className='px-3 md:px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-xs md:text-sm font-semibold whitespace-nowrap'>
                 View Solutions
               </button>
 
