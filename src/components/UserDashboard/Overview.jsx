@@ -197,46 +197,43 @@ const Overview = () => {
             </div>
 
             {/* RECENT POSTS AND ACTIVITY */}
-            <div className='flex flex-col p-3 gap-3'>
-
-                <div className='flex flex-col w-full rounded-2xl border-2 border-gray-300 bg-white'>
-                    <div className='flex flex-col gap-1 p-3'>
-                        <h1 className='text-xl font-bold'>Recent Activities</h1>
-                        <p className='text-sm  text-[#848484]'>View key metrices for recent posts</p>
+            <div className='flex flex-col p-2 sm:p-3 gap-3'>
+                <div className='flex flex-col w-full rounded-xl sm:rounded-2xl border-2 border-gray-300 bg-white'>
+                    <div className='flex flex-col gap-1 p-3 sm:p-4'>
+                        <h1 className='text-lg sm:text-xl font-bold'>Recent Activities</h1>
+                        <p className='text-xs sm:text-sm text-[#848484]'>View key metrics for recent posts</p>
                     </div>
 
                     <div className='flex flex-col gap-4'>
                         <div>
                             <div className='h-10 border-y-2 border-gray-300 flex items-center px-3 bg-[#f9fbfc]'>
-                                <h2 className="text-sm font-bold text-[#666]">Posted Problems</h2>
+                                <h2 className="text-xs sm:text-sm font-bold text-[#666]">Posted Problems</h2>
                             </div>
 
                             <div className="flex flex-col">
                                 {latestProblems.length === 0 ? (
-                                    <div className="flex flex-col items-center justify-center p-8 text-gray-400">
-                                        <p className="text-lg font-semibold">No problems posted yet</p>
-                                        <p className="text-sm mt-2">Start by posting your first problem!</p>
+                                    <div className="flex flex-col items-center justify-center p-6 sm:p-8 text-gray-400">
+                                        <p className="text-base sm:text-lg font-semibold">No problems posted yet</p>
+                                        <p className="text-xs sm:text-sm mt-2">Start by posting your first problem!</p>
                                     </div>
                                 ) : (
                                     latestProblems.map((item, index) => (
                                         <div
                                             key={index}
-                                            className="flex gap-3 p-3 items-center border-t-2 border-gray-200"
+                                            className="flex gap-2 sm:gap-3 p-2 sm:p-3 items-start border-t-2 border-gray-200"
                                         >
-                                            {/* Serial Number */}
-
                                             {/* Content */}
-                                            <div className="flex flex-col gap-1 lg:gap-2">
-                                                <div className='flex items-center h-7 gap-3'>
-                                                    <p className="text-sm font-bold text-gray-500">
+                                            <div className="flex flex-col gap-1 lg:gap-2 flex-1 min-w-0">
+                                                <div className='flex items-center gap-2 sm:gap-3'>
+                                                    <p className="text-xs sm:text-sm font-bold text-gray-500 shrink-0">
                                                         {index + 1}.
                                                     </p>
-                                                    <h3 className="text-md font-semibold text-gray-800">
+                                                    <h3 className="text-sm sm:text-md font-semibold text-gray-800 line-clamp-2">
                                                         {item.title}
                                                     </h3>
                                                 </div>
 
-                                                <h4 className="text-sm text-gray-800">
+                                                <h4 className="text-xs sm:text-sm text-gray-800 line-clamp-2 sm:line-clamp-3 ml-5 sm:ml-6">
                                                     {item.description}
                                                 </h4>
                                             </div>
@@ -248,33 +245,33 @@ const Overview = () => {
 
                         <div>
                             <div className='h-10 border-y-2 border-gray-300 flex items-center px-3 bg-[#f9fbfc]'>
-                                <h2 className="text-sm font-bold text-[#666]">Posted Solutions</h2>
+                                <h2 className="text-xs sm:text-sm font-bold text-[#666]">Posted Solutions</h2>
                             </div>
 
                             <div className="flex flex-col">
                                 {latestSolutions.length === 0 ? (
-                                    <div className="flex flex-col items-center justify-center p-8 text-gray-400">
-                                        <p className="text-lg font-semibold">No solutions posted yet</p>
-                                        <p className="text-sm mt-2">Be the first to help solve a problem!</p>
+                                    <div className="flex flex-col items-center justify-center p-6 sm:p-8 text-gray-400">
+                                        <p className="text-base sm:text-lg font-semibold">No solutions posted yet</p>
+                                        <p className="text-xs sm:text-sm mt-2">Be the first to help solve a problem!</p>
                                     </div>
                                 ) : (
                                     latestSolutions.map((item, index) => (
                                         <div
                                             key={index}
-                                            className="flex gap-3 p-3 items-center border-t-2 border-gray-200"
+                                            className="flex gap-2 sm:gap-3 p-2 sm:p-3 items-start border-t-2 border-gray-200"
                                         >
                                             {/* Content */}
-                                            <div className="flex flex-col gap-1 lg:gap-2">
-                                                <div className='flex items-center h-7 gap-3'>
-                                                    <p className="text-sm font-bold text-gray-500">
+                                            <div className="flex flex-col gap-1 lg:gap-2 flex-1 min-w-0">
+                                                <div className='flex items-center gap-2 sm:gap-3'>
+                                                    <p className="text-xs sm:text-sm font-bold text-gray-500 shrink-0">
                                                         {index + 1}.
                                                     </p>
-                                                    <h3 className="text-md font-semibold text-gray-800">
+                                                    <h3 className="text-sm sm:text-md font-semibold text-gray-800 line-clamp-2">
                                                         {item.problemId.title}
                                                     </h3>
                                                 </div>
 
-                                                <h4 className="text-sm text-gray-800">
+                                                <h4 className="text-xs sm:text-sm text-gray-800 line-clamp-2 sm:line-clamp-3 ml-5 sm:ml-6">
                                                     {item.answer}
                                                 </h4>
                                             </div>
@@ -282,12 +279,8 @@ const Overview = () => {
                                     ))
                                 )}
                             </div>
-
                         </div>
                     </div>
-
-
-
                 </div>
             </div>
 
