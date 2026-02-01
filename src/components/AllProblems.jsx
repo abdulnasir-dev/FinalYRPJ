@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 // import { FaFilter } from "react-icons/fa6";
 import { fetchAllProblems } from "../api/problems.api";
+import { useNavigate } from "react-router-dom";
 
 const AllProblems = () => {
     const [problems, setProblems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const navigate = useNavigate()
 
     const LIMIT = 10;
 
@@ -51,7 +53,7 @@ const AllProblems = () => {
                     <div className="flex justify-between items-center gap-2 flex-wrap md:flex-nowrap">
                         <div className="flex items-center gap-2 min-w-0">
                             <h2 className="text-base md:text-lg font-bold truncate">
-                                 Problems
+                                Problems
                             </h2>
                             <div className="h-5 w-5 bg-black text-white rounded-full flex justify-center items-center text-xs shrink-0">
                                 {problems.length}
@@ -105,7 +107,8 @@ const AllProblems = () => {
                         problems.map((problem) => (
                             <div
                                 key={problem._id}
-                                className="bg-white rounded-lg w-full p-4 border-2 border-gray-300 flex flex-col gap-3"
+                                onClick={() => navigate(`/problems/${problem._id}`)}
+                                className="bg-white rounded-lg w-full p-4 border-2 border-gray-300 flex flex-col gap-3 cursor-pointer"
                             >
 
                                 {/* Meta */}
