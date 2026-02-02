@@ -8,13 +8,15 @@ import {
   Gift,
   Settings as SettingsIcon,
   FileText,
+  Leaf,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Navbar({ onMenuClick }) {
   const [openProfile, setOpenProfile] = useState(false);
   const navigate = useNavigate();
+  const dropdownRef = useRef(null);
 
   const handleNavigate = (path) => {
     setOpenProfile(false);
@@ -25,6 +27,23 @@ export default function Navbar({ onMenuClick }) {
     localStorage.removeItem("accessToken");
     window.location.href = "/signin";
   };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpenProfile(false);
+      }
+    };
+
+    if (openProfile) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [openProfile]);
 
   return (
     <nav className="w-full h-16 bg-white border-b border-gray-200 flex items-center px-4 sm:px-6 lg:px-8 shadow-sm">
@@ -44,8 +63,8 @@ export default function Navbar({ onMenuClick }) {
           onClick={() => navigate("/dashboard")}
           className="flex items-center gap-2 cursor-pointer"
         >
-          <div className="w-9 h-9 rounded-lg bg-green-600 flex items-center justify-center text-white font-bold">
-            I
+          <div className="w-9 h-9 rounded-lg bg-green-600 flex items-center justify-center text-white">
+            <Leaf className="w-5 h-5" />
           </div>
           <span className="text-lg font-semibold text-gray-900 hidden sm:block">
             ImpactHub
@@ -71,12 +90,12 @@ export default function Navbar({ onMenuClick }) {
           <Search className="w-5 h-5 text-gray-700" />
         </button>
 
-        <button className="p-2 rounded-md hover:bg-gray-100">
-          <Bell className="w-5 h-5 text-gray-700" />
+        <button onClick={()=> navigate("/dashboard/notifications")} className="p-2 rounded-md hover:bg-gray-100">
+          <Bell  className="w-5 h-5 text-gray-700" />
         </button>
 
         {/* USER DROPDOWN */}
-        <div className="relative">
+        <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setOpenProfile((prev) => !prev)}
             className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100"
@@ -150,4 +169,4 @@ function DropdownItem({ icon, label, onClick, danger = false }) {
       {label}
     </button>
   );
-} 
+}

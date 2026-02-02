@@ -103,7 +103,7 @@ const SignIn = ({ switchtoSignup }) => {
         </p>
 
         <span
-          onClick={switchtoSignup}
+          onClick={()=> navigate("/signup")}
           className="text-blue-400 hover:underline cursor-pointer flex justify-center"
         >
           Sign up

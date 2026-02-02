@@ -10,6 +10,7 @@ const AllProblems = () => {
     const [totalPages, setTotalPages] = useState(1);
     const navigate = useNavigate()
 
+
     const LIMIT = 10;
 
     useEffect(() => {
@@ -31,6 +32,18 @@ const AllProblems = () => {
 
         fetchProblems();
     }, [page]);
+
+    if (loading) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-screen">
+                <div className="relative w-20 h-20">
+                    <div className="absolute inset-0 border-4 border-gray-200 rounded-full"></div>
+                    <div className="absolute inset-0 border-4 border-t-blue-500 rounded-full animate-spin"></div>
+                </div>
+                <p className="mt-4 text-lg font-semibold text-gray-600">Loading dashboard...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col h-full p-4 gap-4 overflow-hidden">
