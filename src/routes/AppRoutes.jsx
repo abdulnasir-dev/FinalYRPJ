@@ -13,7 +13,7 @@ import Rewards from "../components/UserDashboard/Rewards";
 import Redemption from "../components/UserDashboard/Redemption";
 import Settings from "../components/UserDashboard/Settings";
 import Problem from "../components/Problem";
-import CreateProblem from "../components/UserDashboard/createProblem";
+import CreateProblem from "../components/UserDashboard/CreateProblem";
 
 
 
