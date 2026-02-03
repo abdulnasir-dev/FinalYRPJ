@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { FaFilter } from "react-icons/fa6";
 import { FetchMySolutions } from '../../api/userDashboard';
 import { useNavigate } from 'react-router-dom';
+import { LoaderOne } from '../ui/loader';
 
 const MySolutions = () => {
   const [solutions, setSolutions] = useState([])
@@ -18,7 +19,7 @@ const MySolutions = () => {
         setSolutions(res.data.solutions)
       } catch (error) {
         console.error(error)
-      }finally{
+      } finally {
         setLoading(false)
       }
     }
@@ -39,16 +40,12 @@ const MySolutions = () => {
   };
 
   if (loading) {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-screen">
-                <div className="relative w-20 h-20">
-                    <div className="absolute inset-0 border-4 border-gray-200 rounded-full"></div>
-                    <div className="absolute inset-0 border-4 border-t-blue-500 rounded-full animate-spin"></div>
-                </div>
-                <p className="mt-4 text-lg font-semibold text-gray-600">Loading Solutions...</p>
-            </div>
-        );
-    }
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <LoaderOne />
+      </div>
+    );
+  }
 
   return (
     <div className='flex flex-col gap-4 h-full'>

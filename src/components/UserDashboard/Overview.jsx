@@ -3,6 +3,7 @@ import { dashboardStats } from '../../api/userDashboard';
 import ReusablePieChart from '../charts/ReusablePieChart';
 import ReusableLineChart from '../charts/ReusableLineChart';
 import MiniLineChart from '../charts/MiniLineChart';
+import { LoaderFive, LoaderFour, LoaderOne, LoaderThree, LoaderTwo } from '../ui/loader';
 
 const Overview = () => {
 
@@ -60,15 +61,13 @@ const Overview = () => {
 
     if (loading) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-screen">
-                <div className="relative w-20 h-20">
-                    <div className="absolute inset-0 border-4 border-gray-200 rounded-full"></div>
-                    <div className="absolute inset-0 border-4 border-t-blue-500 rounded-full animate-spin"></div>
-                </div>
-                <p className="mt-4 text-lg font-semibold text-gray-600">Loading dashboard...</p>
+            <div className="flex h-full w-full items-center justify-center">
+                <LoaderOne />
             </div>
         );
     }
+
+
 
     // Replace your getFakeData function with this:
     const getFakeData = (finalValue) => {
@@ -106,7 +105,7 @@ const Overview = () => {
                 <p className='text-stone-600'>This is the overview section of your dashboard.</p>
             </div>
 
-            <div className="flex flex-col lg:flex-row w-full justify-center items-stretch gap-4 p-3">
+            <div className="flex flex-col lg:flex-row w-full justify-center items-stretch gap-4 lg:p-4">
                 <div className='bg-white rounded-xl lg:w-1/3 h-32 py-3 px-4 flex justify-center items-center border-2 border-gray-300'>
                     <div className='w-1/2 h-full flex flex-col justify-between'>
                         <h3 className='font-bold text-sm text-[#848484]'>Total Problems</h3>
@@ -157,7 +156,7 @@ const Overview = () => {
 
 
             {/* CHART AREA */}
-            <div className='flex flex-col px-3 gap-3'>
+            <div className='flex flex-col lg:p-4 gap-3'>
                 <h1 className='text-xl font-bold'>Statics</h1>
                 <div className='flex gap-4 flex-col lg:flex lg:flex-row'>
                     <div className="lg:w-1/4 h-[300px] bg-white border-2 border-gray-300 rounded-2xl p-4 flex flex-col">
@@ -197,7 +196,7 @@ const Overview = () => {
             </div>
 
             {/* RECENT POSTS AND ACTIVITY */}
-            <div className='flex flex-col p-2 sm:p-3 gap-3'>
+            <div className='flex flex-col lg:p-4 gap-3'>
                 <div className='flex flex-col w-full rounded-xl sm:rounded-2xl border-2 border-gray-300 bg-white'>
                     <div className='flex flex-col gap-1 p-3 sm:p-4'>
                         <h1 className='text-lg sm:text-xl font-bold'>Recent Activities</h1>

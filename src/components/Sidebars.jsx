@@ -10,11 +10,17 @@ import { PiPottedPlantLight } from "react-icons/pi";
 import { GiFarmer } from "react-icons/gi";
 import { TbWorld } from "react-icons/tb";
 
+const role = localStorage.getItem("role"); // "admin" | "user"
+
 const discover = [
   { label: "Home", icon: FiHome, path: "/" },
   { label: "Leaderboard", icon: MdOutlineLeaderboard, path: "/leaderboard" },
   { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
+  ...(role === "admin"
+    ? [{ label: "Admin Panel", icon: LayoutDashboard, path: "/admin" }]
+    : []),
 ];
+
 
 const categories = [
   { label: "Water Conservation", icon: FaHandHoldingWater },

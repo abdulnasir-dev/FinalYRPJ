@@ -31,7 +31,8 @@ const SignIn = ({ switchtoSignup }) => {
           error: "Invalid email or password",
         }
       );
-
+      // console.log(res.data)
+      localStorage.setItem("role", res.data.role)
       localStorage.setItem("accessToken", res.data.accessToken);
 
       window.location.href = "/dashboard";

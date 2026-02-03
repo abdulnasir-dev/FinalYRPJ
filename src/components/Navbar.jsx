@@ -110,28 +110,13 @@ export default function Navbar({ onMenuClick }) {
             <div className="absolute right-0 mt-2 w-52 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
               <DropdownItem
                 icon={<User size={16} />}
-                label="Overview"
+                label="User Dashboard"
                 onClick={() => handleNavigate("/dashboard")}
               />
               <DropdownItem
                 icon={<FileText size={16} />}
-                label="My Problems"
-                onClick={() => handleNavigate("/dashboard/problems")}
-              />
-              <DropdownItem
-                icon={<FileText size={16} />}
-                label="My Solutions"
-                onClick={() => handleNavigate("/dashboard/solutions")}
-              />
-              <DropdownItem
-                icon={<Gift size={16} />}
-                label="Rewards"
-                onClick={() => handleNavigate("/dashboard/points")}
-              />
-              <DropdownItem
-                icon={<Gift size={16} />}
-                label="Redemption"
-                onClick={() => handleNavigate("/dashboard/redemption")}
+                label="Admin Dashboard"
+                onClick={() => handleNavigate("/admin")}
               />
               <DropdownItem
                 icon={<SettingsIcon size={16} />}
