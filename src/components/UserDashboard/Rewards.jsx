@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaFilter } from "react-icons/fa6";
 import { myPoints } from "../../api/userDashboard";
 import { useNavigate } from "react-router-dom";
+import { LoaderOne } from "../ui/loader";
 
 const typeLabelMap = {
   commented: "Commented on a solution",
@@ -14,20 +15,32 @@ const typeLabelMap = {
 const Rewards = () => {
   const [summary, setSummary] = useState(null);
   const navigate = useNavigate()
+  const [loading, setloading] = useState(false)
 
   useEffect(() => {
     const fetchPoints = async () => {
       try {
+        setloading(true)
         const res = await myPoints();
         console.log(res.data)
         setSummary(res.data);
       } catch (error) {
         console.error(error);
+      } finally {
+        setloading(false)
       }
     };
 
     fetchPoints();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <LoaderOne />
+      </div>
+    );
+  }
 
   if (!summary) {
     return <p className="text-center text-gray-500">Loading rewards...</p>;

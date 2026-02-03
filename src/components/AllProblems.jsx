@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 // import { FaFilter } from "react-icons/fa6";
 import { fetchAllProblems } from "../api/problems.api";
 import { useNavigate } from "react-router-dom";
+import { LoaderOne } from "./ui/loader";
 
 const AllProblems = () => {
     const [problems, setProblems] = useState([]);
@@ -19,7 +20,7 @@ const AllProblems = () => {
                 setLoading(true);
                 const res = await fetchAllProblems(page, LIMIT);
                 setProblems(res.data.problems || []);
-
+                console.log(res.data)
                 // Calculate totalPages from total and limit
                 const calculatedTotalPages = Math.ceil(res.data.total / res.data.limit) || 1;
                 setTotalPages(calculatedTotalPages);
@@ -34,16 +35,12 @@ const AllProblems = () => {
     }, [page]);
 
     if (loading) {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-screen">
-                <div className="relative w-20 h-20">
-                    <div className="absolute inset-0 border-4 border-gray-200 rounded-full"></div>
-                    <div className="absolute inset-0 border-4 border-t-blue-500 rounded-full animate-spin"></div>
+            return (
+                <div className="flex h-full w-full items-center justify-center">
+                    <LoaderOne />
                 </div>
-                <p className="mt-4 text-lg font-semibold text-gray-600">Loading dashboard...</p>
-            </div>
-        );
-    }
+            );
+        }
 
     return (
         <div className="flex flex-col h-full p-4 gap-4 overflow-hidden">

@@ -6,24 +6,31 @@ import SignIn from "../pages/SignIn";
 import Home from "../pages/Home";
 
 import UserDashboard from "../pages/UserDashboard";
+
 import Overview from "../components/UserDashboard/Overview";
 import MyProblems from "../components/UserDashboard/MyProblems";
 import MySolutions from "../components/UserDashboard/MySolutions";
 import Rewards from "../components/UserDashboard/Rewards";
 import Redemption from "../components/UserDashboard/Redemption";
 import Settings from "../components/UserDashboard/Settings";
-import Problem from "../components/Problem";
 import CreateProblem from "../components/UserDashboard/CreateProblem";
 import Notifications from "../components/UserDashboard/Notifications";
 
+import Users from "../components/AdminDashboard/Users";
+import Problem from "../components/Problem";
+import AdminDashboard from "../pages/AdminDashboard";
+import Analytics from "@/components/AdminDashboard/Analytics";
 
+const RequireAdmin = ({ children }) => {
+  const role = localStorage.getItem("role");
+  return role === "admin"
+    ? children
+    : <Navigate to="/dashboard" replace />;
+};
 
 export default function AppRoutes() {
   const token = localStorage.getItem("accessToken");
 
-  /* ======================
-     NO TOKEN → AUTH ONLY
-  ====================== */
   if (!token) {
     return (
       <Routes>
@@ -34,23 +41,13 @@ export default function AppRoutes() {
     );
   }
 
-  /* ======================
-     AUTHENTICATED ROUTES
-  ====================== */
   return (
     <Routes>
+      {/* ================= USER / PUBLIC LAYOUT ================= */}
       <Route element={<Layout />}>
-        {/* Home */}
         <Route path="/" element={<Home />} />
-
-        {/* Problem detail (PUBLIC but authenticated) */}
         <Route path="/problems/:problemId" element={<Problem />} />
 
-        {/* Prevent auth pages when logged in */}
-        <Route path="/signup" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/signin" element={<Navigate to="/dashboard" replace />} />
-
-        {/* Dashboard */}
         <Route path="/dashboard" element={<UserDashboard />}>
           <Route index element={<Overview />} />
           <Route path="problems" element={<MyProblems />} />
@@ -61,10 +58,23 @@ export default function AppRoutes() {
           <Route path="create" element={<CreateProblem />} />
           <Route path="notifications" element={<Notifications />} />
         </Route>
-
-        {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
+
+      {/* ================= ADMIN (NO LAYOUT WRAP) ================= */}
+      <Route
+        path="/admin"
+        element={
+          <RequireAdmin>
+            <AdminDashboard />
+          </RequireAdmin>
+        }
+      >
+        <Route index element={<Analytics />} />
+        {/* <Route path="users" element={<Users />} /> */}
+      </Route>
+
+      {/* ================= FALLBACK ================= */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

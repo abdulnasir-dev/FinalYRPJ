@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { fetchProblemById } from "../api/problems.api";
 import Solutions from "./Solutions";
+import { LoaderOne } from "./ui/loader";
 
 const Problem = () => {
     const { problemId } = useParams();
@@ -38,12 +39,8 @@ const Problem = () => {
 
     if (loading) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-screen">
-                <div className="relative w-20 h-20">
-                    <div className="absolute inset-0 border-4 border-gray-200 rounded-full"></div>
-                    <div className="absolute inset-0 border-4 border-t-blue-500 rounded-full animate-spin"></div>
-                </div>
-                <p className="mt-4 text-lg font-semibold text-gray-600">Loading Problem...</p>
+            <div className="flex h-full w-full items-center justify-center">
+                <LoaderOne />
             </div>
         );
     }
