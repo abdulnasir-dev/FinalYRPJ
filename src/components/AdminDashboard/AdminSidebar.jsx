@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { X } from "lucide-react";
+import { ClipboardList, Inbox, ScrollText, X } from "lucide-react";
 import {
     LayoutDashboard,
     Users,
@@ -16,14 +16,14 @@ import { FiHome } from "react-icons/fi";
 
 const adminNav = [
     { label: "Home", icon: FiHome, path: "/" },
-    { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
+    { label: "Dashboard", icon: BarChart3, path: "/admin" },
     { label: "Users", icon: Users, path: "/admin/users" },
-    { label: "Problems", icon: FileText, path: "/admin/problems" },
-    { label: "Solutions", icon: MessageSquare, path: "/admin/solutions" },
-    { label: "Reports", icon: ShieldCheck, path: "/admin/reports" },
-    { label: "Analytics", icon: BarChart3, path: "/admin/analytics" },
-    { label: "Notifications", icon: Bell, path: "/notifications" },
-    { label: "Settings", icon: Settings, path: "/admin/settings" },
+    { label: "Problems", icon: FileText, path: "/admin/all-problems" },
+    { label: "Solutions", icon: MessageSquare, path: "/admin/all-solutions" },
+    { label: "Admin Logs", icon: ScrollText, path: "/admin/logs" },
+    { label: "Requests", icon: ClipboardList, path: "/admin/requests" },
+    { label: "Notifications", icon: Bell, path: "/dashboard/notifications" },
+    { label: "Settings", icon: Settings, path: "/dashboard/settings" },
 ];
 
 const SidebarContent = ({ onClose }) => {
