@@ -41,3 +41,8 @@ export const approveRedemptionRequest = (redemptionId) =>
 
 export const rejectRedemptionRequest = (redemptionId) =>
     API.patch(`/redemption/${redemptionId}/reject`);
+
+export const getAllProblems = () => API.get("/problems");
+
+export const toggleProblemVisibility = (problemId) =>
+    API.patch(`/toggle-problem/${problemId}`);
