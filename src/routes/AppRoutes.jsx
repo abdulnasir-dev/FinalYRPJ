@@ -20,6 +20,10 @@ import Users from "../components/AdminDashboard/Users";
 import Problem from "../components/Problem";
 import AdminDashboard from "../pages/AdminDashboard";
 import Analytics from "@/components/AdminDashboard/Analytics";
+import Requests from "@/components/AdminDashboard/Requests";
+import AdminLogs from "@/components/AdminDashboard/AdminLogs";
+import AdminProblem from "@/components/AdminDashboard/AdminProblem";
+import AdminSolutions from "@/components/AdminDashboard/AdminSolutions";
 
 const RequireAdmin = ({ children }) => {
   const role = localStorage.getItem("role");
@@ -70,7 +74,11 @@ export default function AppRoutes() {
         }
       >
         <Route index element={<Analytics />} />
-        {/* <Route path="users" element={<Users />} /> */}
+        <Route path="users" element={<Users />} />
+        <Route path="requests" element={<Requests />} />
+        <Route path="logs" element={<AdminLogs />} />
+        <Route path="all-problems" element={<AdminProblem />} />
+        <Route path="all-solutions" element={<AdminSolutions />} />
       </Route>
 
       {/* ================= FALLBACK ================= */}
