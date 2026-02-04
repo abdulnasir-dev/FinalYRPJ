@@ -29,6 +29,12 @@ const adminNav = [
 const SidebarContent = ({ onClose }) => {
     const { pathname } = useLocation();
 
+    const handleLogout = () => {
+        // console.log("clicked")
+        localStorage.removeItem("accessToken");
+        window.location.href = "/signin";
+    };
+
     return (
         <div className="h-full bg-white">
             <div className="flex flex-col h-full bg-gray-50 overflow-hidden">
@@ -76,7 +82,7 @@ const SidebarContent = ({ onClose }) => {
 
                 {/* Footer */}
                 <div className="p-4 border-t border-gray-200">
-                    <button className="flex gap-3 items-center px-3 py-2.5 w-full text-sm text-red-600 hover:bg-red-50 transition">
+                    <button onClick={handleLogout} className="flex gap-3 items-center px-3 py-2.5 w-full text-sm text-red-600 hover:bg-red-50 transition">
                         <LogOut size={18} />
                         Logout
                     </button>

@@ -14,7 +14,7 @@ const MyProblems = () => {
       try {
         setLoading(true)
         const res = await myProblems()
-        console.log(res.data.problems)
+        // console.log(res.data.problems)
         setProblems(res.data.problems)
       } catch (error) {
         console.error(error)

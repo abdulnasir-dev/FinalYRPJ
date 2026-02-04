@@ -23,7 +23,7 @@ const Overview = () => {
             try {
                 setLoading(true);
                 const res = await dashboardStats()
-                console.log(res.data)
+                // console.log(res.data)
                 setTotalProblems(res.data.totalProblems)
                 setTotalSolutions(res.data.totalSolutionsProvided)
                 setTotalSolutionsRecieved(res.data.totalSolutionsRecieved)

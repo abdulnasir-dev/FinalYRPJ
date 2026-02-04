@@ -15,7 +15,7 @@ const MySolutions = () => {
       try {
         setLoading(true)
         const res = await FetchMySolutions()
-        console.log(res.data)
+        // console.log(res.data)
         setSolutions(res.data.solutions)
       } catch (error) {
         console.error(error)

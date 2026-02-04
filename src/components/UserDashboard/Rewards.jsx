@@ -22,7 +22,7 @@ const Rewards = () => {
       try {
         setloading(true)
         const res = await myPoints();
-        console.log(res.data)
+        // console.log(res.data)
         setSummary(res.data);
       } catch (error) {
         console.error(error);

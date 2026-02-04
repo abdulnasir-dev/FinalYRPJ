@@ -16,7 +16,7 @@ API.interceptors.request.use((config) => {
 
 export const getAllUsers = () => API.get("/user")
 
-export const fetchAdminLogs = () => API.get("/logs")
+export const fetchAdminLogs = (page = 1, limit = 10) => API.get(`/logs?page=${page}&limit=${limit}`)
 
 export const getAdminUsersList = (page = 1, limit = 10) => {
     return API.get(`/user?page=${page}&limit=${limit}`);
@@ -46,3 +46,7 @@ export const getAllProblems = () => API.get("/problems");
 
 export const toggleProblemVisibility = (problemId) =>
     API.patch(`/toggle-problem/${problemId}`);
+
+export const getAllSolutions = () => API.get(`/solutions`)
+
+export const toggleSolutionVisibility = (solutionId) => API.patch(`/toggle-solution/${solutionId}`)

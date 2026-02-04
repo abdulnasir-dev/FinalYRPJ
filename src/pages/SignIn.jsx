@@ -35,7 +35,13 @@ const SignIn = ({ switchtoSignup }) => {
       localStorage.setItem("role", res.data.role)
       localStorage.setItem("accessToken", res.data.accessToken);
 
-      window.location.href = "/dashboard";
+      if (res.data.role === "admin") {
+        window.location.href = "/admin"
+      } else {
+        window.location.href = "/dashboard";
+      }
+
+
 
     } catch (err) {
       console.log(err);
@@ -104,7 +110,7 @@ const SignIn = ({ switchtoSignup }) => {
         </p>
 
         <span
-          onClick={()=> navigate("/signup")}
+          onClick={() => navigate("/signup")}
           className="text-blue-400 hover:underline cursor-pointer flex justify-center"
         >
           Sign up

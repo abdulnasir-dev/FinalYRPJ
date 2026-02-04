@@ -20,7 +20,7 @@ const AllProblems = () => {
                 setLoading(true);
                 const res = await fetchAllProblems(page, LIMIT);
                 setProblems(res.data.problems || []);
-                console.log(res.data)
+                // console.log(res.data)
                 // Calculate totalPages from total and limit
                 const calculatedTotalPages = Math.ceil(res.data.total / res.data.limit) || 1;
                 setTotalPages(calculatedTotalPages);

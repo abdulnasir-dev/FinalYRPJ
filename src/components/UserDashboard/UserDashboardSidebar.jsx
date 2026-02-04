@@ -1,31 +1,37 @@
-    import React from "react";
-    import { NavLink, useLocation } from "react-router-dom";
-    import { Bell, PlusCircle, X } from "lucide-react";
-    import {
-        LayoutDashboard,
-        FileText,
-        MessageSquare,
-        Star,
-        Settings,
-        LogOut,
-        Gift,
-    } from "lucide-react";
-    import { FiHome } from "react-icons/fi";
+import React from "react";
+import { NavLink, useLocation } from "react-router-dom";
+import { Bell, PlusCircle, X } from "lucide-react";
+import {
+    LayoutDashboard,
+    FileText,
+    MessageSquare,
+    Star,
+    Settings,
+    LogOut,
+    Gift,
+} from "lucide-react";
+import { FiHome } from "react-icons/fi";
 
-    const dashboardNav = [
-        { label: "Home", icon: FiHome, path: "/" },
-        { label: "Overview", icon: LayoutDashboard, path: "/dashboard" },
-        { label: "My Problems", icon: FileText, path: "/dashboard/problems" },
-        { label: "My Solutions", icon: MessageSquare, path: "/dashboard/solutions" },
-        { label: "Points & Rewards", icon: Star, path: "/dashboard/points" },
-        { label: "Redemption", icon: Gift, path: "/dashboard/redemption" },
-        { label: "Create Problem", icon: PlusCircle, path: "/dashboard/create" },
-        { label: "Notifications", icon: Bell, path: "/dashboard/notifications" },
-        { label: "Settings", icon: Settings, path: "/dashboard/settings" },
-    ];
+const dashboardNav = [
+    { label: "Home", icon: FiHome, path: "/" },
+    { label: "Overview", icon: LayoutDashboard, path: "/dashboard" },
+    { label: "My Problems", icon: FileText, path: "/dashboard/problems" },
+    { label: "My Solutions", icon: MessageSquare, path: "/dashboard/solutions" },
+    { label: "Points & Rewards", icon: Star, path: "/dashboard/points" },
+    { label: "Redemption", icon: Gift, path: "/dashboard/redemption" },
+    { label: "Create Problem", icon: PlusCircle, path: "/dashboard/create" },
+    { label: "Notifications", icon: Bell, path: "/dashboard/notifications" },
+    { label: "Settings", icon: Settings, path: "/dashboard/settings" },
+];
 
 const SidebarContent = ({ onClose }) => {
     const { pathname } = useLocation();
+
+    const handleLogout = () => {
+        // console.log("clicked")
+        localStorage.removeItem("accessToken");
+        window.location.href = "/signin";
+    };
 
     return (
         <div className="h-full bg-white">
@@ -74,7 +80,7 @@ const SidebarContent = ({ onClose }) => {
 
                 {/* Footer */}
                 <div className="p-4 border-t border-gray-200">
-                    <button className="flex gap-3 items-center px-3 py-2.5 w-full text-sm text-red-600 hover:bg-red-50 transition">
+                    <button onClick={handleLogout} className="flex gap-3 items-center px-3 py-2.5 w-full text-sm text-red-600 hover:bg-red-50 transition">
                         <LogOut size={18} />
                         Logout
                     </button>

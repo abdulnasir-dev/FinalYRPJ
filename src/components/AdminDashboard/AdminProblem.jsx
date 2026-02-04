@@ -2,8 +2,9 @@ import { getAllProblems, toggleProblemVisibility } from "@/api/admin.users";
 import React, { useEffect, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { LoaderOne } from "../ui/loader";
+import { useNavigate } from "react-router-dom";
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 9;
 
 const statusStyles = {
   open: "bg-amber-100 text-amber-700",
@@ -16,12 +17,14 @@ const AdminProblem = () => {
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState(null);
   const [page, setPage] = useState(1);
+  const navigate = useNavigate()
 
   const fetchProblems = async () => {
     try {
       setLoading(true);
       const res = await getAllProblems();
       const data = res?.data?.problems || [];
+      console.log(res.data)
       setProblems(data);
       setPage(1); // reset page on refetch
     } catch (err) {
@@ -85,108 +88,99 @@ const AdminProblem = () => {
         </div>
 
         {/* GRID */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {currentProblems.map((problem) => (
             <div
               key={problem._id}
-              className="bg-white rounded-xl p-4 flex flex-col justify-between gap-4 border-2 border-gray-300"
+              className="rounded-xl border border-gray-400 p-4 bg-white hover:border-gray-300 transition"
             >
-              {/* TOP */}
-              <div className="flex flex-col gap-2">
-                <h3 className="text-base font-semibold text-gray-800 line-clamp-2">
-                  {problem.title}
-                </h3>
-
-                {/* BADGES */}
-                <div className="flex flex-wrap gap-2 text-xs">
-                  <span
-                    className={`px-2 py-1 rounded-full font-semibold ${statusStyles[problem.status] || "bg-gray-100 text-gray-700"
-                      }`}
-                  >
-                    {problem.status}
-                  </span>
-
-                  <span
-                    className={`px-2 py-1 rounded-full font-semibold ${problem.isDeleted
-                        ? "bg-red-100 text-red-700"
-                        : "bg-green-100 text-green-700"
-                      }`}
-                  >
-                    {problem.isDeleted ? "Hidden" : "Visible"}
-                  </span>
-
-                  {problem.isPinned && (
-                    <span className="px-2 py-1 rounded-full bg-purple-100 text-purple-700 font-semibold">
-                      Pinned
-                    </span>
-                  )}
-
-                  <span className="px-2 py-1 rounded-full bg-blue-100 text-blue-700 font-semibold">
-                    {problem.views} views
-                  </span>
-                </div>
-
-                {/* CATEGORIES */}
-                <div className="flex gap-2 text-xs text-gray-600">
-                  <span className="px-2 py-1 rounded bg-gray-100">
-                    {problem.category}
-                  </span>
-                  <span className="px-2 py-1 rounded bg-green-100 text-green-700">
-                    {problem.expertCategory}
-                  </span>
-                </div>
-
-                {/* CREATED INFO */}
-                <div className="text-xs text-gray-500 flex flex-col gap-1">
-                  <span>
+              {/* HEADER */}
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-900">
+                    {problem.title}
+                  </h3>
+                  <p className="text-xs text-gray-500 mt-1">
                     Created by{" "}
-                    <span className="font-semibold text-gray-700">
+                    <span className="font-medium text-gray-700">
                       {problem.createdBy?.fullName || "Unknown User"}
                     </span>
-                    {problem.createdBy?.role && (
-                      <span className="ml-2 px-2 py-[2px] rounded-full bg-indigo-100 text-indigo-700 text-[10px] font-semibold uppercase">
-                        {problem.createdBy.role}
-                      </span>
-                    )}
-                  </span>
-
-                  <span>
-                    {new Date(problem.createdAt).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </span>
+                  </p>
                 </div>
+
+                {/* ENTITY TYPE / STATUS */}
+                <span className="text-[11px] px-2 py-[2px] rounded-md border border-gray-200 text-gray-600 whitespace-nowrap">
+                  Problem
+                </span>
+              </div>
+
+              {/* DIVIDER */}
+              <div className="my-3 h-[1px] bg-gray-100 rounded" />
+
+              {/* META ROW */}
+              <div className="flex items-center justify-between text-xs text-gray-500">
+                <span>
+                  {new Date(problem.createdAt).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </span>
+
+                <span className="italic">
+                  Entity ID: {problem._id}
+                </span>
+              </div>
+
+              {/* TAGS */}
+              <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
+                <span className="border border-gray-200 rounded px-2 py-[2px] text-gray-600">
+                  {problem.category}
+                </span>
+
+                <span className="border border-green-200 rounded px-2 py-[2px] text-green-700">
+                  {problem.expertCategory}
+                </span>
+
+                <span
+                  className={`border rounded px-2 py-[2px]
+            ${problem.isDeleted
+                      ? "border-red-300 text-red-600"
+                      : "border-green-300 text-green-600"}
+          `}
+                >
+                  {problem.isDeleted ? "Hidden" : "Visible"}
+                </span>
+
+                {problem.isPinned && (
+                  <span className="border border-purple-300 rounded px-2 py-[2px] text-purple-600">
+                    Pinned
+                  </span>
+                )}
               </div>
 
               {/* ACTION */}
-              <button
-                disabled={updatingId === problem._id}
-                onClick={() => handleToggleVisibility(problem._id)}
-                className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition
-                  ${problem.isDeleted
-                    ? "bg-green-600 text-white hover:bg-green-700"
-                    : "bg-red-600 text-white hover:bg-red-700"
-                  }
-                  ${updatingId === problem._id &&
-                  "opacity-50 cursor-not-allowed"
-                  }
-                `}
-              >
-                {problem.isDeleted ? (
-                  <>
-                    <FaEye /> Show
-                  </>
-                ) : (
-                  <>
-                    <FaEyeSlash /> Hide
-                  </>
-                )}
-              </button>
+              <div className="flex gap-3">
+                <button
+                  disabled={updatingId === problem._id}
+                  onClick={() => handleToggleVisibility(problem._id)}
+                  className={`mt-4 w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border transition
+                   ${problem.isDeleted
+                      ? "border-green-400 text-green-700 hover:bg-green-50"
+                      : "border-red-400 text-red-700 hover:bg-red-50"}
+                      ${updatingId === problem._id && "opacity-50 cursor-not-allowed"}
+                     `}
+                >
+                  {problem.isDeleted ? <FaEye /> : <FaEyeSlash />}
+                  {problem.isDeleted ? "Restore" : "Hide"}
+                </button>
+
+                <button onClick={()=> navigate(`/problems/${problem._id}`)} className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border transition">View Problem</button>
+              </div>
             </div>
           ))}
         </div>
+
 
         {/* EMPTY STATE */}
         {problems.length === 0 && (

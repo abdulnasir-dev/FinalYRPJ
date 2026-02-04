@@ -26,13 +26,18 @@ const getAdminFullName = (log) => {
 const AdminLogs = () => {
     const [logs, setLogs] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1)
+    const [count, setCount] = useState(0)
+    const limit = 10;
 
     useEffect(() => {
         const fetchLogs = async () => {
             try {
                 setLoading(true);
-                const res = await fetchAdminLogs();
+                const res = await fetchAdminLogs(page, 10);
+                // console.log(res.data)    
                 setLogs(res.data.logs || []);
+                setCount(res.data.count)
             } catch (error) {
                 console.error("Failed to fetch admin logs", error);
             } finally {
@@ -41,7 +46,7 @@ const AdminLogs = () => {
         };
 
         fetchLogs();
-    }, []);
+    }, [page]);
 
     if (loading) {
         return (
@@ -65,7 +70,7 @@ const AdminLogs = () => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="bg-black text-white rounded-xl px-6 py-4">
                     <p className="text-sm opacity-70">Total Logs</p>
-                    <p className="text-2xl font-bold">{logs.length}</p>
+                    <p className="text-2xl font-bold">{count}</p>
                 </div>
 
                 <div className="bg-blue-600 text-white rounded-xl px-6 py-4">
@@ -152,6 +157,18 @@ const AdminLogs = () => {
                                         {log.meta.rewardType}
                                     </p>
                                 )}
+                                {log.meta.title && (
+                                    <p>
+                                        <span className="font-semibold">Title: </span> {log.meta.title}
+                                        {log.meta.rewardType}
+                                    </p>
+                                )}
+                                {log.meta.fullName && (
+                                    <p>
+                                        <span className="font-semibold">User:</span> {log.meta.fullName}
+                                        {log.meta.rewardType}
+                                    </p>
+                                )}
                             </div>
                         )}
 
@@ -173,6 +190,26 @@ const AdminLogs = () => {
                         </div>
                     </div>
                 ))}
+
+                <div className="flex justify-between items-center pt-2">
+                    <button
+                        disabled={page === 1}
+                        onClick={() => setPage(p => p - 1)}
+                        className="px-4 py-2 text-sm font-semibold rounded-lg border disabled:opacity-50"
+                    >
+                        Prev
+                    </button>
+
+                    <span className="text-sm font-semibold">Page {page}</span>
+
+                    <button
+                        disabled={logs.length < limit}
+                        onClick={() => setPage(p => p + 1)}
+                        className="px-4 py-2 text-sm font-semibold rounded-lg border disabled:opacity-50"
+                    >
+                        Next
+                    </button>
+                </div>
 
                 {logs.length === 0 && (
                     <p className="text-center text-sm text-gray-500 py-6">
