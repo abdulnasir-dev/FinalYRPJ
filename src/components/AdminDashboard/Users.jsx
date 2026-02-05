@@ -1,7 +1,8 @@
-import { getAdminUsersList } from "@/api/admin.users";
+import { banningUsers, getAdminUsersList } from "@/api/admin.users";
 import React, { useEffect, useState } from "react";
 import { FaFilter } from "react-icons/fa6";
 import { LoaderOne } from "../ui/loader";
+import toast from "react-hot-toast";
 // import { LoaderOne } from "../ui/loader";
 // import { getAdminUsersList } from "../../api/admin.users.list";
 
@@ -35,6 +36,19 @@ const Users = () => {
 
     fetchUsers();
   }, [page]);
+
+  const BanUser = async (userId) => {
+    try {
+      await toast.promise(banningUsers(userId, 1), {
+        loading: "Banning user...",
+        success: "User banned successfully",
+        error: "Failed to ban user",
+      })
+      console.log("User Banned")
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   if (loading) {
     return (
@@ -111,6 +125,8 @@ const Users = () => {
                 })}
               </p>
 
+              <p className="text-xs text-gray-500">{user.email}</p>
+
               <div className="flex gap-2 flex-wrap mt-1">
                 {user.admin && (
                   <span className="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
@@ -128,9 +144,7 @@ const Users = () => {
 
             {/* RIGHT */}
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-600">
-                {user.email}
-              </span>
+              <button onClick={() => BanUser(user._id)}>Ban User</button>
             </div>
           </div>
         ))}

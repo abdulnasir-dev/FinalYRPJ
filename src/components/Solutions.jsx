@@ -8,6 +8,7 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
     const [answer, setAnswer] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const [acceptingId, setAcceptingId] = useState(null);
+    const [isBanned, setIsBanned] = useState(false);
 
     useEffect(() => {
         const getSolutions = async () => {
@@ -49,7 +50,7 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
                 {
                     loading: "Posting solution...",
                     success: "Solution posted successfully! 🎉",
-                    error: "Failed to post solution",
+                    // error: "Failed to post solution",
                 }
             );
 
@@ -58,13 +59,14 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
         } catch (err) {
             console.error("Failed to add solution", err);
 
-            if (err.response?.status === 409) {
-                toast.error("You have already submitted a solution for this problem");
+            if (err.response?.status === 403 && err.response?.data?.message === "User temporary Banned") {
+                setIsBanned(true); toast.error("You are temporarily banned from posting solutions");
             } else if (err.response?.status === 403) {
                 toast.error("Only experts can answer this problem");
-            } else if (err.response?.data?.message) {
-                toast.error(err.response.data.message);
+            } else if (err.response?.status === 409) {
+                toast.error("You have already submitted a solution for this problem");
             }
+
         } finally {
             setSubmitting(false);
         }
@@ -128,7 +130,7 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
                 <div className="flex justify-end mt-3">
                     <button
                         onClick={handleSubmit}
-                        disabled={submitting || !answer.trim()}
+                        disabled={submitting || !answer.trim() || isBanned}
                         className={`px-4 py-2 rounded-lg text-xs font-semibold text-white
                             ${submitting || !answer.trim()
                                 ? "bg-gray-400 cursor-not-allowed"

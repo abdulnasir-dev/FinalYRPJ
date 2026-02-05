@@ -1,27 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaFilter } from "react-icons/fa6";
 import { LoaderOne } from "../ui/loader";
-// import { getAdminLogs } from "../../api/admin.logs";
 import { fetchAdminLogs } from "@/api/admin.users";
-
-/* ------------------ Helpers ------------------ */
-
-const actionLabelMap = {
-    approved_redemption_request: "Approved Redemption Request",
-    rejected_redemption_request: "Rejected Redemption Request",
-    user_banned: "User Banned",
-    user_unbanned: "User Unbanned",
-    role_changed: "User Role Updated",
-};
-
-const getAdminFullName = (log) => {
-    if (log.adminId?.fullName) return log.adminId.fullName;
-    if (log.adminId?.name) return log.adminId.name;
-    if (log.adminName) return log.adminName;
-    return "System Administrator";
-};
-
-/* ------------------ Component ------------------ */
 
 const AdminLogs = () => {
     const [logs, setLogs] = useState([]);
@@ -58,7 +38,6 @@ const AdminLogs = () => {
 
     return (
         <div className="flex flex-col gap-4 h-full">
-            {/* HEADER */}
             <div className="p-1 flex flex-col gap-2">
                 <h1 className="text-2xl font-bold">ADMIN LOGS</h1>
                 <p className="text-stone-600">
@@ -66,7 +45,6 @@ const AdminLogs = () => {
                 </p>
             </div>
 
-            {/* SUMMARY */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="bg-black text-white rounded-xl px-6 py-4">
                     <p className="text-sm opacity-70">Total Logs</p>
@@ -94,9 +72,7 @@ const AdminLogs = () => {
                 </div>
             </div>
 
-            {/* LOG LIST */}
             <div className="bg-white rounded-xl w-full py-3 px-4 flex flex-col gap-4 border-2 border-gray-300">
-                {/* TOP BAR */}
                 <div className="flex justify-between items-center">
                     <div className="flex gap-3 items-center p-1">
                         <h1 className="text-base md:text-lg font-bold">
@@ -110,23 +86,21 @@ const AdminLogs = () => {
                     <FaFilter size={20} className="md:w-6 md:h-6" />
                 </div>
 
-                {/* LOG ITEMS */}
                 {logs.map((log) => (
                     <div
                         key={log._id}
                         className="bg-white rounded-md w-full py-4 px-3 md:px-4 flex flex-col gap-3 border-2 border-gray-300"
                     >
-                        {/* TOP */}
                         <div className="flex justify-between items-start">
                             <div className="flex flex-col gap-1 flex-1">
                                 <h2 className="text-sm md:text-base font-semibold text-gray-800">
-                                    {actionLabelMap[log.action] || log.action}
+                                    {log.action}
                                 </h2>
 
                                 <p className="text-xs text-gray-500">
                                     Performed by{" "}
                                     <span className="font-semibold">
-                                        {getAdminFullName(log)}
+                                        {log.adminId.fullName}
                                     </span>
                                 </p>
                             </div>
@@ -136,7 +110,6 @@ const AdminLogs = () => {
                             </span>
                         </div>
 
-                        {/* META */}
                         {log.meta && (
                             <div className="bg-gray-50 rounded-md p-3 text-sm text-gray-700 space-y-1">
                                 {log.meta.userId && (
@@ -172,7 +145,6 @@ const AdminLogs = () => {
                             </div>
                         )}
 
-                        {/* FOOTER */}
                         <div className="flex justify-between items-center text-xs text-gray-500">
                             <span>
                                 {new Date(log.createdAt).toLocaleString("en-US", {

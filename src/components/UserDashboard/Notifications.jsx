@@ -29,6 +29,7 @@ const Notifications = () => {
 
     const handleRead = async (notificationId, problemId) => {
         try {
+            console.log(notificationId)
             await markNotificationRead(notificationId);
             setNotifications((prev) =>
                 prev.map((n) =>
@@ -75,64 +76,50 @@ const Notifications = () => {
 
                 {/* Notifications list */}
                 {notifications.map((notification) => {
-                    const problem = notification.problemId
-                    const postedBy = problem?.createdBy
+                    const problem = notification.problemId;
+
+                    const isGlobal = !problem;
 
                     return (
                         <div
+                        onClick={()=> handleRead(notification._id, problem)}
                             key={notification._id}
                             className={`rounded-md w-full py-3 px-3 md:px-4 flex flex-col md:flex-row md:justify-between md:items-center gap-3 border-2 
-      ${notification.isRead
+        ${notification.isRead
                                     ? "bg-gray-50 border-gray-200"
                                     : "bg-white border-blue-400"
                                 }`}
                         >
                             {/* Left */}
                             <div className="flex flex-col gap-2 flex-1">
-                                {/* Problem title */}
-                                <h3 className="text-base md:text-lg font-semibold text-gray-800 line-clamp-2">
-                                    {problem.title}
+                                <h3 className="text-base md:text-lg font-semibold text-gray-800">
+                                    {isGlobal ? "System Notification" : problem.title}
                                 </h3>
 
-                                {/* Posted by */}
-                                <p className="text-sm text-gray-600">
-                                    Posted by{" "}
-                                    <span className="font-medium">
-                                        {postedBy.fullName}
-                                    </span>{" "}
-                                    ({postedBy.role})
+                                <p className="text-sm text-gray-700">
+                                    {notification.message}
                                 </p>
 
-                                {/* Problem created time */}
-                                <div className="flex items-center gap-4 text-xs md:text-sm text-gray-500">
-                                    <span>
-                                        {new Date(problem.createdAt).toLocaleDateString("en-US", {
-                                            month: "short",
-                                            day: "numeric",
-                                            year: "numeric",
-                                        })}
+                                {!notification.isRead && (
+                                    <span className="w-fit px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
+                                        New
                                     </span>
-
-                                    {!notification.isRead && (
-                                        <span className="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
-                                            New
-                                        </span>
-                                    )}
-                                </div>
+                                )}
                             </div>
 
                             {/* Right */}
-                            <button
-                                onClick={() =>
-                                    handleRead(notification._id, problem._id)
-                                }
-                                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-xs md:text-sm font-semibold whitespace-nowrap"
-                            >
-                                View Problem
-                            </button>
+                            {!isGlobal && (
+                                <button
+                                    onClick={() => handleRead(notification._id, problem._id)}
+                                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-xs md:text-sm font-semibold"
+                                >
+                                    View Problem
+                                </button>
+                            )}
                         </div>
-                    )
+                    );
                 })}
+
 
 
                 {notifications.length === 0 && (
