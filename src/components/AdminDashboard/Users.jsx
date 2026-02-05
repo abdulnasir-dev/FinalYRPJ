@@ -16,13 +16,13 @@ const Users = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [proUsers, setProUsers] = useState(0);
   const [admins, setAdmins] = useState(0);
+  const [isBanned, setIsBanned] = useState(false)
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         setLoading(true);
         const res = await getAdminUsersList(page, limit);
-
         setUsers(res.data.users);
         setTotalUsers(res.data.count);
         setProUsers(res.data.proUsers);
@@ -45,6 +45,8 @@ const Users = () => {
         error: "Failed to ban user",
       })
       console.log("User Banned")
+      setUsers(prev => prev.map(u => u._id === userId ? { ...u, isBanned: true } : u));
+
     } catch (error) {
       console.error(error)
     }
@@ -144,7 +146,16 @@ const Users = () => {
 
             {/* RIGHT */}
             <div className="flex items-center gap-2">
-              <button onClick={() => BanUser(user._id)}>Ban User</button>
+              <button
+              className="bg-black text-white p-1 rounded"
+                onClick={() => BanUser(user._id)}
+                disabled={user.isBanned}
+              >
+                {user.isBanned ? "Banned" : "Ban User"}
+              </button>
+
+
+
             </div>
           </div>
         ))}
