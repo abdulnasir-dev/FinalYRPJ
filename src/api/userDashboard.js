@@ -31,3 +31,6 @@ export const requestRedemption = (data) => API.post("/redemptions/request", data
 // api/notifications.js
 export const getNotifications = () => API.get("/notifications");
 export const markNotificationRead = (id) => API.patch(`/notifications/${id}/read`);
+
+export const profilePage = (userId) => API.get(`/users/profile/${userId}`)
+export const getMyProfile = () => API.get(`/users/my-profile`)
