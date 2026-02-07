@@ -13,6 +13,7 @@ const Profile = () => {
             try {
                 setLoading(true);
                 const res = await profilePage(userId);
+                console.log("Fetched profile data:", res.data);
                 setData(res.data);
             } catch (error) {
                 console.error("Failed to fetch profile", error);
@@ -50,9 +51,20 @@ const Profile = () => {
         );
     }
 
-    // Safe profile extraction
-    const user = data.publicProfile || data.privateProfile;
-    const userStats = data.publicProfile?.userStats;
+    // Safe profile extraction for all response types
+    let user = null;
+    let userStats = null;
+
+    if (data.publicProfile) {
+        user = data.publicProfile;
+        userStats = data.publicProfile.userStats;
+    } else if (data.privateProfile) {
+        user = data.privateProfile;
+    } else if (data.user) {
+        user = data.user;
+        userStats = data.userStats;
+    }
+
 
     if (!user) {
         return (
