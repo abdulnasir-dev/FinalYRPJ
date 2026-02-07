@@ -25,6 +25,7 @@ import AdminLogs from "@/components/AdminDashboard/AdminLogs";
 import AdminProblem from "@/components/AdminDashboard/AdminProblem";
 import AdminSolutions from "@/components/AdminDashboard/AdminSolutions";
 import Profile from "@/components/UserDashboard/Profile";
+import MyProfile from "@/components/UserDashboard/MyProfile";
 
 const RequireAdmin = ({ children }) => {
   const role = localStorage.getItem("role");
@@ -63,6 +64,7 @@ export default function AppRoutes() {
           <Route path="create" element={<CreateProblem />} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="profile/:userId" element={<Profile />} />
+          <Route path="my-profile" element={<MyProfile />} />
         </Route>
       </Route>
 

@@ -181,12 +181,30 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
                             {/* Header */}
                             <div className="flex justify-between items-start gap-3">
                                 <div className="flex items-center gap-3">
-                                    <div onClick={()=> navigate(`/dashboard/profile/${solution.answeredBy._id}`)} className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center font-bold text-green-700">
-                                        {solution.answeredBy?.fullName?.[0] ?? "U"}
+                                    <div
+                                        onClick={() =>
+                                            navigate(`/dashboard/profile/${solution.answeredBy._id}`)
+                                        }
+                                        className="w-10 h-10 rounded-full overflow-hidden bg-green-100 flex items-center justify-center font-bold text-green-700 cursor-pointer"
+                                    >
+                                        {solution.answeredBy?.coverImage ? (
+                                            <img
+                                                src={solution.answeredBy.coverImage}
+                                                alt={solution.answeredBy.fullName}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            solution.answeredBy?.fullName?.charAt(0) || "U"
+                                        )}
                                     </div>
 
+
                                     <div>
-                                        <div className="flex items-center gap-2">
+                                        <div
+                                            onClick={() =>
+                                                navigate(`/dashboard/profile/${solution.answeredBy._id}`)
+                                            }
+                                            className="flex items-center gap-2 cursor-pointer">
                                             <span className="font-semibold text-gray-800">
                                                 {solution.answeredBy?.fullName ?? "Unknown"}
                                             </span>

@@ -21,7 +21,7 @@ const dashboardNav = [
     { label: "Redemption", icon: Gift, path: "/dashboard/redemption" },
     { label: "Create Problem", icon: PlusCircle, path: "/dashboard/create" },
     { label: "Notifications", icon: Bell, path: "/dashboard/notifications" },
-    { label: "Profile", icon: User, path: "/dashboard/profile" },
+    { label: "Profile", icon: User, path: "/dashboard/my-profile" },
     { label: "Settings", icon: Settings, path: "/dashboard/settings" },
 ];
 

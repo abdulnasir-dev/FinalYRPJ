@@ -123,6 +123,11 @@ export default function Navbar({ onMenuClick }) {
                 label="Settings"
                 onClick={() => handleNavigate("/dashboard/settings")}
               />
+              <DropdownItem
+                icon={<User size={16} />}
+                label="Profile"
+                onClick={() => handleNavigate("/dashboard/my-profile")}
+              />
 
               <div className="border-t border-gray-200 my-1" />
 

@@ -75,9 +75,18 @@ const Profile = () => {
             {/* Profile Card */}
             <div className="bg-white rounded-xl w-full py-6 px-5 border-2 border-gray-300 flex flex-col md:flex-row gap-6 items-center md:items-start">
                 {/* Avatar */}
-                <div className="w-24 h-24 rounded-full bg-black text-white flex items-center justify-center text-3xl font-bold">
-                    {user.fullName?.charAt(0)}
+                <div className="w-24 h-24 rounded-full overflow-hidden bg-black text-white flex items-center justify-center text-3xl font-bold">
+                    {user.coverImage ? (
+                        <img
+                            src={user.coverImage}
+                            alt={user.fullName}
+                            className="w-full h-full object-cover"
+                        />
+                    ) : (
+                        user.fullName?.charAt(0)
+                    )}
                 </div>
+
 
                 {/* Info */}
                 <div className="flex flex-col gap-1 text-center md:text-left">

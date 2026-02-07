@@ -59,7 +59,7 @@ export default function AdminNavbar({ onMenuClick }) {
                     onClick={() => navigate("/admin")}
                     className="flex items-center gap-2 cursor-pointer"
                 >
-                    <div  className="w-9 h-9 rounded-lg bg-green-600 flex items-center justify-center text-white">
+                    <div className="w-9 h-9 rounded-lg bg-green-600 flex items-center justify-center text-white">
                         <Leaf className="w-5 h-5" />
                     </div>
                     <span className="text-lg font-semibold text-gray-900 hidden sm:block">
@@ -121,6 +121,12 @@ export default function AdminNavbar({ onMenuClick }) {
                                 icon={<SettingsIcon size={16} />}
                                 label="Settings"
                                 onClick={() => handleNavigate("/dashboard/settings")}
+                            />
+
+                            <DropdownItem
+                                icon={<User size={16} />}
+                                label="Profile"
+                                onClick={() => handleNavigate("/dashboard/my-profile")}
                             />
 
                             <div className="border-t border-gray-200 my-1" />
