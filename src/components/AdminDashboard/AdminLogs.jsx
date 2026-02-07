@@ -15,7 +15,7 @@ const AdminLogs = () => {
             try {
                 setLoading(true);
                 const res = await fetchAdminLogs(page, 10);
-                // console.log(res.data)    
+                console.log(res.data)    
                 setLogs(res.data.logs || []);
                 setCount(res.data.count)
             } catch (error) {
@@ -133,13 +133,23 @@ const AdminLogs = () => {
                                 {log.meta.title && (
                                     <p>
                                         <span className="font-semibold">Title: </span> {log.meta.title}
-                                        {log.meta.rewardType}
+                                       
                                     </p>
                                 )}
                                 {log.meta.fullName && (
                                     <p>
                                         <span className="font-semibold">User:</span> {log.meta.fullName}
-                                        {log.meta.rewardType}
+                                    </p>
+                                )}
+                                {log.meta.bannedUntil && (
+                                    <p>
+                                        <span className="font-semibold">Banned Until:</span> {new Date(log.meta.bannedUntil).toLocaleString()}
+                                    </p>
+                                )}
+                                {log.meta.userId && (
+                                    <p>
+                                        <span className="font-semibold">UserId:</span> {log.meta.userId}
+                                        
                                     </p>
                                 )}
                             </div>

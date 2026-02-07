@@ -24,7 +24,7 @@ const AdminProblem = () => {
       setLoading(true);
       const res = await getAllProblems();
       const data = res?.data?.problems || [];
-      console.log(res.data)
+      // console.log(res.data)
       setProblems(data);
       setPage(1); // reset page on refetch
     } catch (err) {

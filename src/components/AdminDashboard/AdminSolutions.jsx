@@ -18,7 +18,7 @@ const AdminSolutions = () => {
     try {
       setLoading(true);
       const res = await getAllSolutions();
-      console.log(res.data.solutions)
+      // console.log(res.data.solutions)
       const data = res?.data?.solutions || [];
       setSolutions(data);
       setPage(1); // reset page on refetch

@@ -16,14 +16,11 @@ const Users = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [proUsers, setProUsers] = useState(0);
   const [admins, setAdmins] = useState(0);
-  const [isBanned, setIsBanned] = useState(false)
 
   const fetchUsers = async () => {
     try {
       setLoading(true);
       const res = await getAdminUsersList(page, limit);
-      // setIsBanned(res.data)
-      console.log(res.data.users)
       setUsers(res.data.users);
       setTotalUsers(res.data.count);
       setProUsers(res.data.proUsers);
