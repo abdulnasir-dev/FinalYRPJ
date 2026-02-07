@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { createSolution, fetchSolutionsForProblem, acceptSolution } from "../api/solution.api";
+import { useNavigate } from "react-router-dom";
 
 const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) => {
+    const navigate = useNavigate()
     const [solutions, setSolutions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [answer, setAnswer] = useState("");
@@ -14,6 +16,7 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
         const getSolutions = async () => {
             try {
                 const res = await fetchSolutionsForProblem(problemId);
+                console.log(res.data)
                 setSolutions(res.data.solutions || []);
             } catch (err) {
                 console.error("Failed to fetch solutions", err);
@@ -178,7 +181,7 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
                             {/* Header */}
                             <div className="flex justify-between items-start gap-3">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center font-bold text-green-700">
+                                    <div onClick={()=> navigate(`/dashboard/profile/${solution.answeredBy._id}`)} className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center font-bold text-green-700">
                                         {solution.answeredBy?.fullName?.[0] ?? "U"}
                                     </div>
 
