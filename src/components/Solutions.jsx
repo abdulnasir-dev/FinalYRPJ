@@ -59,12 +59,19 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
         } catch (err) {
             console.error("Failed to add solution", err);
 
-            if (err.response?.status === 403 && err.response?.data?.message === "User temporary Banned") {
-                setIsBanned(true); toast.error("You are temporarily banned from posting solutions");
-            } else if (err.response?.status === 403) {
-                toast.error("Only experts can answer this problem");
+            if (err.response?.status === 403) {
+                const message = err.response?.data?.message || "";
+
+                if (message.toLowerCase().includes("ban")) {
+                    setIsBanned(true);
+                    toast.error("You are banned. Try again later.");
+                } else {
+                    toast.error(message || "Not allowed to perform this action");
+                }
             } else if (err.response?.status === 409) {
                 toast.error("You have already submitted a solution for this problem");
+            } else {
+                toast.error("Failed to post solution");
             }
 
         } finally {

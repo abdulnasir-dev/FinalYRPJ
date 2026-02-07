@@ -18,21 +18,24 @@ const Users = () => {
   const [admins, setAdmins] = useState(0);
   const [isBanned, setIsBanned] = useState(false)
 
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const res = await getAdminUsersList(page, limit);
+      // setIsBanned(res.data)
+      console.log(res.data.users)
+      setUsers(res.data.users);
+      setTotalUsers(res.data.count);
+      setProUsers(res.data.proUsers);
+      setAdmins(res.data.admins);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        setLoading(true);
-        const res = await getAdminUsersList(page, limit);
-        setUsers(res.data.users);
-        setTotalUsers(res.data.count);
-        setProUsers(res.data.proUsers);
-        setAdmins(res.data.admins);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
 
     fetchUsers();
   }, [page]);
@@ -44,13 +47,24 @@ const Users = () => {
         success: "User banned successfully",
         error: "Failed to ban user",
       })
-      console.log("User Banned")
-      setUsers(prev => prev.map(u => u._id === userId ? { ...u, isBanned: true } : u));
+
+      await fetchUsers()
 
     } catch (error) {
       console.error(error)
     }
   }
+
+  const getRemainingTime = (banExpiresAt) => {
+    const diff = new Date(banExpiresAt) - new Date();
+    if (diff <= 0) return null;
+
+    const minutes = Math.floor(diff / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
+
+    return `${minutes}m ${seconds}s`;
+  };
+
 
   if (loading) {
     return (
@@ -147,16 +161,16 @@ const Users = () => {
             {/* RIGHT */}
             <div className="flex items-center gap-2">
               <button
-              className="bg-black text-white p-1 rounded"
+                className="bg-black text-white p-1 rounded disabled:opacity-50"
                 onClick={() => BanUser(user._id)}
                 disabled={user.isBanned}
               >
-                {user.isBanned ? "Banned" : "Ban User"}
+                {user.isBanned
+                  ? `Banned (${getRemainingTime(user.banExpiresAt) || "expired"})`
+                  : "Ban User"}
               </button>
-
-
-
             </div>
+
           </div>
         ))}
 
