@@ -3,7 +3,7 @@ import axios from "axios";
 const getToken = () => localStorage.getItem("accessToken");
 
 const API = axios.create({
-  baseURL: "https://impacthub-jqm3.onrender.com/api/v1/problems",
+    baseURL: "https://impacthub-jqm3.onrender.com/api/v1/problems",
 });
 
 
@@ -30,3 +30,5 @@ export const createProblem = (formData) =>
             "Content-Type": "multipart/form-data",
         },
     });
+
+export const editProblem = (problemId, formData) => API.patch(`/${problemId}/edit`, formData);
