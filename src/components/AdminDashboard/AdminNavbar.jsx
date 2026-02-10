@@ -34,7 +34,7 @@ export default function AdminNavbar({ onMenuClick }) {
         const fetchAvatar = async () => {
             try {
                 const res = await userAvatar();
-                console.log(res.data)
+                // console.log(res.data)
                 setAvatar(res.data.coverImage)
             } catch (error) {
                 console.error(error)

@@ -103,7 +103,7 @@ const MyProblems = () => {
 
               <div className='flex items-center gap-2'>
                 <button
-                  onClick={() => handleEdit(problem._id)}
+                  onClick={()=> navigate(`/problems/${problem._id}/edit`)}
                   className='px-2 md:px-3 py-2 text-xs md:text-sm font-semibold text-blue-600 hover:bg-blue-50 rounded-lg transition'
                 >
                   Edit
