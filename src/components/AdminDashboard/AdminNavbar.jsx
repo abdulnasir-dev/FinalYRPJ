@@ -1,3 +1,4 @@
+import { userAvatar } from "@/api/user.api";
 import {
     Search,
     Menu,
@@ -14,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function AdminNavbar({ onMenuClick }) {
     const [openProfile, setOpenProfile] = useState(false);
+    const [avatar, setAvatar] = useState(null)
     const navigate = useNavigate();
     const dropdownRef = useRef(null);
 
@@ -27,6 +29,19 @@ export default function AdminNavbar({ onMenuClick }) {
         localStorage.removeItem("role");
         window.location.href = "/signin";
     };
+
+    useEffect(() => {
+        const fetchAvatar = async () => {
+            try {
+                const res = await userAvatar();
+                console.log(res.data)
+                setAvatar(res.data.coverImage)
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        fetchAvatar()
+    }, [])
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -99,9 +114,18 @@ export default function AdminNavbar({ onMenuClick }) {
                         onClick={() => setOpenProfile((prev) => !prev)}
                         className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100"
                     >
-                        <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-semibold">
-                            A
+                        <div className="w-9 h-9 rounded-full bg-green-100 overflow-hidden flex items-center justify-center">
+                            {avatar ? (
+                                <img
+                                    src={avatar}
+                                    alt="avatar"
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <span className="text-green-700 font-semibold">U</span>
+                            )}
                         </div>
+
                         <ChevronDown className="w-4 h-4 text-gray-600 hidden sm:block" />
                     </button>
 
