@@ -9,10 +9,12 @@ const AllProblems = () => {
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [avatar, setAvatar] = useState(null)
     const navigate = useNavigate()
 
 
     const LIMIT = 10;
+
 
     useEffect(() => {
         const fetchProblems = async () => {
@@ -35,12 +37,12 @@ const AllProblems = () => {
     }, [page]);
 
     if (loading) {
-            return (
-                <div className="flex h-full w-full items-center justify-center">
-                    <LoaderOne />
-                </div>
-            );
-        }
+        return (
+            <div className="flex h-full w-full items-center justify-center">
+                <LoaderOne />
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col h-full p-4 gap-4 overflow-hidden">
@@ -134,7 +136,19 @@ const AllProblems = () => {
                                 {/* Meta */}
                                 <div className="flex justify-between text-xs md:text-sm text-gray-500">
                                     <div className="flex items-center gap-2">
-                                        <span className="font-medium text-gray-700">
+                                        <span className="flex items-center gap-3 font-medium text-gray-700">
+                                            {problem.createdBy?.coverImage ? (
+                                                <img
+                                                    className="h-7 w-7 rounded-full object-cover"
+                                                    src={problem.createdBy.coverImage}
+                                                    alt={problem.createdBy.fullName}
+                                                />
+                                            ) : (
+                                                <div className="h-7 w-7 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold">
+                                                    {problem.createdBy?.fullName?.[0] || "U"}
+                                                </div>
+                                            )}
+
                                             {problem.createdBy?.fullName ?? "Unknown"}
                                         </span>
 

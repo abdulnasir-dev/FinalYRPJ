@@ -16,7 +16,7 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
         const getSolutions = async () => {
             try {
                 const res = await fetchSolutionsForProblem(problemId);
-                console.log(res.data)
+                // console.log(res.data)
                 setSolutions(res.data.solutions || []);
             } catch (err) {
                 console.error("Failed to fetch solutions", err);
