@@ -16,7 +16,7 @@ import { FiHome } from "react-icons/fi";
 
 const adminNav = [
     { label: "Home", icon: FiHome, path: "/" },
-    { label: "Dashboard", icon: BarChart3, path: "/admin" },
+    { label: "Analytics", icon: BarChart3, path: "/admin" },
     { label: "Users", icon: Users, path: "/admin/users" },
     { label: "Problems", icon: FileText, path: "/admin/all-problems" },
     { label: "Solutions", icon: MessageSquare, path: "/admin/all-solutions" },
