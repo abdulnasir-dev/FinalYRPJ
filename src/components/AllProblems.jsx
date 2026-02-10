@@ -58,7 +58,7 @@ const AllProblems = () => {
                         onClick={() => navigate(`/dashboard/create`)}
                         className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-green-600 hover:bg-green-700 text-white text-sm sm:text-base font-semibold rounded-lg shadow-md transition-colors duration-200"
                     >
-                        Create Problem
+                        Post Problem
                     </button>
                 </div>
             </div>
