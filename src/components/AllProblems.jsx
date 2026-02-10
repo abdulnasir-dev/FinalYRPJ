@@ -159,7 +159,7 @@ const AllProblems = () => {
                                     <div className="w-full md:w-48 h-32 bg-gray-200 rounded-lg overflow-hidden shrink-0">
                                         {problem.bannerImage ? (
                                             <img
-                                                src={problem.bannerImage}
+                                                src={problem.bannerImage.url}
                                                 alt={problem.title}
                                                 className="w-full h-full object-cover"
                                             />

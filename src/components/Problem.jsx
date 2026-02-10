@@ -86,7 +86,7 @@ const Problem = () => {
             <div className="w-full min-h-[250px] rounded-xl border bg-gray-100 overflow-hidden flex items-center justify-center">
                 {problem.bannerImage ? (
                     <img
-                        src={problem.bannerImage}
+                        src={problem.bannerImage.url}
                         alt={problem.title}
                         className="w-full h-full object-cover"
                     />
