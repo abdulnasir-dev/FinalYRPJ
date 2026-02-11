@@ -152,6 +152,12 @@ const AdminLogs = () => {
                                         
                                     </p>
                                 )}
+
+                                {log.meta.ownerId && (
+                                    <p>
+                                        <span className="font-semibold">OwnerId:</span> {log.meta.ownerId}
+                                    </p>
+                                )}
                             </div>
                         )}
 

@@ -14,12 +14,14 @@ const Problem = () => {
         const token = localStorage.getItem("accessToken");
         if (token) {
             const payload = JSON.parse(atob(token.split('.')[1]));
-            return payload._id || payload.userId || payload.id;
+            return payload;
         }
         return null;
     };
 
-    const currentUserId = getCurrentUser();
+    const currentUser = getCurrentUser();
+    const currentUserId = currentUser?._id || currentUser?.userId || currentUser?.id;
+    const currentUserRole = currentUser?.role;
 
     useEffect(() => {
         const getProblem = async () => {
@@ -72,7 +74,6 @@ const Problem = () => {
                     >
                         {problem.status.toUpperCase()}
                     </span>
-
 
 
                     {problem.expertOnly && (
@@ -139,8 +140,9 @@ const Problem = () => {
                 <div className="flex items-center gap-7 px-5">
                     <span>Views: {problem.views}</span>
 
-                    {currentUserId &&
-                        problem.createdBy?._id === currentUserId && (
+                    {currentUser &&
+                        (problem.createdBy?._id === currentUserId ||
+                            currentUserRole === "admin") && (
                             <button
                                 onClick={() => navigate(`/problems/${problem._id}/edit`)}
                                 className="bg-green-500 py-1 px-3 rounded-md text-white font-bold cursor-pointer active:scale-95"
@@ -148,6 +150,7 @@ const Problem = () => {
                                 Edit
                             </button>
                         )}
+
                 </div>
 
             </div>
