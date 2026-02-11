@@ -24,3 +24,5 @@ export const LoginUser = (data) => API.post("/login", data)
 export const registerUser = (data) => {
     return API.post("/register", data);
 };
+
+export const verifyOTP = (data) => API.post("/verify-otp", data)

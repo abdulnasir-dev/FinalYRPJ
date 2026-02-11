@@ -27,6 +27,7 @@ import AdminSolutions from "@/components/AdminDashboard/AdminSolutions";
 import Profile from "@/components/UserDashboard/Profile";
 import MyProfile from "@/components/UserDashboard/MyProfile";
 import EditProblem from "@/components/EditProblem";
+import VerifyOTP from "@/pages/VerifyOTP";
 
 const RequireAdmin = ({ children }) => {
   const role = localStorage.getItem("role");
@@ -43,6 +44,7 @@ export default function AppRoutes() {
       <Routes>
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/verify-otp" element={<VerifyOTP />} />
         <Route path="*" element={<Navigate to="/signin" replace />} />
       </Routes>
     );
