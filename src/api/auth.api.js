@@ -24,4 +24,4 @@ export const registerUser = (data) => {
 export const getLeaderboard = (range = "all") => 
     API.get("/reputations/leaderboards", { params: { range } }); 
 
-export const verifyOTP = (data) => API.post("/verify-otp", data)
+export const verifyOTP = (data) => API.post("/auth/verify-otp", data)
