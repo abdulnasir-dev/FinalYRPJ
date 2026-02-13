@@ -15,6 +15,7 @@ import Redemption from "../components/UserDashboard/Redemption";
 import Settings from "../components/UserDashboard/Settings";
 import CreateProblem from "../components/UserDashboard/CreateProblem";
 import Notifications from "../components/UserDashboard/Notifications";
+import Leaderboard from "../components/Leaderboard";
 
 import Users from "../components/AdminDashboard/Users";
 import Problem from "../components/Problem";
@@ -55,6 +56,11 @@ export default function AppRoutes() {
       {/* ================= USER / PUBLIC LAYOUT ================= */}
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
+        
+        <Route path="/leaderboard" element={<Leaderboard />} />
+
+        {/* Problem detail (PUBLIC but authenticated) */}
+=======
         <Route path="/problems/:problemId" element={<Problem />} />
         <Route path="/problems/:problemId/edit" element={<EditProblem />} />
 
@@ -67,6 +73,8 @@ export default function AppRoutes() {
           <Route path="settings" element={<Settings />} />
           <Route path="create" element={<CreateProblem />} />
           <Route path="notifications" element={<Notifications />} />
+          
+=======
           <Route path="profile/:userId" element={<Profile />} />
           <Route path="my-profile" element={<MyProfile />} />
         </Route>
