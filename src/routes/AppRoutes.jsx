@@ -15,6 +15,7 @@ import Settings from "../components/UserDashboard/Settings";
 import Problem from "../components/Problem";
 import CreateProblem from "../components/UserDashboard/CreateProblem";
 import Notifications from "../components/UserDashboard/Notifications";
+import Leaderboard from "../components/Leaderboard";
 
 
 
@@ -42,6 +43,8 @@ export default function AppRoutes() {
       <Route element={<Layout />}>
         {/* Home */}
         <Route path="/" element={<Home />} />
+        
+        <Route path="/leaderboard" element={<Leaderboard />} />
 
         {/* Problem detail (PUBLIC but authenticated) */}
         <Route path="/problems/:problemId" element={<Problem />} />
@@ -60,6 +63,7 @@ export default function AppRoutes() {
           <Route path="settings" element={<Settings />} />
           <Route path="create" element={<CreateProblem />} />
           <Route path="notifications" element={<Notifications />} />
+          
         </Route>
 
         {/* Fallback */}

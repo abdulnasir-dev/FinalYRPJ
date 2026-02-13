@@ -21,6 +21,9 @@ export default function Layout() {
         closeSidebar();
     }, [location.pathname]);
 
+    const [selectedCategory, setSelectedCategory] = useState("all");
+
+
     return (
         <div className="flex flex-col h-screen overflow-hidden">
             {/* Navbar spans full width */}
@@ -31,11 +34,16 @@ export default function Layout() {
                 {isDashboard ? (
                     <UserDashboardSidebar open={sidebarOpen} onClose={closeSidebar} />
                 ) : (
-                    <Sidebars open={sidebarOpen} onClose={closeSidebar} />
+                    <Sidebars
+  open={sidebarOpen}
+  onClose={closeSidebar}
+  onCategorySelect={setSelectedCategory}
+/>
+
                 )}
 
                 <main className="flex-1 overflow-y-auto">
-                    <Outlet />
+<Outlet context={{ selectedCategory, setSelectedCategory }} />
                 </main>
             </div>
         </div>

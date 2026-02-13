@@ -29,7 +29,7 @@ const categories = [
   { label: "Eco-Friendly Living", icon: FaLeaf },
 ];
 
-const SidebarContent = ({ onClose }) => {
+const SidebarContent = ({ onClose, onCategorySelect }) => {
   const { pathname } = useLocation();
   const [showCategories, setShowCategories] = useState(true);
 
@@ -96,11 +96,16 @@ const SidebarContent = ({ onClose }) => {
                 const Icon = item.icon;
 
                 return (
-                  <div
-                    key={index}
-                    className="flex gap-3 rounded-md items-center px-3 py-2.5 text-gray-700
-                      hover:bg-gray-100 cursor-pointer transition"
-                  >
+                <div
+  key={index}
+  onClick={() => {
+    onCategorySelect(item.label.toLowerCase());
+    onClose?.();
+  }}
+  className="flex gap-3 rounded-md items-center px-3 py-2.5 text-gray-700
+    hover:bg-gray-100 cursor-pointer transition"
+>
+
                     <Icon size={18} />
                     <span className="text-sm">{item.label}</span>
                   </div>
@@ -114,12 +119,13 @@ const SidebarContent = ({ onClose }) => {
   );
 };
 
-export default function Sidebars({ open, onClose }) {
+export default function Sidebars({ open, onClose ,onCategorySelect}) {
 
   return (
     <>
       <div className="hidden lg:flex h-screen w-[260px] min-w-[240px] flex-col overflow-hidden shadow-sm border-r border-gray-200 bg-white">
-        <SidebarContent />
+        <SidebarContent onCategorySelect={onCategorySelect} />
+
       </div>
 
       <div
@@ -137,7 +143,11 @@ export default function Sidebars({ open, onClose }) {
           transform transition-transform duration-300
           ${open ? "translate-x-0" : "-translate-x-full"}`}
         >
-          <SidebarContent onClose={onClose} />
+         <SidebarContent
+  onClose={onClose}
+  onCategorySelect={onCategorySelect}
+/>
+
         </div>
       </div>
     </>

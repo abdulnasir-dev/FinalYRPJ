@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 // import { FaFilter } from "react-icons/fa6";
 import { fetchAllProblems } from "../api/problems.api";
 import { useNavigate } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
 const AllProblems = () => {
     const [problems, setProblems] = useState([]);
@@ -9,6 +10,8 @@ const AllProblems = () => {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const navigate = useNavigate()
+
+   const { selectedCategory, setSelectedCategory } = useOutletContext();
 
 
     const LIMIT = 10;
@@ -44,6 +47,14 @@ const AllProblems = () => {
             </div>
         );
     }
+    const filteredProblems =
+        selectedCategory === "all"
+            ? problems
+            : problems.filter(
+                (p) =>
+                    p.category?.toLowerCase() === selectedCategory.toLowerCase()
+            );
+
 
     return (
         <div className="flex flex-col h-full p-4 gap-4 overflow-hidden">
@@ -78,8 +89,17 @@ const AllProblems = () => {
                             <h2 className="text-base md:text-lg font-bold truncate">
                                 Problems
                             </h2>
+                             {selectedCategory !== "all" && (
+                                            <button
+                                                onClick={() => setSelectedCategory("all")}
+                                                className="text-sm text-blue-600 hover:underline"
+                                            >
+                                                Clear filter
+                                            </button>
+                                        )}
+
                             <div className="h-5 w-5 bg-black text-white rounded-full flex justify-center items-center text-xs shrink-0">
-                                {problems.length}
+                               {filteredProblems.length}
                             </div>
                         </div>
 
@@ -127,7 +147,7 @@ const AllProblems = () => {
                     {loading ? (
                         <p className="text-sm text-gray-500">Loading...</p>
                     ) : (
-                        problems.map((problem) => (
+                        filteredProblems.map((problem) => (
                             <div
                                 key={problem._id}
                                 onClick={() => navigate(`/problems/${problem._id}`)}
