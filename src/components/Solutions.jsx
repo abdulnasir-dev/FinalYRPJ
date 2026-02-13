@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { createSolution, fetchSolutionsForProblem, acceptSolution } from "../api/solution.api";
+import { useNavigate } from "react-router-dom";
 
 const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) => {
+    const navigate = useNavigate()
     const [solutions, setSolutions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [answer, setAnswer] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const [acceptingId, setAcceptingId] = useState(null);
+    const [isBanned, setIsBanned] = useState(false);
 
     useEffect(() => {
         const getSolutions = async () => {
             try {
                 const res = await fetchSolutionsForProblem(problemId);
+                // console.log(res.data)
                 setSolutions(res.data.solutions || []);
             } catch (err) {
                 console.error("Failed to fetch solutions", err);
@@ -49,7 +53,7 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
                 {
                     loading: "Posting solution...",
                     success: "Solution posted successfully! 🎉",
-                    error: "Failed to post solution",
+                    // error: "Failed to post solution",
                 }
             );
 
@@ -58,13 +62,21 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
         } catch (err) {
             console.error("Failed to add solution", err);
 
-            if (err.response?.status === 409) {
+            if (err.response?.status === 403) {
+                const message = err.response?.data?.message || "";
+
+                if (message.toLowerCase().includes("ban")) {
+                    setIsBanned(true);
+                    toast.error("You are banned. Try again later.");
+                } else {
+                    toast.error(message || "Not allowed to perform this action");
+                }
+            } else if (err.response?.status === 409) {
                 toast.error("You have already submitted a solution for this problem");
-            } else if (err.response?.status === 403) {
-                toast.error("Only experts can answer this problem");
-            } else if (err.response?.data?.message) {
-                toast.error(err.response.data.message);
+            } else {
+                toast.error("Failed to post solution");
             }
+
         } finally {
             setSubmitting(false);
         }
@@ -128,7 +140,7 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
                 <div className="flex justify-end mt-3">
                     <button
                         onClick={handleSubmit}
-                        disabled={submitting || !answer.trim()}
+                        disabled={submitting || !answer.trim() || isBanned}
                         className={`px-4 py-2 rounded-lg text-xs font-semibold text-white
                             ${submitting || !answer.trim()
                                 ? "bg-gray-400 cursor-not-allowed"
@@ -169,12 +181,30 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
                             {/* Header */}
                             <div className="flex justify-between items-start gap-3">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center font-bold text-green-700">
-                                        {solution.answeredBy?.fullName?.[0] ?? "U"}
+                                    <div
+                                        onClick={() =>
+                                            navigate(`/dashboard/profile/${solution.answeredBy._id}`)
+                                        }
+                                        className="w-10 h-10 rounded-full overflow-hidden bg-green-100 flex items-center justify-center font-bold text-green-700 cursor-pointer"
+                                    >
+                                        {solution.answeredBy?.coverImage ? (
+                                            <img
+                                                src={solution.answeredBy.coverImage}
+                                                alt={solution.answeredBy.fullName}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            solution.answeredBy?.fullName?.charAt(0) || "U"
+                                        )}
                                     </div>
 
+
                                     <div>
-                                        <div className="flex items-center gap-2">
+                                        <div
+                                            onClick={() =>
+                                                navigate(`/dashboard/profile/${solution.answeredBy._id}`)
+                                            }
+                                            className="flex items-center gap-2 cursor-pointer">
                                             <span className="font-semibold text-gray-800">
                                                 {solution.answeredBy?.fullName ?? "Unknown"}
                                             </span>

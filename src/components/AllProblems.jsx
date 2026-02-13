@@ -2,13 +2,16 @@ import React, { useEffect, useState } from "react";
 // import { FaFilter } from "react-icons/fa6";
 import { fetchAllProblems } from "../api/problems.api";
 import { useNavigate } from "react-router-dom";
+
 import { useOutletContext } from "react-router-dom";
+import { LoaderOne } from "./ui/loader";
 
 const AllProblems = () => {
     const [problems, setProblems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [avatar, setAvatar] = useState(null)
     const navigate = useNavigate()
 
    const { selectedCategory, setSelectedCategory } = useOutletContext();
@@ -16,13 +19,14 @@ const AllProblems = () => {
 
     const LIMIT = 10;
 
+
     useEffect(() => {
         const fetchProblems = async () => {
             try {
                 setLoading(true);
                 const res = await fetchAllProblems(page, LIMIT);
                 setProblems(res.data.problems || []);
-
+                // console.log(res.data)
                 // Calculate totalPages from total and limit
                 const calculatedTotalPages = Math.ceil(res.data.total / res.data.limit) || 1;
                 setTotalPages(calculatedTotalPages);
@@ -38,12 +42,8 @@ const AllProblems = () => {
 
     if (loading) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-screen">
-                <div className="relative w-20 h-20">
-                    <div className="absolute inset-0 border-4 border-gray-200 rounded-full"></div>
-                    <div className="absolute inset-0 border-4 border-t-blue-500 rounded-full animate-spin"></div>
-                </div>
-                <p className="mt-4 text-lg font-semibold text-gray-600">Loading dashboard...</p>
+            <div className="flex h-full w-full items-center justify-center">
+                <LoaderOne />
             </div>
         );
     }
@@ -72,7 +72,7 @@ const AllProblems = () => {
                         onClick={() => navigate(`/dashboard/create`)}
                         className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-green-600 hover:bg-green-700 text-white text-sm sm:text-base font-semibold rounded-lg shadow-md transition-colors duration-200"
                     >
-                        Create Problem
+                        Post Problem
                     </button>
                 </div>
             </div>
@@ -157,7 +157,19 @@ const AllProblems = () => {
                                 {/* Meta */}
                                 <div className="flex justify-between text-xs md:text-sm text-gray-500">
                                     <div className="flex items-center gap-2">
-                                        <span className="font-medium text-gray-700">
+                                        <span className="flex items-center gap-3 font-medium text-gray-700">
+                                            {problem.createdBy?.coverImage ? (
+                                                <img
+                                                    className="h-7 w-7 rounded-full object-cover"
+                                                    src={problem.createdBy.coverImage}
+                                                    alt={problem.createdBy.fullName}
+                                                />
+                                            ) : (
+                                                <div className="h-7 w-7 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold">
+                                                    {problem.createdBy?.fullName?.[0] || "U"}
+                                                </div>
+                                            )}
+
                                             {problem.createdBy?.fullName ?? "Unknown"}
                                         </span>
 
@@ -182,7 +194,7 @@ const AllProblems = () => {
                                     <div className="w-full md:w-48 h-32 bg-gray-200 rounded-lg overflow-hidden shrink-0">
                                         {problem.bannerImage ? (
                                             <img
-                                                src={problem.bannerImage}
+                                                src={problem.bannerImage.url}
                                                 alt={problem.title}
                                                 className="w-full h-full object-cover"
                                             />

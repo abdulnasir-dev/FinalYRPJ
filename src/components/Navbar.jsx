@@ -1,3 +1,4 @@
+import { userAvatar } from "@/api/user.api";
 import {
   Search,
   Menu,
@@ -15,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Navbar({ onMenuClick }) {
   const [openProfile, setOpenProfile] = useState(false);
+  const [avatar, setAvatar] = useState(null)
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
@@ -22,6 +24,19 @@ export default function Navbar({ onMenuClick }) {
     setOpenProfile(false);
     navigate(path);
   };
+
+  useEffect(() => {
+    const fetchAvatar = async () => {
+      try {
+        const res = await userAvatar();
+        // console.log(res.data)
+        setAvatar(res.data.coverImage)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    fetchAvatar()
+  }, [])
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
@@ -90,8 +105,8 @@ export default function Navbar({ onMenuClick }) {
           <Search className="w-5 h-5 text-gray-700" />
         </button>
 
-        <button onClick={()=> navigate("/dashboard/notifications")} className="p-2 rounded-md hover:bg-gray-100">
-          <Bell  className="w-5 h-5 text-gray-700" />
+        <button onClick={() => navigate("/dashboard/notifications")} className="p-2 rounded-md hover:bg-gray-100">
+          <Bell className="w-5 h-5 text-gray-700" />
         </button>
 
         {/* USER DROPDOWN */}
@@ -100,9 +115,18 @@ export default function Navbar({ onMenuClick }) {
             onClick={() => setOpenProfile((prev) => !prev)}
             className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100"
           >
-            <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-semibold">
-              A
+            <div className="w-9 h-9 rounded-full bg-green-100 overflow-hidden flex items-center justify-center">
+              {avatar ? (
+                <img
+                  src={avatar}
+                  alt="avatar"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-green-700 font-semibold">U</span>
+              )}
             </div>
+
             <ChevronDown className="w-4 h-4 text-gray-600 hidden sm:block" />
           </button>
 
@@ -110,33 +134,23 @@ export default function Navbar({ onMenuClick }) {
             <div className="absolute right-0 mt-2 w-52 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
               <DropdownItem
                 icon={<User size={16} />}
-                label="Overview"
+                label="User Dashboard"
                 onClick={() => handleNavigate("/dashboard")}
               />
               <DropdownItem
                 icon={<FileText size={16} />}
-                label="My Problems"
-                onClick={() => handleNavigate("/dashboard/problems")}
-              />
-              <DropdownItem
-                icon={<FileText size={16} />}
-                label="My Solutions"
-                onClick={() => handleNavigate("/dashboard/solutions")}
-              />
-              <DropdownItem
-                icon={<Gift size={16} />}
-                label="Rewards"
-                onClick={() => handleNavigate("/dashboard/points")}
-              />
-              <DropdownItem
-                icon={<Gift size={16} />}
-                label="Redemption"
-                onClick={() => handleNavigate("/dashboard/redemption")}
+                label="Admin Dashboard"
+                onClick={() => handleNavigate("/admin")}
               />
               <DropdownItem
                 icon={<SettingsIcon size={16} />}
                 label="Settings"
                 onClick={() => handleNavigate("/dashboard/settings")}
+              />
+              <DropdownItem
+                icon={<User size={16} />}
+                label="Profile"
+                onClick={() => handleNavigate("/dashboard/my-profile")}
               />
 
               <div className="border-t border-gray-200 my-1" />

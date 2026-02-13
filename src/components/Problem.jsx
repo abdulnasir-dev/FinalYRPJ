@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchProblemById } from "../api/problems.api";
 import Solutions from "./Solutions";
+import { LoaderOne } from "./ui/loader";
 
 const Problem = () => {
     const { problemId } = useParams();
-
+    const navigate = useNavigate()
     const [problem, setProblem] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -13,18 +14,21 @@ const Problem = () => {
         const token = localStorage.getItem("accessToken");
         if (token) {
             const payload = JSON.parse(atob(token.split('.')[1]));
-            return payload._id || payload.userId || payload.id;
+            return payload;
         }
         return null;
     };
 
-    const currentUserId = getCurrentUser();
+    const currentUser = getCurrentUser();
+    const currentUserId = currentUser?._id || currentUser?.userId || currentUser?.id;
+    const currentUserRole = currentUser?.role;
 
     useEffect(() => {
         const getProblem = async () => {
             try {
                 setLoading(true)
                 const res = await fetchProblemById(problemId);
+                // console.log(res.data)
                 setProblem(res.data.problem);
             } catch (error) {
                 console.error("Failed to fetch problem", error);
@@ -38,12 +42,8 @@ const Problem = () => {
 
     if (loading) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-screen">
-                <div className="relative w-20 h-20">
-                    <div className="absolute inset-0 border-4 border-gray-200 rounded-full"></div>
-                    <div className="absolute inset-0 border-4 border-t-blue-500 rounded-full animate-spin"></div>
-                </div>
-                <p className="mt-4 text-lg font-semibold text-gray-600">Loading Problem...</p>
+            <div className="flex h-full w-full items-center justify-center">
+                <LoaderOne />
             </div>
         );
     }
@@ -60,6 +60,8 @@ const Problem = () => {
                     {problem.title}
                 </h1>
 
+                <div className="text-gray-700 font-bold">Posted by : {problem.createdBy.fullName}</div>
+
                 <div className="flex flex-wrap gap-3 text-sm text-gray-600">
                     <span className="capitalize">
                         Category: <strong>{problem.category}</strong>
@@ -72,6 +74,8 @@ const Problem = () => {
                     >
                         {problem.status.toUpperCase()}
                     </span>
+
+
                     {problem.expertOnly && (
                         <span className="px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">
                             Expert Only
@@ -83,13 +87,15 @@ const Problem = () => {
                         </span>
                     )}
                 </div>
+
+
             </div>
 
             {/* ===== Banner Image ===== */}
             <div className="w-full min-h-[250px] rounded-xl border bg-gray-100 overflow-hidden flex items-center justify-center">
                 {problem.bannerImage ? (
                     <img
-                        src={problem.bannerImage}
+                        src={problem.bannerImage.url}
                         alt={problem.title}
                         className="w-full h-full object-cover"
                     />
@@ -121,7 +127,7 @@ const Problem = () => {
             </div>
 
             {/* ===== Meta ===== */}
-            <div className="flex justify-between flex-wrap gap-2 text-sm text-gray-500">
+            <div className="flex justify-between items-center flex-wrap gap-2 text-sm text-gray-500">
                 <span>
                     Posted on{" "}
                     {new Date(problem.createdAt).toLocaleDateString("en-US", {
@@ -130,7 +136,23 @@ const Problem = () => {
                         year: "numeric",
                     })}
                 </span>
-                <span>Views: {problem.views}</span>
+
+                <div className="flex items-center gap-7 px-5">
+                    <span>Views: {problem.views}</span>
+
+                    {currentUser &&
+                        (problem.createdBy?._id === currentUserId ||
+                            currentUserRole === "admin") && (
+                            <button
+                                onClick={() => navigate(`/problems/${problem._id}/edit`)}
+                                className="bg-green-500 py-1 px-3 rounded-md text-white font-bold cursor-pointer active:scale-95"
+                            >
+                                Edit
+                            </button>
+                        )}
+
+                </div>
+
             </div>
 
             {/* ===== Description ===== */}

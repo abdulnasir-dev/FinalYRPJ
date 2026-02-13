@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaFilter } from "react-icons/fa6";
-import {requestRedemption, myPoints, fetchMyRedemptions } from "../../api/userDashboard";
+import { requestRedemption, myPoints, fetchMyRedemptions } from "../../api/userDashboard";
+import { LoaderOne } from "../ui/loader";
 
 const Redemption = () => {
   const [availablePoints, setAvailablePoints] = useState(0);
@@ -41,6 +42,14 @@ const Redemption = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <LoaderOne />
+      </div>
+    );
+  }
+
   const hasPending = redeemed.some((r) => r.status === "pending");
 
   return (
@@ -54,7 +63,7 @@ const Redemption = () => {
       </div>
 
       {/* Available points */}
-      <div className="bg-black text-white rounded-xl px-6 py-4 flex justify-between items-center">
+      <div className="bg-green-600 text-white rounded-xl px-6 py-4 flex justify-between items-center">
         <div>
           <p className="text-sm opacity-70">Available Points</p>
           <p className="text-2xl font-bold">{availablePoints}</p>

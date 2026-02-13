@@ -26,26 +26,28 @@ const SignUp = () => {
         };
 
         try {
-            const res = await toast.promise(
+            // FIXED: Store the response and only navigate on success
+            const response = await toast.promise(
                 registerUser(payload),
                 {
-                    loading: "Creating account...",
-                    success: "Account created successfully 🎉",
-                    error: (err) =>
-                        err?.response?.data?.message || "Registration failed",
+                    loading: "Sending OTP...",
+                    success: "OTP sent to your email",
+                    error: (err) => err?.response?.data?.message || "Registration failed",
                 }
             );
 
-            navigate("/signin");
+            // Only navigate if we reach this point (success)
+            navigate("/verify-otp", { state: { email } });
+
         } catch (err) {
-            // error already handled by toast.promise
+            // Error is already handled by toast.promise
             console.error("Signup failed:", err);
+            // Don't navigate on error
         }
     };
 
-
     return (
-        <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-black via-gray-900 to-zinc-800 px-4">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-zinc-800 px-4">
             <form
                 onSubmit={handleSubmit}
                 className="w-full max-w-md px-8 backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl py-8 shadow-2xl"
@@ -53,13 +55,11 @@ const SignUp = () => {
                 <h1 className="text-3xl text-center mb-2 text-white font-bold">
                     Welcome!
                 </h1>
-                <p className="text-gray-300 mb-6 text-center">
-                    Sign up to continue
-                </p>
+                <p className="text-gray-300 mb-6 text-center">Sign up to continue</p>
 
                 <input
                     type="text"
-                    placeholder="Enter your full name"
+                    placeholder="Full Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
@@ -68,7 +68,7 @@ const SignUp = () => {
 
                 <input
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -77,7 +77,7 @@ const SignUp = () => {
 
                 <input
                     type="password"
-                    placeholder="Enter your password"
+                    placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -86,7 +86,7 @@ const SignUp = () => {
 
                 <input
                     type="password"
-                    placeholder="Confirm your password"
+                    placeholder="Confirm Password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
@@ -95,7 +95,7 @@ const SignUp = () => {
 
                 <button
                     type="submit"
-                    className="w-full py-3 rounded-lg bg-linear-to-r from-blue-500 to-indigo-600 text-white font-semibold hover:opacity-90 transition"
+                    className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold hover:opacity-90 transition"
                 >
                     Sign Up
                 </button>

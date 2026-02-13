@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { LayoutDashboard, X } from "lucide-react";
-import { FiHome } from "react-icons/fi";
-import { MdOutlineLeaderboard, MdOutlineEnergySavingsLeaf, MdLocationCity, MdOutlineAir } from "react-icons/md";
+import { FiHome, FiSettings, FiShield } from "react-icons/fi";
+import { MdOutlineLeaderboard, MdOutlineEnergySavingsLeaf, MdLocationCity, MdOutlineAir, MdAdminPanelSettings } from "react-icons/md";
 import { FaHandHoldingWater, FaRecycle, FaLeaf } from "react-icons/fa";
 import { Trash } from "lucide-react";
 import { HiMiniSignal } from "react-icons/hi2";
@@ -10,11 +10,17 @@ import { PiPottedPlantLight } from "react-icons/pi";
 import { GiFarmer } from "react-icons/gi";
 import { TbWorld } from "react-icons/tb";
 
+const role = localStorage.getItem("role"); // "admin" | "user"
+
 const discover = [
   { label: "Home", icon: FiHome, path: "/" },
   { label: "Leaderboard", icon: MdOutlineLeaderboard, path: "/leaderboard" },
   { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
+  ...(role === "admin"
+    ? [{ label: "Admin Panel", icon: FiShield, path: "/admin" }]
+    : []),
 ];
+
 
 const categories = [
   { label: "Water Conservation", icon: FaHandHoldingWater },

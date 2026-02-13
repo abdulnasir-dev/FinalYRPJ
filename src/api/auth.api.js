@@ -3,7 +3,6 @@ import axios from "axios";
 const getToken = () => localStorage.getItem("accessToken")
 
 const API = axios.create({
-    // REMOVED /auth from here
     baseURL: "https://impacthub-jqm3.onrender.com/api/v1", 
 });
 
@@ -24,4 +23,5 @@ export const registerUser = (data) => {
 
 export const getLeaderboard = (range = "all") => 
     API.get("/reputations/leaderboards", { params: { range } }); 
-// Added 
+
+export const verifyOTP = (data) => API.post("/verify-otp", data)

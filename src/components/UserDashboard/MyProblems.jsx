@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { myProblems } from '../../api/userDashboard'
 import { FaFilter } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
+import { LoaderOne } from '../ui/loader';
 
 const MyProblems = () => {
   const [problems, setProblems] = useState([])
@@ -13,7 +14,7 @@ const MyProblems = () => {
       try {
         setLoading(true)
         const res = await myProblems()
-        console.log(res.data.problems)
+        // console.log(res.data.problems)
         setProblems(res.data.problems)
       } catch (error) {
         console.error(error)
@@ -41,12 +42,8 @@ const MyProblems = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <div className="relative w-20 h-20">
-          <div className="absolute inset-0 border-4 border-gray-200 rounded-full"></div>
-          <div className="absolute inset-0 border-4 border-t-blue-500 rounded-full animate-spin"></div>
-        </div>
-        <p className="mt-4 text-lg font-semibold text-gray-600">Loading Problems...</p>
+      <div className="flex h-full w-full items-center justify-center">
+        <LoaderOne />
       </div>
     );
   }
@@ -106,7 +103,7 @@ const MyProblems = () => {
 
               <div className='flex items-center gap-2'>
                 <button
-                  onClick={() => handleEdit(problem._id)}
+                  onClick={()=> navigate(`/problems/${problem._id}/edit`)}
                   className='px-2 md:px-3 py-2 text-xs md:text-sm font-semibold text-blue-600 hover:bg-blue-50 rounded-lg transition'
                 >
                   Edit

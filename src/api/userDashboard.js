@@ -6,7 +6,7 @@ const API = axios.create({
     baseURL: "https://impacthub-jqm3.onrender.com/api/v1",
 });
 
-
+// https://impacthub-jqm3.onrender.com
 
 API.interceptors.request.use((config) => {
     const token = getToken();
@@ -31,3 +31,25 @@ export const requestRedemption = (data) => API.post("/redemptions/request", data
 // api/notifications.js
 export const getNotifications = () => API.get("/notifications");
 export const markNotificationRead = (id) => API.patch(`/notifications/${id}/read`);
+
+export const profilePage = (userId) => API.get(`/users/profile/${userId}`)
+export const getMyProfile = () => API.get(`/users/my-profile`)
+
+export const updateMyProfile = (data, coverFile) => {
+    const formData = new FormData();
+
+    // append text fields
+    Object.keys(data).forEach((key) => {
+        formData.append(key, data[key]);
+    });
+
+    // append image file
+    if (coverFile) {
+        formData.append("coverImage", coverFile);
+    }
+
+    return API.patch("/users/update-profile", formData);
+};
+
+
+

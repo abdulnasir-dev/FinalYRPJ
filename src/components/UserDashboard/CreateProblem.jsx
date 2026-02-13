@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { createProblem } from "../../api/problems.api";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const CATEGORIES = [
     "water conservation",
@@ -23,6 +25,7 @@ const CreateProblem = () => {
     const [banner, setBanner] = useState(null);
     const [expertOnly, setExpertOnly] = useState(false);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate()
 
     /* ---------------- TAGS ---------------- */
 
@@ -48,24 +51,37 @@ const CreateProblem = () => {
         try {
             setLoading(true);
 
-            const formData = new FormData();
-            formData.append("title", title);
-            formData.append("description", description);
-            formData.append("category", category); // Optional - backend will generate if empty
-            formData.append("expertOnly", expertOnly);
-            formData.append("tags", JSON.stringify(tags));
-            if (banner) formData.append("bannerImage", banner);
+            const submitProblem = async () => {
+                const formData = new FormData();
+                formData.append("title", title);
+                formData.append("description", description);
+                formData.append("category", category); // Optional - backend will generate if empty
+                formData.append("expertOnly", expertOnly);
+                formData.append("tags", JSON.stringify(tags));
+                if (banner) formData.append("bannerImage", banner);
 
-            await createProblem(formData);
-            alert("Problem created successfully");
+                await createProblem(formData);
+            }
 
-            // Reset form
-            setTitle("");
-            setDescription("");
-            setCategory("");
-            setTags([]);
-            setBanner(null);
-            setExpertOnly(false);
+            toast.promise(
+                submitProblem(),
+                {
+                    loading: "Creating problem...",
+                    success: "Problem created successfully",
+                    error: (err) =>
+                        err?.response?.data?.message || "Failed to create problem",
+                }
+            ).then(() => {
+                // Reset form
+                setTitle("");
+                setDescription("");
+                setCategory("");
+                setTags([]);
+                setBanner(null);
+                setExpertOnly(false);
+
+                navigate("/")
+            })
         } catch (e) {
             alert(e.response?.data?.message || "Failed to create problem");
         } finally {
