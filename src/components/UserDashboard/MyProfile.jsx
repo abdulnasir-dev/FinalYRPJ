@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { LoaderOne } from "../ui/loader";
 import { getMyProfile, updateMyProfile } from "@/api/userDashboard";
+import Button from "../ui/Button";
 
 const MyProfile = () => {
     const [data, setData] = useState(null);
@@ -20,7 +21,7 @@ const MyProfile = () => {
             try {
                 setLoading(true);
                 const res = await getMyProfile();
-                console.log( res);
+                console.log(res);
                 setData(res.data);
                 const profile = res.data.profile;
                 setFormData({
@@ -211,14 +212,10 @@ const MyProfile = () => {
                                 </button>
                             </>
                         ) : (
-                            <button
-                                onClick={() => setIsEditing(true)}
-                                className="px-4 py-2 bg-black text-white rounded-lg text-sm font-semibold"
-                            >
-                                Edit Profile
-                            </button>
+                            <Button onClick={() => setIsEditing(true)} />
                         )}
                     </div>
+
                 </div>
             </div>
 

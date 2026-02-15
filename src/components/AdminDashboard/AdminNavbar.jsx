@@ -152,7 +152,7 @@ export default function AdminNavbar({ onMenuClick }) {
                                         className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm"
                                         onClick={() => {
                                             if (searchType === "problem") {
-                                                navigate(`/dashboard/problem/${item._id}`);
+                                                navigate(`/problems/${item._id}`);
                                             } else {
                                                 navigate(`/dashboard/profile/${item._id}`);
                                             }

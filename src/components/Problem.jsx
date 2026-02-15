@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { fetchProblemById } from "../api/problems.api";
 import Solutions from "./Solutions";
 import { LoaderOne } from "./ui/loader";
+import Button from "./ui/Button";
 
 const Problem = () => {
     const { problemId } = useParams();
@@ -143,12 +144,9 @@ const Problem = () => {
                     {currentUser &&
                         (problem.createdBy?._id === currentUserId ||
                             currentUserRole === "admin") && (
-                            <button
+                            <Button
                                 onClick={() => navigate(`/problems/${problem._id}/edit`)}
-                                className="bg-green-500 py-1 px-3 rounded-md text-white font-bold cursor-pointer active:scale-95"
-                            >
-                                Edit
-                            </button>
+                            />
                         )}
 
                 </div>

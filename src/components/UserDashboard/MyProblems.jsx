@@ -3,6 +3,8 @@ import { myProblems } from '../../api/userDashboard'
 import { FaFilter } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom';
 import { LoaderOne } from '../ui/loader';
+import Button from '../ui/Button';
+import DeleteButton from '../ui/DeleteButton';
 
 const MyProblems = () => {
   const [problems, setProblems] = useState([])
@@ -96,25 +98,14 @@ const MyProblems = () => {
             </div>
 
             {/* Right side - Actions */}
-            <div className='flex items-center gap-2 md:gap-3 flex-wrap'>
+            <div className='flex items-center justify-around gap-2 md:gap-10 flex-wrap'>
               <button onClick={() => navigate(`/problems/${problem._id}`)} className='px-3 md:px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-xs md:text-sm font-semibold whitespace-nowrap'>
                 View Solutions
               </button>
 
               <div className='flex items-center gap-2'>
-                <button
-                  onClick={()=> navigate(`/problems/${problem._id}/edit`)}
-                  className='px-2 md:px-3 py-2 text-xs md:text-sm font-semibold text-blue-600 hover:bg-blue-50 rounded-lg transition'
-                >
-                  Edit
-                </button>
-
-                <button
-                  onClick={() => handleDelete(problem._id)}
-                  className='px-2 md:px-3 py-2 text-xs md:text-sm font-semibold text-red-600 hover:bg-red-50 rounded-lg transition'
-                >
-                  Delete
-                </button>
+                <Button onClick={() => navigate(`/problems/${problem._id}/edit`)} />
+                <DeleteButton onClick={() => handleDelete(problem._id)} />
               </div>
             </div>
           </div>

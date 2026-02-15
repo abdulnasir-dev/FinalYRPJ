@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 import { useOutletContext } from "react-router-dom";
 import { LoaderOne } from "./ui/loader";
+import ViewButton from "./ui/ViewButton";
+import StarButton from "./ui/StarButton";
 
 const AllProblems = () => {
     const [problems, setProblems] = useState([]);
@@ -14,7 +16,7 @@ const AllProblems = () => {
     const [avatar, setAvatar] = useState(null)
     const navigate = useNavigate()
 
-   const { selectedCategory, setSelectedCategory } = useOutletContext();
+    const { selectedCategory, setSelectedCategory } = useOutletContext();
 
 
     const LIMIT = 10;
@@ -68,12 +70,11 @@ const AllProblems = () => {
                     </p>
                 </div>
                 <div className="w-full sm:w-auto">
-                    <button
-                        onClick={() => navigate(`/dashboard/create`)}
-                        className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-green-600 hover:bg-green-700 text-white text-sm sm:text-base font-semibold rounded-lg shadow-md transition-colors duration-200"
-                    >
-                        Post Problem
-                    </button>
+                    <StarButton
+                        onClick={() => navigate("/dashboard/create")}
+                        starcolor="rgb(34, 197, 94)
+"
+                    />
                 </div>
             </div>
 
@@ -89,17 +90,17 @@ const AllProblems = () => {
                             <h2 className="text-base md:text-lg font-bold truncate">
                                 Problems
                             </h2>
-                             {selectedCategory !== "all" && (
-                                            <button
-                                                onClick={() => setSelectedCategory("all")}
-                                                className="text-sm text-blue-600 hover:underline"
-                                            >
-                                                Clear filter
-                                            </button>
-                                        )}
+                            {selectedCategory !== "all" && (
+                                <button
+                                    onClick={() => setSelectedCategory("all")}
+                                    className="text-sm text-blue-600 hover:underline"
+                                >
+                                    Clear filter
+                                </button>
+                            )}
 
                             <div className="h-5 w-5 bg-black text-white rounded-full flex justify-center items-center text-xs shrink-0">
-                               {filteredProblems.length}
+                                {filteredProblems.length}
                             </div>
                         </div>
 
@@ -229,9 +230,7 @@ const AllProblems = () => {
                                         {problem.status.toUpperCase()}
                                     </span>
 
-                                    <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-xs font-semibold">
-                                        View Details
-                                    </button>
+                                    <ViewButton size="small" onClick={() => navigate(`/problems/${problem._id}`)} text="View " />
                                 </div>
 
                             </div>

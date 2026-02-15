@@ -4,6 +4,7 @@ import { FaFilter } from "react-icons/fa6";
 import { FetchMySolutions } from '../../api/userDashboard';
 import { useNavigate } from 'react-router-dom';
 import { LoaderOne } from '../ui/loader';
+import DeleteButton from '../ui/DeleteButton';
 
 const MySolutions = () => {
   const [solutions, setSolutions] = useState([])
@@ -105,15 +106,10 @@ const MySolutions = () => {
                 View Problem
               </button>
 
-              <button
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent parent div click
-                  handleDelete(solution._id);
-                }}
-                className='px-3 md:px-4 py-2 text-xs md:text-sm font-semibold text-red-600 hover:bg-red-50 rounded-lg transition border border-red-200'
-              >
-                Delete Solution
-              </button>
+              <DeleteButton onClick={(e) => {
+                e.stopPropagation();
+                handleDelete(solution._id);
+              }} />
             </div>
           </div>
         ))}
