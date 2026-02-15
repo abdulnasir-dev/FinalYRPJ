@@ -20,8 +20,8 @@ const MyProfile = () => {
             try {
                 setLoading(true);
                 const res = await getMyProfile();
+                console.log( res);
                 setData(res.data);
-                // console.log("Profile data:", res.data);
                 const profile = res.data.profile;
                 setFormData({
                     fullName: profile.fullName || "",

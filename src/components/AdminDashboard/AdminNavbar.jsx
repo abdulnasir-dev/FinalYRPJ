@@ -1,3 +1,4 @@
+import { searchRequest } from "@/api/search.api";
 import { userAvatar } from "@/api/user.api";
 import {
     Search,
@@ -12,12 +13,18 @@ import {
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import Switch from "../ui/Switch";
 
 export default function AdminNavbar({ onMenuClick }) {
     const [openProfile, setOpenProfile] = useState(false);
-    const [avatar, setAvatar] = useState(null)
+    const [avatar, setAvatar] = useState(null);
     const navigate = useNavigate();
     const dropdownRef = useRef(null);
+    const [openSearch, setOpenSearch] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [results, setResults] = useState([]);
+    const [showResults, setShowResults] = useState(false);
+    const [searchType, setSearchType] = useState("problem");
 
     const handleNavigate = (path) => {
         setOpenProfile(false);
@@ -30,19 +37,50 @@ export default function AdminNavbar({ onMenuClick }) {
         window.location.href = "/signin";
     };
 
+    // Debounced search
+    useEffect(() => {
+        if (!searchQuery.trim()) {
+            setResults([]);
+            return;
+        }
+
+        const timer = setTimeout(async () => {
+            try {
+                const res = await searchRequest({
+                    type: searchType,
+                    query: searchQuery,
+                });
+                setResults(res.data.results);
+                setShowResults(true);
+            } catch (err) {
+                console.error(err);
+            }
+        }, 400);
+
+        return () => clearTimeout(timer);
+    }, [searchQuery, searchType]);
+
+    // Auto close results after 5s
+    useEffect(() => {
+        if (!showResults) return;
+        const timer = setTimeout(() => setShowResults(false), 5000);
+        return () => clearTimeout(timer);
+    }, [showResults]);
+
+    // Fetch avatar
     useEffect(() => {
         const fetchAvatar = async () => {
             try {
                 const res = await userAvatar();
-                // console.log(res.data)
-                setAvatar(res.data.coverImage)
+                setAvatar(res.data.coverImage);
             } catch (error) {
-                console.error(error)
+                console.error(error);
             }
-        }
-        fetchAvatar()
-    }, [])
+        };
+        fetchAvatar();
+    }, []);
 
+    // Close profile dropdown
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -85,19 +123,75 @@ export default function AdminNavbar({ onMenuClick }) {
 
             {/* CENTER SEARCH */}
             <div className="flex-1 max-w-xl mx-auto hidden md:block px-6">
-                <div className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 border border-gray-200">
+                <div className="relative flex items-center gap-2 bg-gray-50 rounded-lg px-3 h-10 border border-gray-200 focus-within:border-green-500 focus-within:ring-2 focus-within:ring-green-100">
+
+                    <div className="flex items-center h-8 mt-2">
+                        <Switch
+                            searchType={searchType}
+                            setSearchType={setSearchType}
+                        />
+                    </div>
+
                     <Search className="w-4 h-4 text-gray-500" />
-                    <input
-                        type="text"
-                        placeholder="Search users, problems, reports…"
-                        className="w-full bg-transparent outline-none text-sm"
-                    />
+
+                    <div className="relative w-full">
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder={`Search ${searchType}s...`}
+                            className="w-full bg-transparent outline-none text-sm"
+                            onFocus={() => setShowResults(true)}
+                        />
+
+                        {showResults && results.length > 0 && (
+                            <div className="absolute top-10 left-0 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                                {results.map((item) => (
+                                    <div
+                                        key={item._id}
+                                        className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm"
+                                        onClick={() => {
+                                            if (searchType === "problem") {
+                                                navigate(`/dashboard/problem/${item._id}`);
+                                            } else {
+                                                navigate(`/dashboard/profile/${item._id}`);
+                                            }
+                                            setShowResults(false);
+                                        }}
+                                    >
+                                        {searchType === "problem"
+                                            ? item.title
+                                            : (
+                                                <div className="flex items-center gap-2">
+                                                    {item.coverImage ? (
+                                                        <img
+                                                            src={item.coverImage}
+                                                            alt="avatar"
+                                                            className="w-8 h-8 rounded-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                                                            <User size={16} className="text-gray-500" />
+                                                        </div>
+                                                    )}
+                                                    <span>{item.fullName}</span>
+                                                </div>
+                                            )
+                                        }
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
             {/* RIGHT */}
             <div className="flex items-center gap-3 ml-auto">
-                <button className="md:hidden p-2 rounded-md hover:bg-gray-100">
+                <button
+                    onClick={() => setOpenSearch(true)}
+                    className="md:hidden p-2 rounded-md hover:bg-gray-100"
+                >
                     <Search className="w-5 h-5 text-gray-700" />
                 </button>
 
@@ -108,7 +202,7 @@ export default function AdminNavbar({ onMenuClick }) {
                     <Bell className="w-5 h-5 text-gray-700" />
                 </button>
 
-                {/* PROFILE DROPDOWN */}
+                {/* PROFILE */}
                 <div className="relative" ref={dropdownRef}>
                     <button
                         onClick={() => setOpenProfile((prev) => !prev)}
@@ -125,7 +219,6 @@ export default function AdminNavbar({ onMenuClick }) {
                                 <span className="text-green-700 font-semibold">U</span>
                             )}
                         </div>
-
                         <ChevronDown className="w-4 h-4 text-gray-600 hidden sm:block" />
                     </button>
 
@@ -147,12 +240,6 @@ export default function AdminNavbar({ onMenuClick }) {
                                 onClick={() => handleNavigate("/dashboard/settings")}
                             />
 
-                            <DropdownItem
-                                icon={<User size={16} />}
-                                label="Profile"
-                                onClick={() => handleNavigate("/dashboard/my-profile")}
-                            />
-
                             <div className="border-t border-gray-200 my-1" />
 
                             <DropdownItem
@@ -165,6 +252,89 @@ export default function AdminNavbar({ onMenuClick }) {
                     )}
                 </div>
             </div>
+
+            {openSearch && (
+                <div
+                    className="fixed inset-0 bg-black/40 z-50 flex items-start justify-center pt-24"
+                    onClick={() => setOpenSearch(false)}
+                >
+                    <div
+                        className="w-[90%] max-w-md bg-white rounded-xl shadow-lg p-4"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="flex items-center justify-between mb-3">
+                            <h2 className="text-sm font-semibold text-gray-700">Search</h2>
+                            <button
+                                onClick={() => setOpenSearch(false)}
+                                className="text-gray-500 text-sm"
+                            >
+                                Close
+                            </button>
+                        </div>
+
+                        <div className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 border border-gray-200">
+                            <div className="flex items-center h-8 mt-2">
+                                <Switch
+                                    searchType={searchType}
+                                    setSearchType={setSearchType}
+                                />
+                            </div>
+
+                            <Search className="w-4 h-4 text-gray-500" />
+
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder={`Search ${searchType}s...`}
+                                className="w-full bg-transparent outline-none text-sm"
+                                autoFocus
+                            />
+                        </div>
+
+                        {results.length > 0 && (
+                            <div className="mt-3 bg-white border border-gray-200 rounded-lg overflow-hidden">
+                                {results.map((item) => (
+                                    <div
+                                        key={item._id}
+                                        className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm"
+                                        onClick={() => {
+                                            if (searchType === "problem") {
+                                                navigate(`/problems/${item._id}`);
+                                            } else {
+                                                navigate(`/dashboard/profile/${item._id}`);
+                                            }
+                                            setOpenSearch(false);
+                                        }}
+                                    >
+                                        {searchType === "problem"
+                                            ? item.title
+                                            : (
+                                                <div className="flex items-center gap-2">
+                                                    {item.coverImage ? (
+                                                        <img
+                                                            src={item.coverImage}
+                                                            alt="avatar"
+                                                            className="w-8 h-8 rounded-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                                                            <User size={16} className="text-gray-500" />
+                                                        </div>
+                                                    )}
+                                                    <span>{item.fullName}</span>
+                                                </div>
+                                            )
+                                        }
+
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
         </nav>
     );
 }

@@ -3,6 +3,7 @@ import { userAvatar } from "@/api/user.api";
 import { Search, Menu, Bell, ChevronDown, LogOut, User, Settings as SettingsIcon, FileText, Leaf, } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import Switch from "./ui/Switch";
 
 export default function Navbar({ onMenuClick }) {
   const [openProfile, setOpenProfile] = useState(false);
@@ -105,15 +106,14 @@ export default function Navbar({ onMenuClick }) {
 
       {/* CENTER SEARCH (DESKTOP) */}
       <div className="flex-1 max-w-xl mx-auto hidden md:block px-6">
-        <div className="relative flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 border border-gray-200 focus-within:border-green-500 focus-within:ring-2 focus-within:ring-green-100">
-          <select
-            value={searchType}
-            onChange={(e) => setSearchType(e.target.value)}
-            className="bg-transparent text-sm outline-none border-r pr-2 text-gray-600"
-          >
-            <option value="problem">Problem</option>
-            <option value="user">User</option>
-          </select>
+        <div className="relative flex items-center gap-2 bg-gray-50 rounded-lg px-3 h-10 border border-gray-200 focus-within:border-green-500 focus-within:ring-2 focus-within:ring-green-100">
+
+          <div className="flex items-center h-8 mt-2">
+            <Switch
+              searchType={searchType}
+              setSearchType={setSearchType}
+            />
+          </div>
 
           <Search className="w-4 h-4 text-gray-500" />
 
@@ -125,7 +125,6 @@ export default function Navbar({ onMenuClick }) {
               placeholder={`Search ${searchType}s...`}
               className="w-full bg-transparent outline-none text-sm"
               onFocus={() => setShowResults(true)}
-
             />
 
             {showResults && results.length > 0 && (
@@ -136,7 +135,7 @@ export default function Navbar({ onMenuClick }) {
                     className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm"
                     onClick={() => {
                       if (searchType === "problem") {
-                        navigate(`/problems/${item._id}`);
+                        navigate(`/dashboard/problem/${item._id}`);
                       } else {
                         navigate(`/dashboard/profile/${item._id}`);
                       }
@@ -161,8 +160,7 @@ export default function Navbar({ onMenuClick }) {
                           <span>{item.fullName}</span>
                         </div>
                       )
-                    } 
-
+                    }
                   </div>
                 ))}
               </div>
@@ -266,14 +264,12 @@ export default function Navbar({ onMenuClick }) {
             </div>
 
             <div className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 border border-gray-200">
-              <select
-                value={searchType}
-                onChange={(e) => setSearchType(e.target.value)}
-                className="bg-transparent text-sm outline-none border-r pr-2 text-gray-600"
-              >
-                <option value="problem">Problem</option>
-                <option value="user">User</option>
-              </select>
+              <div className="flex items-center h-8 mt-2">
+                <Switch
+                  searchType={searchType}
+                  setSearchType={setSearchType}
+                />
+              </div>
 
               <Search className="w-4 h-4 text-gray-500" />
 
