@@ -4,12 +4,14 @@ import { fetchProblemById } from "../api/problems.api";
 import Solutions from "./Solutions";
 import { LoaderOne } from "./ui/loader";
 import Button from "./ui/Button";
+import { getCurrentUserData } from "@/lib/currentUser";
 
 const Problem = () => {
     const { problemId } = useParams();
     const navigate = useNavigate()
     const [problem, setProblem] = useState(null);
     const [loading, setLoading] = useState(true);
+    const user = getCurrentUserData();
 
     const getCurrentUser = () => {
         const token = localStorage.getItem("accessToken");
@@ -181,6 +183,7 @@ const Problem = () => {
                     problemOwnerId={problem.createdBy?._id || problem.createdBy}
                     currentUserId={currentUserId}
                     problemStatus={problem.status}
+                    currentUserRole={user?.role}
                 />
             </div>
 

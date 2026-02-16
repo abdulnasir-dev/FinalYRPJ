@@ -3,7 +3,7 @@ import axios from "axios";
 const getToken = () => localStorage.getItem("accessToken");
 
 const API = axios.create({
-  baseURL: "https://impacthub-jqm3.onrender.com/api/v1/solutions",
+    baseURL: "https://impacthub-jqm3.onrender.com/api/v1/solutions",
 });
 
 
@@ -24,3 +24,5 @@ export const createSolution = (problemId, answer) =>
 
 export const acceptSolution = (solutionId) =>
     API.patch(`/accept/${solutionId}`);
+
+export const reportSolution = (solutionId) => API.post(`${solutionId}/report`)

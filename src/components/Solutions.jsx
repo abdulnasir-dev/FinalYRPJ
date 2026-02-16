@@ -1,10 +1,21 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { createSolution, fetchSolutionsForProblem, acceptSolution } from "../api/solution.api";
+import {
+    createSolution,
+    fetchSolutionsForProblem,
+    acceptSolution,
+    reportSolution
+} from "../api/solution.api";
 import { useNavigate } from "react-router-dom";
 
-const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) => {
-    const navigate = useNavigate()
+const Solutions = ({
+    problemId,
+    problemOwnerId,
+    currentUserId,
+    problemStatus,
+    currentUserRole
+}) => {
+    const navigate = useNavigate();
     const [solutions, setSolutions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [answer, setAnswer] = useState("");
@@ -16,7 +27,6 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
         const getSolutions = async () => {
             try {
                 const res = await fetchSolutionsForProblem(problemId);
-                // console.log(res.data)
                 setSolutions(res.data.solutions || []);
             } catch (err) {
                 console.error("Failed to fetch solutions", err);
@@ -28,22 +38,37 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
         if (problemId) getSolutions();
     }, [problemId]);
 
+    const handleReportSolution = async (solutionId) => {
+        try {
+            await toast.promise(
+                reportSolution(solutionId),
+                {
+                    loading: "Reporting solution...",
+                    success: "Solution reported",
+                    error: "Failed to report solution",
+                }
+            );
+
+            // update UI
+            setSolutions((prev) =>
+                prev.map((sol) =>
+                    sol._id === solutionId
+                        ? { ...sol, isReported: true }
+                        : sol
+                )
+            );
+        } catch (err) {
+            console.error("Report failed", err);
+        }
+    };
+
     const handleSubmit = async () => {
         const trimmed = answer.trim();
-        if (!trimmed) {
-            toast.error("Please enter a solution");
-            return;
-        }
-
-        if (trimmed.length < 20) {
-            toast.error("Solution must be at least 20 characters long");
-            return;
-        }
-
-        if (trimmed.length > 2000) {
-            toast.error("Solution must not exceed 2000 characters");
-            return;
-        }
+        if (!trimmed) return toast.error("Please enter a solution");
+        if (trimmed.length < 20)
+            return toast.error("Solution must be at least 20 characters long");
+        if (trimmed.length > 2000)
+            return toast.error("Solution must not exceed 2000 characters");
 
         try {
             setSubmitting(true);
@@ -53,7 +78,6 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
                 {
                     loading: "Posting solution...",
                     success: "Solution posted successfully! 🎉",
-                    // error: "Failed to post solution",
                 }
             );
 
@@ -69,14 +93,13 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
                     setIsBanned(true);
                     toast.error("You are banned. Try again later.");
                 } else {
-                    toast.error(message || "Not allowed to perform this action");
+                    toast.error(message || "Not allowed");
                 }
             } else if (err.response?.status === 409) {
-                toast.error("You have already submitted a solution for this problem");
+                toast.error("You already submitted a solution");
             } else {
                 toast.error("Failed to post solution");
             }
-
         } finally {
             setSubmitting(false);
         }
@@ -95,10 +118,11 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
                 }
             );
 
-            // Update the solution to show it's accepted
             setSolutions((prev) =>
                 prev.map((sol) =>
-                    sol._id === solutionId ? { ...sol, isAccepted: true } : sol
+                    sol._id === solutionId
+                        ? { ...sol, isAccepted: true }
+                        : sol
                 )
             );
         } catch (err) {
@@ -114,26 +138,31 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
     const charCount = answer.trim().length;
     const isValid = charCount >= 20 && charCount <= 2000;
 
-    // Check if current user is the problem owner
     const isProblemOwner = currentUserId === problemOwnerId;
     const isProblemOpen = problemStatus === "open";
+    const isAdmin = currentUserRole === "admin";
 
     return (
         <div className="mt-10 flex flex-col gap-6">
-            {/* ===== Add Solution Box ===== */}
+            {/* Add Solution Box */}
             <div className="bg-white rounded-xl border-2 border-gray-300 p-4">
                 <h3 className="text-sm font-semibold mb-2">Add a solution</h3>
 
                 <textarea
                     value={answer}
                     onChange={(e) => setAnswer(e.target.value)}
-                    placeholder="Share your solution or suggestion…"
-                    className="w-full min-h-[100px] resize-none border border-gray-300 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+                    placeholder="Share your solution…"
+                    className="w-full min-h-[100px] resize-none border border-gray-300 rounded-lg p-3 text-sm"
                 />
 
                 <div className="flex justify-between items-center mt-2">
-                    <span className={`text-xs ${charCount > 0 && !isValid ? 'text-red-500' : 'text-gray-500'}`}>
-                        {charCount}/2000 characters {charCount > 0 && charCount < 20 && `(minimum 20)`}
+                    <span
+                        className={`text-xs ${charCount > 0 && !isValid
+                                ? "text-red-500"
+                                : "text-gray-500"
+                            }`}
+                    >
+                        {charCount}/2000 characters
                     </span>
                 </div>
 
@@ -143,7 +172,7 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
                         disabled={submitting || !answer.trim() || isBanned}
                         className={`px-4 py-2 rounded-lg text-xs font-semibold text-white
                             ${submitting || !answer.trim()
-                                ? "bg-gray-400 cursor-not-allowed"
+                                ? "bg-gray-400"
                                 : "bg-blue-500 hover:bg-blue-600"
                             }`}
                     >
@@ -152,26 +181,26 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
                 </div>
             </div>
 
-            {/* ===== Solutions Header ===== */}
+            {/* Solutions */}
             <h2 className="text-lg font-bold">
                 Solutions ({solutions.length})
             </h2>
 
-            {loading && (
-                <p className="text-sm text-gray-500">Loading solutions...</p>
-            )}
-
-            {!loading && solutions.length === 0 && (
-                <p className="text-sm text-gray-500">
-                    No solutions yet. Be the first to help!
-                </p>
-            )}
-
-            {/* ===== Solutions List ===== */}
             <div className="flex flex-col gap-6">
                 {solutions.map((solution) => {
-                    const isOwnSolution = solution.answeredBy?._id === currentUserId;
-                    const canAccept = isProblemOwner && !isOwnSolution && !solution.isAccepted && isProblemOpen;
+                    const isOwnSolution =
+                        solution.answeredBy?._id === currentUserId;
+
+                    const canAccept =
+                        isProblemOwner &&
+                        !isOwnSolution &&
+                        !solution.isAccepted &&
+                        isProblemOpen;
+
+                    const canReport =
+                        (isProblemOwner || isAdmin) &&
+                        !isOwnSolution &&
+                        !solution.isReported;
 
                     return (
                         <div
@@ -179,34 +208,25 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
                             className="bg-white rounded-xl border-2 border-gray-300 p-4"
                         >
                             {/* Header */}
-                            <div className="flex justify-between items-start gap-3">
+                            <div className="flex justify-between w-full">
                                 <div className="flex items-center gap-3">
                                     <div
                                         onClick={() =>
-                                            navigate(`/dashboard/profile/${solution.answeredBy._id}`)
+                                            navigate(
+                                                `/dashboard/profile/${solution.answeredBy._id}`
+                                            )
                                         }
-                                        className="w-10 h-10 rounded-full overflow-hidden bg-green-100 flex items-center justify-center font-bold text-green-700 cursor-pointer"
+                                        className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center font-bold text-green-700 cursor-pointer"
                                     >
-                                        {solution.answeredBy?.coverImage ? (
-                                            <img
-                                                src={solution.answeredBy.coverImage}
-                                                alt={solution.answeredBy.fullName}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        ) : (
-                                            solution.answeredBy?.fullName?.charAt(0) || "U"
-                                        )}
+                                        {solution.answeredBy?.fullName?.charAt(
+                                            0
+                                        ) || "U"}
                                     </div>
 
-
                                     <div>
-                                        <div
-                                            onClick={() =>
-                                                navigate(`/dashboard/profile/${solution.answeredBy._id}`)
-                                            }
-                                            className="flex items-center gap-2 cursor-pointer">
+                                        <div className="flex items-center gap-2">
                                             <span className="font-semibold text-gray-800">
-                                                {solution.answeredBy?.fullName ?? "Unknown"}
+                                                {solution.answeredBy?.fullName}
                                             </span>
 
                                             {solution.isAccepted && (
@@ -214,32 +234,54 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
                                                     ✓ ACCEPTED
                                                 </span>
                                             )}
+
+                                            {solution.isReported && (
+                                                <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded-full font-semibold">
+                                                    ⚠ REPORTED
+                                                </span>
+                                            )}
                                         </div>
 
                                         <div className="text-xs text-gray-500">
-                                            {new Date(solution.createdAt).toLocaleDateString("en-US", {
-                                                month: "short",
-                                                day: "numeric",
-                                                year: "numeric",
-                                            })}
+                                            {new Date(
+                                                solution.createdAt
+                                            ).toLocaleDateString()}
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Accept Button - Only show for problem owner */}
-                                {canAccept && (
-                                    <button
-                                        onClick={() => handleAcceptSolution(solution._id)}
-                                        disabled={acceptingId === solution._id}
-                                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors
-                                            ${acceptingId === solution._id
-                                                ? "bg-gray-400 text-white cursor-not-allowed"
-                                                : "bg-green-500 text-white hover:bg-green-600"
-                                            }`}
-                                    >
-                                        {acceptingId === solution._id ? "Accepting..." : "Accept Solution"}
-                                    </button>
-                                )}
+                                <div className="flex items-center gap-3">
+                                    {canReport && (
+                                        <button
+                                            onClick={() =>
+                                                handleReportSolution(
+                                                    solution._id
+                                                )
+                                            }
+                                            className="text-xs font-semibold text-red-500 hover:text-red-600"
+                                        >
+                                            Report
+                                        </button>
+                                    )}
+
+                                    {canAccept && (
+                                        <button
+                                            onClick={() =>
+                                                handleAcceptSolution(
+                                                    solution._id
+                                                )
+                                            }
+                                            disabled={
+                                                acceptingId === solution._id
+                                            }
+                                            className="px-3 py-1.5 bg-green-500 text-white text-xs rounded-lg"
+                                        >
+                                            {acceptingId === solution._id
+                                                ? "Accepting..."
+                                                : "Accept"}
+                                        </button>
+                                    )}
+                                </div>
                             </div>
 
                             {/* Body */}
@@ -248,14 +290,9 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus }) 
                             </p>
 
                             {/* Footer */}
-                            <div className="mt-4 flex items-center gap-4 text-sm text-gray-600">
+                            <div className="mt-4 flex gap-4 text-sm text-gray-600">
                                 <span>👍 {solution.votes?.upvotes ?? 0}</span>
                                 <span>👎 {solution.votes?.downvotes ?? 0}</span>
-                                {solution.isEdited && (
-                                    <span className="text-xs italic text-gray-400">
-                                        Edited
-                                    </span>
-                                )}
                             </div>
                         </div>
                     );
