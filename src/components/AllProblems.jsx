@@ -21,7 +21,7 @@ const AllProblems = () => {
             try {
                 setLoading(true);
                 const res = await fetchAllProblems(page, LIMIT);
-                console.log("Fetched problems:", res.data);
+                // console.log("Fetched problems:", res.data);
                 setProblems(res.data.problems || []);
                 const calculatedTotalPages =
                     Math.ceil(res.data.total / res.data.limit) || 1;
@@ -60,33 +60,47 @@ const AllProblems = () => {
                 {/* Background Accent */}
                 <div className="absolute top-0 right-0 w-24 h-12 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 rounded-full blur-xl pointer-events-none" />
 
-                <div className="relative flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                <div className="relative flex flex-col gap-3">
 
-                    {/* Left Side */}
-                    <div className="space-y-1">
-                        <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-gray-900">
+                    {/* Mobile: title + button in one row */}
+                    <div className="flex items-center justify-between md:hidden">
+                        <h1 className="text-xl font-semibold tracking-tight text-gray-900">
                             Community{" "}
                             <span className="bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent">
                                 Problems
                             </span>
                         </h1>
 
-                        <div className="flex items-center gap-3 text-xs md:text-sm text-gray-600">
-                            <div className="flex items-center gap-1.5">
-                                <span className="w-2 h-2 bg-green-500 rounded-full" />
-                                <span>{filteredProblems.length} visible</span>
-                            </div>
-
-                            {selectedCategory !== "all" && (
-                                <span className="px-2 py-0.5 bg-gray-100 rounded-full text-xs font-medium capitalize">
-                                    {selectedCategory}
-                                </span>
-                            )}
-                        </div>
+                        <StarButton
+                            onClick={() => navigate("/dashboard/create")}
+                            starcolor="rgb(79,70,229)"
+                        />
                     </div>
 
-                    {/* Right Side CTA */}
-                    <div className="flex items-center w-full md:w-auto justify-end">
+                    {/* Desktop: original layout */}
+                    <div className="hidden md:flex justify-between items-center">
+                        <div className="space-y-1">
+                            <h1 className="text-2xl font-semibold tracking-tight text-gray-900">
+                                Community{" "}
+                                <span className="bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent">
+                                    Problems
+                                </span>
+                            </h1>
+
+                            <div className="flex items-center gap-3 text-sm text-gray-600">
+                                <div className="flex items-center gap-1.5">
+                                    <span className="w-2 h-2 bg-green-500 rounded-full" />
+                                    <span>{filteredProblems.length} visible</span>
+                                </div>
+
+                                {selectedCategory !== "all" && (
+                                    <span className="px-2 py-0.5 bg-gray-100 rounded-full text-xs font-medium capitalize">
+                                        {selectedCategory}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+
                         <StarButton
                             onClick={() => navigate("/dashboard/create")}
                             starcolor="rgb(79,70,229)"
@@ -94,6 +108,7 @@ const AllProblems = () => {
                     </div>
 
                 </div>
+
             </div>
 
 
@@ -104,58 +119,113 @@ const AllProblems = () => {
 
 
                 {/* Top Bar */}
-                <div className="px-6 py-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b bg-white/60 backdrop-blur">
+                <div className="px-6 py-4 border-b bg-white/60 backdrop-blur">
 
-                    <div className="flex items-center gap-3">
-                        <h2 className="text-lg font-semibold text-gray-800">
-                            Problems
-                        </h2>
+                    {/* Mobile Layout */}
+                    <div className="flex flex-col gap-3 md:hidden">
 
-                        {selectedCategory !== "all" && (
-                            <button
-                                onClick={() => setSelectedCategory("all")}
-                                className="text-sm text-blue-600 hover:text-blue-800 transition"
-                            >
-                                Clear filter
-                            </button>
-                        )}
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <h2 className="text-lg font-semibold text-gray-800">
+                                    Problems
+                                </h2>
 
-                        <div className="px-2 py-0.5 bg-black text-white rounded-full text-xs font-medium">
-                            {filteredProblems.length}
+                                <div className="px-2 py-0.5 bg-black text-white rounded-full text-xs font-medium">
+                                    {filteredProblems.length}
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                <button
+                                    disabled={page === 1}
+                                    onClick={() => setPage((p) => p - 1)}
+                                    className={`px-3 py-1 rounded-md text-sm font-medium transition
+                ${page === 1
+                                            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                            : "bg-gray-100 hover:bg-gray-200"
+                                        }`}
+                                >
+                                    Prev
+                                </button>
+
+                                {/* Page text between buttons */}
+                                <span className="text-sm font-medium text-gray-600 min-w-[36px] text-center">
+                                    {page}/{totalPages}
+                                </span>
+
+                                <button
+                                    disabled={page === totalPages}
+                                    onClick={() => setPage((p) => p + 1)}
+                                    className={`px-3 py-1 rounded-md text-sm font-medium transition
+                ${page === totalPages
+                                            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                            : "bg-gray-100 hover:bg-gray-200"
+                                        }`}
+                                >
+                                    Next
+                                </button>
+                            </div>
                         </div>
+
+
                     </div>
 
-                    {/* Pagination */}
-                    <div className="flex items-center gap-3">
-                        <button
-                            disabled={page === 1}
-                            onClick={() => setPage((p) => p - 1)}
-                            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200
-                                ${page === 1
-                                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                                    : "bg-gray-100 hover:bg-gray-200 hover:scale-105"
-                                }`}
-                        >
-                            Prev
-                        </button>
+                    {/* Desktop Layout (unchanged structure) */}
+                    <div className="hidden md:flex justify-between items-center">
 
-                        <span className="text-sm font-medium text-gray-600">
-                            {page} / {totalPages}
-                        </span>
+                        <div className="flex items-center gap-3">
+                            <h2 className="text-lg font-semibold text-gray-800">
+                                Problems
+                            </h2>
 
-                        <button
-                            disabled={page === totalPages}
-                            onClick={() => setPage((p) => p + 1)}
-                            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200
-                                ${page === totalPages
-                                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                                    : "bg-gray-100 hover:bg-gray-200 hover:scale-105"
-                                }`}
-                        >
-                            Next
-                        </button>
+                            {selectedCategory !== "all" && (
+                                <button
+                                    onClick={() => setSelectedCategory("all")}
+                                    className="text-sm text-blue-600 hover:text-blue-800 transition"
+                                >
+                                    Clear filter
+                                </button>
+                            )}
+
+                            <div className="px-2 py-0.5 bg-black text-white rounded-full text-xs font-medium">
+                                {filteredProblems.length}
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <button
+                                disabled={page === 1}
+                                onClick={() => setPage((p) => p - 1)}
+                                className={`px-3 py-1 rounded-md text-sm font-medium transition
+            ${page === 1
+                                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                        : "bg-gray-100 hover:bg-gray-200"
+                                    }`}
+                            >
+                                Prev
+                            </button>
+
+                            <span className="text-sm font-medium text-gray-600">
+                                {page}/{totalPages}
+                            </span>
+
+                            <button
+                                disabled={page === totalPages}
+                                onClick={() => setPage((p) => p + 1)}
+                                className={`px-3 py-1 rounded-md text-sm font-medium transition
+            ${page === totalPages
+                                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                        : "bg-gray-100 hover:bg-gray-200"
+                                    }`}
+                            >
+                                Next
+                            </button>
+                        </div>
+
                     </div>
+
                 </div>
+
 
                 {/* Cards */}
                 <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">

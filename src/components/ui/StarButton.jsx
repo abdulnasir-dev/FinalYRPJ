@@ -2,23 +2,29 @@ import React from "react";
 import styled from "styled-components";
 
 const StarButton = ({
-    onClick,
-    label = "Post Problem",
-    variant = "primary",
-    size = "medium",
+  onClick,
+  label = "Post Problem",
+  variant = "primary",
+  size = "medium",
 }) => {
-    return (
-        <StyledWrapper variant={variant} size={size}>
-            <button onClick={onClick}>
-                <span className="icon">
-                    +
-                </span>
-                {label}
-                <span className="shine" />
-            </button>
-        </StyledWrapper>
-    );
+  return (
+    <StyledWrapper variant={variant} size={size}>
+      <button onClick={onClick}>
+        <span className="icon">
+          +
+        </span>
+
+        {/* Hide text on small screens */}
+        <span className="label hidden sm:inline">
+          {label}
+        </span>
+
+        <span className="shine" />
+      </button>
+    </StyledWrapper>
+  );
 };
+ 
 
 const StyledWrapper = styled.div`
   button {
@@ -30,18 +36,18 @@ const StyledWrapper = styled.div`
     gap: 10px;
 
     padding: ${({ size }) =>
-        size === "small"
-            ? "8px 18px"
-            : size === "large"
-            ? "14px 32px"
-            : "11px 26px"};
+    size === "small"
+      ? "8px 18px"
+      : size === "large"
+        ? "14px 32px"
+        : "11px 26px"};
 
     font-size: ${({ size }) =>
-        size === "small"
-            ? "13px"
-            : size === "large"
-            ? "17px"
-            : "15px"};
+    size === "small"
+      ? "13px"
+      : size === "large"
+        ? "17px"
+        : "15px"};
 
     font-weight: 600;
     letter-spacing: 0.3px;

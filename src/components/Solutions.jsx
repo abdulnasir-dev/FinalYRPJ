@@ -4,6 +4,7 @@ import { createSolution, fetchSolutionsForProblem, acceptSolution, reportSolutio
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ThumbsUp, ThumbsDown } from "lucide-react";
+import { likeDislikeSolution } from "@/api/vote.api";
 
 const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus, currentUserRole }) => {
     const navigate = useNavigate();
@@ -12,6 +13,7 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus, cu
     const [answer, setAnswer] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const [acceptingId, setAcceptingId] = useState(null);
+    const [votes, setVotes] = useState("")
 
     useEffect(() => {
         const getSolutions = async () => {
@@ -44,7 +46,6 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus, cu
                 error: "Failed to report solution",
             });
 
-            // Update local state so the UI reflects the reported status immediately
             setSolutions((prev) =>
                 prev.map((sol) =>
                     sol._id === solutionId ? { ...sol, isReported: true } : sol
@@ -55,41 +56,15 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus, cu
         }
     };
 
-    const toggleLike = (solutionId) => {
-        setSolutions(prev =>
-            prev.map(sol => {
-                if (sol._id !== solutionId) return sol;
-                const isLiked = sol.liked;
-                const wasDisliked = sol.disliked;
-
-                return {
-                    ...sol,
-                    liked: !isLiked,
-                    disliked: false,
-                    likesCount: isLiked ? sol.likesCount - 1 : sol.likesCount + 1,
-                    dislikesCount: wasDisliked ? sol.dislikesCount - 1 : sol.dislikesCount,
-                };
-            })
-        );
-    };
-
-    const toggleDislike = (solutionId) => {
-        setSolutions(prev =>
-            prev.map(sol => {
-                if (sol._id !== solutionId) return sol;
-                const isDisliked = sol.disliked;
-                const wasLiked = sol.liked;
-
-                return {
-                    ...sol,
-                    disliked: !isDisliked,
-                    liked: false,
-                    dislikesCount: isDisliked ? sol.dislikesCount - 1 : sol.dislikesCount + 1,
-                    likesCount: wasLiked ? sol.likesCount - 1 : sol.likesCount,
-                };
-            })
-        );
-    };
+    const toggleLikeHandler = async (solutionId) => {
+        try {
+            const res = await likeDislikeSolution(solutionId)
+            setVotes(res.data)
+            console.log(res.data)
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     const handleSubmit = async () => {
         const trimmed = answer.trim();
@@ -288,12 +263,12 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus, cu
 
                                 <div className="mt-6 flex items-center gap-8">
                                     <button
-                                        onClick={() => toggleLike(solution._id)}
+                                        onClick={() => toggleLikeHandler(solution._id)}
                                         className="flex items-center gap-2 group transition"
                                     >
                                         <motion.div
                                             animate={
-                                                solution.liked
+                                                  solution.liked
                                                     ? { scale: [1, 1.3, 1] }
                                                     : { scale: 1 }
                                             }
