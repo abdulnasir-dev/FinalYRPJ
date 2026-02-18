@@ -97,202 +97,212 @@ const MyProfile = () => {
     }
 
     return (
-        <div className="flex flex-col gap-4 h-full">
-            {/* Header */}
-            <div className="p-1 flex flex-col gap-2">
-                <h1 className="text-2xl font-bold">MY PROFILE</h1>
-                <p className="text-stone-600">
-                    Manage your personal information and activity.
-                </p>
-            </div>
+  <div className="flex flex-col gap-6 h-full bg-gradient-to-br from-gray-50 to-gray-100 p-4">
 
-            {/* Profile Card */}
-            <div className="bg-white rounded-xl w-full py-6 px-5 border-2 border-gray-300 flex flex-col md:flex-row gap-6 items-center md:items-start">
-                {/* Avatar */}
-                <div className="flex flex-col items-center gap-2">
-                    <div className="w-24 h-24 rounded-full overflow-hidden bg-black text-white flex items-center justify-center text-3xl font-bold">
-                        {coverFile ? (
-                            <img
-                                src={URL.createObjectURL(coverFile)}
-                                alt="preview"
-                                className="w-full h-full object-cover"
-                            />
-                        ) : user.coverImage ? (
-                            <img
-                                src={user.coverImage}
-                                alt={user.fullName}
-                                className="w-full h-full object-cover"
-                            />
-                        ) : (
-                            user.fullName?.charAt(0)
-                        )}
-                    </div>
+    {/* Header */}
+    <div>
+      <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">
+        My Profile
+      </h1>
+      <p className="text-gray-500 text-sm mt-1">
+        Manage your personal information and activity.
+      </p>
+    </div>
 
-                    {isEditing && (
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => setCoverFile(e.target.files[0])}
-                            className="text-xs"
-                        />
-                    )}
-                </div>
+    {/* Profile Card */}
+    <div className="bg-white/70 backdrop-blur-md rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col md:flex-row gap-8">
 
-                {/* Info */}
-                <div className="flex flex-col gap-2 text-center md:text-left w-full">
-                    {isEditing ? (
-                        <input
-                            name="fullName"
-                            value={formData.fullName}
-                            onChange={handleChange}
-                            className="border border-gray-300 rounded px-3 py-2 text-sm"
-                        />
-                    ) : (
-                        <h2 className="text-xl font-bold">{user.fullName}</h2>
-                    )}
-
-                    <p className="text-gray-600">{user.email}</p>
-
-                    {user.createdAt && (
-                        <p className="text-sm text-gray-500">
-                            Member since{" "}
-                            <span className="font-semibold text-gray-700">
-                                {formatMemberSince(user.createdAt)}
-                            </span>
-                        </p>
-                    )}
-
-                    {/* Bio */}
-                    <div className="mt-2 w-full md:max-w-2xl">
-                        <p className="text-xs uppercase tracking-wide text-gray-400 mb-1">
-                            About
-                        </p>
-
-                        {isEditing ? (
-                            <textarea
-                                name="bio"
-                                value={formData.bio}
-                                onChange={handleChange}
-                                rows={3}
-                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-                            />
-                        ) : (
-                            <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
-                                <p className="text-sm text-gray-700 leading-relaxed">
-                                    {user.bio || "No bio provided."}
-                                </p>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="flex gap-2 mt-2 justify-center md:justify-start">
-                        <span className="px-3 py-1 bg-gray-200 text-gray-800 text-xs rounded-full">
-                            {user.role}
-                        </span>
-                    </div>
-
-                    {/* Buttons */}
-                    <div className="flex gap-3 mt-3">
-                        {isEditing ? (
-                            <>
-                                <button
-                                    onClick={() => {
-                                        setIsEditing(false);
-                                        setCoverFile(null);
-                                    }}
-                                    className="px-4 py-2 bg-gray-300 rounded-lg text-sm font-semibold"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={handleSave}
-                                    className="px-4 py-2 bg-black text-white rounded-lg text-sm font-semibold"
-                                >
-                                    Save Changes
-                                </button>
-                            </>
-                        ) : (
-                            <Button onClick={() => setIsEditing(true)} />
-                        )}
-                    </div>
-
-                </div>
-            </div>
-
-            {/* Info Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Experience */}
-                <div className="bg-white rounded-xl p-4 border-2 border-gray-300">
-                    <p className="text-sm text-gray-500">Experience</p>
-
-                    {isEditing ? (
-                        <input
-                            type="number"
-                            name="experience"
-                            value={formData.experience}
-                            onChange={handleChange}
-                            className="border border-gray-300 rounded px-3 py-2 text-sm mt-1"
-                        />
-                    ) : (
-                        <p className="text-lg font-bold">
-                            {user.experience || 0} years
-                        </p>
-                    )}
-                </div>
-
-                {/* Portfolio */}
-                <div className="bg-white rounded-xl p-4 border-2 border-gray-300">
-                    <p className="text-sm text-gray-500">Portfolio</p>
-
-                    {isEditing ? (
-                        <input
-                            name="portfolioLink"
-                            value={formData.portfolioLink}
-                            onChange={handleChange}
-                            className="border border-gray-300 rounded px-3 py-2 text-sm mt-1 w-full"
-                        />
-                    ) : user.portfolioLink ? (
-                        <a
-                            href={user.portfolioLink}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-blue-600 underline font-semibold"
-                        >
-                            View Portfolio
-                        </a>
-                    ) : (
-                        <p className="text-gray-400">Not provided</p>
-                    )}
-                </div>
-            </div>
-
-            {/* Stats */}
-            {userStats && (
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div className="bg-black text-white rounded-xl px-6 py-4">
-                        <p className="text-sm opacity-70">Total Points</p>
-                        <p className="text-2xl font-bold">
-                            {userStats.totalPoints}
-                        </p>
-                    </div>
-
-                    <div className="bg-gray-200 text-gray-900 rounded-xl px-6 py-4">
-                        <p className="text-sm opacity-70">Problems Posted</p>
-                        <p className="text-2xl font-bold">
-                            {userStats.totalProblemsPosted}
-                        </p>
-                    </div>
-
-                    <div className="bg-gray-200 text-gray-900 rounded-xl px-6 py-4">
-                        <p className="text-sm opacity-70">Solutions</p>
-                        <p className="text-2xl font-bold">
-                            {userStats.totalSolutions}
-                        </p>
-                    </div>
-                </div>
-            )}
+      {/* Avatar */}
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-28 h-28 rounded-full overflow-hidden bg-gradient-to-br from-gray-800 to-gray-600 text-white flex items-center justify-center text-3xl font-bold shadow-md ring-4 ring-white">
+          {coverFile ? (
+            <img
+              src={URL.createObjectURL(coverFile)}
+              alt="preview"
+              className="w-full h-full object-cover"
+            />
+          ) : user.coverImage ? (
+            <img
+              src={user.coverImage}
+              alt={user.fullName}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            user.fullName?.charAt(0)
+          )}
         </div>
-    );
+
+        {isEditing && (
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setCoverFile(e.target.files[0])}
+            className="text-xs text-gray-500"
+          />
+        )}
+      </div>
+
+      {/* Info Section */}
+      <div className="flex flex-col gap-4 flex-1">
+
+        {isEditing ? (
+          <input
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleChange}
+            className="border border-gray-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+          />
+        ) : (
+          <h2 className="text-2xl font-semibold text-gray-900">
+            {user.fullName}
+          </h2>
+        )}
+
+        <p className="text-gray-500 text-sm">{user.email}</p>
+
+        {user.createdAt && (
+          <p className="text-sm text-gray-500">
+            Member since{" "}
+            <span className="font-medium text-gray-700">
+              {formatMemberSince(user.createdAt)}
+            </span>
+          </p>
+        )}
+
+        {/* Bio */}
+        <div>
+          <p className="text-xs uppercase tracking-wide text-gray-400 mb-2">
+            About
+          </p>
+
+          {isEditing ? (
+            <textarea
+              name="bio"
+              value={formData.bio}
+              onChange={handleChange}
+              rows={3}
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+            />
+          ) : (
+            <div className="bg-gray-50 border border-gray-100 rounded-xl px-4 py-3">
+              <p className="text-sm text-gray-700 leading-relaxed">
+                {user.bio || "No bio provided."}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Role */}
+        <div>
+          <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded-full font-medium">
+            {user.role}
+          </span>
+        </div>
+
+        {/* Buttons */}
+        <div className="flex gap-3 pt-2">
+          {isEditing ? (
+            <>
+              <button
+                onClick={() => {
+                  setIsEditing(false);
+                  setCoverFile(null);
+                }}
+                className="px-4 py-2 bg-gray-200 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleSave}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition"
+              >
+                Save Changes
+              </button>
+            </>
+          ) : (
+            <Button onClick={() => setIsEditing(true)} />
+          )}
+        </div>
+      </div>
+    </div>
+
+    {/* Info Grid */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <div className="bg-white/70 backdrop-blur-md rounded-xl p-5 border border-gray-100 shadow-sm">
+        <p className="text-sm text-gray-500">Experience</p>
+
+        {isEditing ? (
+          <input
+            type="number"
+            name="experience"
+            value={formData.experience}
+            onChange={handleChange}
+            className="border border-gray-200 rounded-lg px-4 py-2 text-sm mt-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+          />
+        ) : (
+          <p className="text-xl font-semibold text-gray-900 mt-2">
+            {user.experience || 0} years
+          </p>
+        )}
+      </div>
+
+      <div className="bg-white/70 backdrop-blur-md rounded-xl p-5 border border-gray-100 shadow-sm">
+        <p className="text-sm text-gray-500">Portfolio</p>
+
+        {isEditing ? (
+          <input
+            name="portfolioLink"
+            value={formData.portfolioLink}
+            onChange={handleChange}
+            className="border border-gray-200 rounded-lg px-4 py-2 text-sm mt-2 w-full focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+          />
+        ) : user.portfolioLink ? (
+          <a
+            href={user.portfolioLink}
+            target="_blank"
+            rel="noreferrer"
+            className="text-indigo-600 font-medium hover:underline mt-2 inline-block"
+          >
+            View Portfolio
+          </a>
+        ) : (
+          <p className="text-gray-400 mt-2">Not provided</p>
+        )}
+      </div>
+    </div>
+
+    {/* Stats */}
+    {userStats && (
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm px-6 py-5">
+          <p className="text-sm text-gray-500">Total Points</p>
+          <p className="text-2xl font-bold text-gray-900 mt-2">
+            {userStats.totalPoints}
+          </p>
+        </div>
+
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm px-6 py-5">
+          <p className="text-sm text-gray-500">Problems Posted</p>
+          <p className="text-2xl font-bold text-gray-900 mt-2">
+            {userStats.totalProblemsPosted}
+          </p>
+        </div>
+
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm px-6 py-5">
+          <p className="text-sm text-gray-500">Solutions</p>
+          <p className="text-2xl font-bold text-gray-900 mt-2">
+            {userStats.totalSolutions}
+          </p>
+        </div>
+
+      </div>
+    )}
+  </div>
+);
+
 };
 
 export default MyProfile;

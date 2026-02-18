@@ -98,193 +98,164 @@ const Overview = () => {
         ? solutionsOverTime.map(item => ({ value: item.count }))
         : getFakeData(totalPoints);
 
-    return (
-        <div className='flex flex-col gap-5'>
-            <div className='p-1 flex flex-col gap-2'>
-                <h1 className='text-2xl font-bold'>OVERVIEW</h1>
-                <p className='text-stone-600'>This is the overview section of your dashboard.</p>
-            </div>
+return (
+  <div className="flex flex-col gap-8 bg-gradient-to-br from-gray-50 to-gray-100 p-4">
 
-            <div className="flex flex-col lg:flex-row w-full justify-center items-stretch gap-4 lg:p-4">
-                <div className='bg-white rounded-xl lg:w-1/3 h-32 py-3 px-4 flex justify-center items-center border-2 border-gray-300'>
-                    <div className='w-1/2 h-full flex flex-col justify-between'>
-                        <h3 className='font-bold text-sm text-[#848484]'>Total Problems</h3>
-                        <p className='text-4xl font-bold py-2 pl-2'>{totalProblems || 0}</p>
-                        <p className='text-sm font-bold text-[#848484]'>Past 30 Days</p>
-                    </div>
+    {/* HEADER */}
+    <div className="bg-white/70 backdrop-blur-md border border-gray-100 rounded-2xl shadow-sm px-6 py-6">
+      <h1 className="text-3xl font-semibold text-gray-900 tracking-tight">
+        Overview
+      </h1>
+      <p className="text-gray-500 text-sm mt-1">
+        Track your activity and performance insights.
+      </p>
+    </div>
 
-                    <div className='w-1/2 h-full'>
-                        <MiniLineChart
-                            data={problemsChartData}
-                            stroke="#3b82f6"
-                        />
-                    </div>
-                </div>
+    {/* STAT CARDS */}
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-
-                <div className='bg-white rounded-xl lg:w-1/3 h-32 py-3 px-4 flex justify-center items-center border-2 border-gray-300'>
-                    <div className='w-1/2 h-full flex flex-col justify-between'>
-                        <h3 className='font-bold text-sm text-[#848484]'>Solutions Provided</h3>
-                        <p className='text-4xl font-bold py-2 pl-2'>{totalSolutions || 0}</p>
-                        <p className='text-sm font-bold text-[#848484]'>Past 30 Days</p>
-                    </div>
-
-                    <div className='w-1/2 h-full'>
-                        <MiniLineChart
-                            data={solutionsProvidedChartData}
-                            stroke="#10b981"
-                        />
-                    </div>
-                </div>
-
-
-                <div className='bg-white rounded-xl lg:w-1/3 h-32 py-3 px-4 flex justify-center items-center border-2 border-gray-300'>
-                    <div className='w-1/2 h-full flex flex-col justify-between'>
-                        <h3 className='font-bold text-sm text-[#848484]'>Total Points Earned</h3>
-                        <p className='text-4xl font-bold py-2 pl-2'>{totalPoints || 0}</p>
-                        <p className='text-sm font-bold text-[#848484]'>Life Time</p>
-                    </div>
-
-                    <div className='w-1/2 h-full'>
-                        <MiniLineChart
-                            data={totalPointsChartData}
-                            stroke="#f59e0b"
-                        />
-                    </div>
-                </div>
-            </div>
-
-
-            {/* CHART AREA */}
-            <div className='flex flex-col lg:p-4 gap-3'>
-                <h1 className='text-xl font-bold'>Statics</h1>
-                <div className='flex gap-4 flex-col lg:flex lg:flex-row'>
-                    <div className="lg:w-1/4 h-[300px] bg-white border-2 border-gray-300 rounded-2xl p-4 flex flex-col">
-                        <h2 className="text-sm font-semibold text-gray-700">
-                            Problem Status
-                        </h2>
-
-                        <div className="mt-2">
-                            <ReusablePieChart
-                                data={chartData}
-                                colors={{
-                                    open: "#f59e0b",
-                                    solved: "#10b981",
-                                    closed: "#ef4444",
-                                }}
-                            />
-                        </div>
-                    </div>
-
-
-
-
-                    <div className="flex flex-col lg:w-3/4 h-[300px] bg-white border-2 border-gray-300 rounded-2xl p-4">
-                        <h2 className="text-sm font-semibold text-gray-700">
-                            Solution History
-                        </h2>
-
-                        <div className="flex-1 mt-8">
-                            <ReusableLineChart
-                                data={weeklyLineData}
-                                stroke="#10b981"
-                            />
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            {/* RECENT POSTS AND ACTIVITY */}
-            <div className='flex flex-col lg:p-4 gap-3'>
-                <div className='flex flex-col w-full rounded-xl sm:rounded-2xl border-2 border-gray-300 bg-white'>
-                    <div className='flex flex-col gap-1 p-3 sm:p-4'>
-                        <h1 className='text-lg sm:text-xl font-bold'>Recent Activities</h1>
-                        <p className='text-xs sm:text-sm text-[#848484]'>View key metrics for recent posts</p>
-                    </div>
-
-                    <div className='flex flex-col gap-4'>
-                        <div>
-                            <div className='h-10 border-y-2 border-gray-300 flex items-center px-3 bg-[#f9fbfc]'>
-                                <h2 className="text-xs sm:text-sm font-bold text-[#666]">Posted Problems</h2>
-                            </div>
-
-                            <div className="flex flex-col">
-                                {latestProblems.length === 0 ? (
-                                    <div className="flex flex-col items-center justify-center p-6 sm:p-8 text-gray-400">
-                                        <p className="text-base sm:text-lg font-semibold">No problems posted yet</p>
-                                        <p className="text-xs sm:text-sm mt-2">Start by posting your first problem!</p>
-                                    </div>
-                                ) : (
-                                    latestProblems.map((item, index) => (
-                                        <div
-                                            key={index}
-                                            className="flex gap-2 sm:gap-3 p-2 sm:p-3 items-start border-t-2 border-gray-200"
-                                        >
-                                            {/* Content */}
-                                            <div className="flex flex-col gap-1 lg:gap-2 flex-1 min-w-0">
-                                                <div className='flex items-center gap-2 sm:gap-3'>
-                                                    <p className="text-xs sm:text-sm font-bold text-gray-500 shrink-0">
-                                                        {index + 1}.
-                                                    </p>
-                                                    <h3 className="text-sm sm:text-md font-semibold text-gray-800 line-clamp-2">
-                                                        {item.title}
-                                                    </h3>
-                                                </div>
-
-                                                <h4 className="text-xs sm:text-sm text-gray-800 line-clamp-2 sm:line-clamp-3 ml-5 sm:ml-6">
-                                                    {item.description}
-                                                </h4>
-                                            </div>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
-                        </div>
-
-                        <div>
-                            <div className='h-10 border-y-2 border-gray-300 flex items-center px-3 bg-[#f9fbfc]'>
-                                <h2 className="text-xs sm:text-sm font-bold text-[#666]">Posted Solutions</h2>
-                            </div>
-
-                            <div className="flex flex-col">
-                                {latestSolutions.length === 0 ? (
-                                    <div className="flex flex-col items-center justify-center p-6 sm:p-8 text-gray-400">
-                                        <p className="text-base sm:text-lg font-semibold">No solutions posted yet</p>
-                                        <p className="text-xs sm:text-sm mt-2">Be the first to help solve a problem!</p>
-                                    </div>
-                                ) : (
-                                    latestSolutions.map((item, index) => (
-                                        <div
-                                            key={index}
-                                            className="flex gap-2 sm:gap-3 p-2 sm:p-3 items-start border-t-2 border-gray-200"
-                                        >
-                                            {/* Content */}
-                                            <div className="flex flex-col gap-1 lg:gap-2 flex-1 min-w-0">
-                                                <div className='flex items-center gap-2 sm:gap-3'>
-                                                    <p className="text-xs sm:text-sm font-bold text-gray-500 shrink-0">
-                                                        {index + 1}.
-                                                    </p>
-                                                    <h3 className="text-sm sm:text-md font-semibold text-gray-800 line-clamp-2">
-                                                        {item.problemId.title}
-                                                    </h3>
-                                                </div>
-
-                                                <h4 className="text-xs sm:text-sm text-gray-800 line-clamp-2 sm:line-clamp-3 ml-5 sm:ml-6">
-                                                    {item.answer}
-                                                </h4>
-                                            </div>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+      {/* CARD 1 */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center justify-between">
+        <div className="flex flex-col gap-1">
+          <h3 className="text-sm text-gray-500">Total Problems</h3>
+          <p className="text-3xl font-bold text-gray-900">
+            {totalProblems || 0}
+          </p>
+          <span className="text-xs text-gray-400">Past 30 Days</span>
         </div>
-    )
+
+        <div className="w-32 h-20">
+          <MiniLineChart data={problemsChartData} stroke="#3b82f6" />
+        </div>
+      </div>
+
+      {/* CARD 2 */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center justify-between">
+        <div className="flex flex-col gap-1">
+          <h3 className="text-sm text-gray-500">Solutions Provided</h3>
+          <p className="text-3xl font-bold text-gray-900">
+            {totalSolutions || 0}
+          </p>
+          <span className="text-xs text-gray-400">Past 30 Days</span>
+        </div>
+
+        <div className="w-32 h-20">
+          <MiniLineChart data={solutionsProvidedChartData} stroke="#10b981" />
+        </div>
+      </div>
+
+      {/* CARD 3 */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center justify-between">
+        <div className="flex flex-col gap-1">
+          <h3 className="text-sm text-gray-500">Total Points</h3>
+          <p className="text-3xl font-bold text-gray-900">
+            {totalPoints || 0}
+          </p>
+          <span className="text-xs text-gray-400">Lifetime</span>
+        </div>
+
+        <div className="w-32 h-20">
+          <MiniLineChart data={totalPointsChartData} stroke="#f59e0b" />
+        </div>
+      </div>
+    </div>
+
+    {/* CHART SECTION */}
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+        <h2 className="text-sm font-semibold text-gray-700 mb-4">
+          Problem Status
+        </h2>
+        <ReusablePieChart
+          data={chartData}
+          colors={{
+            open: "#f59e0b",
+            solved: "#10b981",
+            closed: "#ef4444",
+          }}
+        />
+      </div>
+
+      <div className="lg:col-span-3 bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+        <h2 className="text-sm font-semibold text-gray-700 mb-6">
+          Solution History
+        </h2>
+        <ReusableLineChart
+          data={weeklyLineData}
+          stroke="#10b981"
+        />
+      </div>
+    </div>
+
+    {/* RECENT ACTIVITY */}
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+
+      <div className="px-6 py-5 border-b border-gray-100">
+        <h2 className="text-xl font-semibold text-gray-900">
+          Recent Activity
+        </h2>
+        <p className="text-sm text-gray-500 mt-1">
+          Your latest posts and contributions
+        </p>
+      </div>
+
+      <div className="divide-y divide-gray-100">
+
+        {/* Problems */}
+        <div className="px-6 py-5">
+          <h3 className="text-sm font-semibold text-gray-700 mb-4">
+            Posted Problems
+          </h3>
+
+          {latestProblems.length === 0 ? (
+            <p className="text-sm text-gray-400">
+              No problems posted yet.
+            </p>
+          ) : (
+            latestProblems.map((item, index) => (
+              <div key={index} className="mb-4">
+                <p className="text-sm font-semibold text-gray-900">
+                  {index + 1}. {item.title}
+                </p>
+                <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                  {item.description}
+                </p>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Solutions */}
+        <div className="px-6 py-5">
+          <h3 className="text-sm font-semibold text-gray-700 mb-4">
+            Posted Solutions
+          </h3>
+
+          {latestSolutions.length === 0 ? (
+            <p className="text-sm text-gray-400">
+              No solutions posted yet.
+            </p>
+          ) : (
+            latestSolutions.map((item, index) => (
+              <div key={index} className="mb-4">
+                <p className="text-sm font-semibold text-gray-900">
+                  {index + 1}. {item.problemId.title}
+                </p>
+                <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                  {item.answer}
+                </p>
+              </div>
+            ))
+          )}
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+);
+
 }
 
 export default Overview
