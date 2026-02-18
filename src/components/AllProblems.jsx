@@ -11,7 +11,7 @@ const AllProblems = () => {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
     const { selectedCategory, setSelectedCategory } = useOutletContext();
 
     const LIMIT = 10;
@@ -46,66 +46,61 @@ const AllProblems = () => {
         selectedCategory === "all"
             ? problems
             : problems.filter(
-                  (p) =>
-                      p.category?.toLowerCase() ===
-                      selectedCategory.toLowerCase()
-              );
+                (p) =>
+                    p.category?.toLowerCase() ===
+                    selectedCategory.toLowerCase()
+            );
 
     return (
-        <div className="flex flex-col h-full p-6 gap-6 bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="flex flex-col h-full p-4 gap-6 bg-gradient-to-br from-gray-50 to-gray-100">
 
-{/* ================= ENHANCED HEADER ================= */}
-<div className="relative overflow-hidden rounded-2xl bg-white border border-gray-200 shadow-sm p-6 md:p-8">
+            <div className="relative overflow-hidden rounded-xl bg-white border border-gray-200 shadow-sm px-4 py-3 md:px-5 md:py-4">
 
-    {/* Background Accent */}
-    <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 rounded-full blur-2xl pointer-events-none" />
+                {/* Background Accent */}
+                <div className="absolute top-0 right-0 w-24 h-12 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 rounded-full blur-xl pointer-events-none" />
 
-    <div className="relative flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div className="relative flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
 
-        {/* Left Side */}
-        <div>
-<h1 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900">
-    Community{" "}
-    <span className="bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent">
-        Problems
-    </span>
-</h1>
+                    {/* Left Side */}
+                    <div className="space-y-1">
+                        <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-gray-900">
+                            Community{" "}
+                            <span className="bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent">
+                                Problems
+                            </span>
+                        </h1>
 
+                        <div className="flex items-center gap-3 text-xs md:text-sm text-gray-600">
+                            <div className="flex items-center gap-1.5">
+                                <span className="w-2 h-2 bg-green-500 rounded-full" />
+                                <span>{filteredProblems.length} visible</span>
+                            </div>
 
+                            {selectedCategory !== "all" && (
+                                <span className="px-2 py-0.5 bg-gray-100 rounded-full text-xs font-medium capitalize">
+                                    {selectedCategory}
+                                </span>
+                            )}
+                        </div>
+                    </div>
 
-            <p className="text-gray-500 mt-2 text-sm md:text-base">
-                Explore, discuss, and solve real-world questions from the community.
-            </p>
+                    {/* Right Side CTA */}
+                    <div className="flex items-center w-full md:w-auto justify-end">
+                        <StarButton
+                            onClick={() => navigate("/dashboard/create")}
+                            starcolor="rgb(79,70,229)"
+                        />
+                    </div>
 
-            {/* Small Stats Row */}
-            <div className="flex items-center gap-4 mt-4 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 bg-green-500 rounded-full" />
-                    <span>{filteredProblems.length} visible</span>
                 </div>
-
-                {selectedCategory !== "all" && (
-                    <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium capitalize">
-                        {selectedCategory}
-                    </span>
-                )}
             </div>
-        </div>
 
-        {/* Right Side CTA */}
-        <div className="flex items-center gap-4">
-            <StarButton
-                onClick={() => navigate("/dashboard/create")}
-                starcolor="rgb(79,70,229)"
-            />
-        </div>
 
-    </div>
-</div>
 
 
             {/* Main Container */}
-            <div className="flex-1 bg-white/70 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-200 flex flex-col overflow-hidden">
+            <div className="flex-1 bg-white rounded-2xl shadow-sm border border-gray-200 flex flex-col overflow-hidden">
+
 
                 {/* Top Bar */}
                 <div className="px-6 py-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b bg-white/60 backdrop-blur">
@@ -135,10 +130,9 @@ const AllProblems = () => {
                             disabled={page === 1}
                             onClick={() => setPage((p) => p - 1)}
                             className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200
-                                ${
-                                    page === 1
-                                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                                        : "bg-gray-100 hover:bg-gray-200 hover:scale-105"
+                                ${page === 1
+                                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                    : "bg-gray-100 hover:bg-gray-200 hover:scale-105"
                                 }`}
                         >
                             Prev
@@ -152,10 +146,9 @@ const AllProblems = () => {
                             disabled={page === totalPages}
                             onClick={() => setPage((p) => p + 1)}
                             className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200
-                                ${
-                                    page === totalPages
-                                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                                        : "bg-gray-100 hover:bg-gray-200 hover:scale-105"
+                                ${page === totalPages
+                                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                    : "bg-gray-100 hover:bg-gray-200 hover:scale-105"
                                 }`}
                         >
                             Next
@@ -219,14 +212,13 @@ const AllProblems = () => {
                                         )}
                                     </div>
 
-                                  
+
                                     <div className="mt-3 flex items-center gap-2 p-2">
                                         <span
-                                            className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                                                problem.status === "solved"
-                                                    ? "bg-green-100 text-green-700"
-                                                    : "bg-orange-100 text-orange-600"
-                                            }`}
+                                            className={`px-2 py-0.5 rounded-full text-xs font-semibold ${problem.status === "solved"
+                                                ? "bg-green-100 text-green-700"
+                                                : "bg-orange-100 text-orange-600"
+                                                }`}
                                         >
                                             {problem.status.toUpperCase()}
                                         </span>
