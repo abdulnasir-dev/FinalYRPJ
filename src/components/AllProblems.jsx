@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
-// import { FaFilter } from "react-icons/fa6";
 import { fetchAllProblems } from "../api/problems.api";
-import { useNavigate } from "react-router-dom";
-
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { LoaderOne } from "./ui/loader";
 import ViewButton from "./ui/ViewButton";
 import StarButton from "./ui/StarButton";
@@ -13,14 +10,11 @@ const AllProblems = () => {
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [avatar, setAvatar] = useState(null)
-    const navigate = useNavigate()
 
+    const navigate = useNavigate(); 
     const { selectedCategory, setSelectedCategory } = useOutletContext();
 
-
     const LIMIT = 10;
-
 
     useEffect(() => {
         const fetchProblems = async () => {
@@ -28,9 +22,8 @@ const AllProblems = () => {
                 setLoading(true);
                 const res = await fetchAllProblems(page, LIMIT);
                 setProblems(res.data.problems || []);
-                // console.log(res.data)
-                // Calculate totalPages from total and limit
-                const calculatedTotalPages = Math.ceil(res.data.total / res.data.limit) || 1;
+                const calculatedTotalPages =
+                    Math.ceil(res.data.total / res.data.limit) || 1;
                 setTotalPages(calculatedTotalPages);
             } catch (error) {
                 console.error("Failed to fetch problems", error);
@@ -38,7 +31,6 @@ const AllProblems = () => {
                 setLoading(false);
             }
         };
-
         fetchProblems();
     }, [page]);
 
@@ -49,155 +41,176 @@ const AllProblems = () => {
             </div>
         );
     }
+
     const filteredProblems =
         selectedCategory === "all"
             ? problems
             : problems.filter(
-                (p) =>
-                    p.category?.toLowerCase() === selectedCategory.toLowerCase()
-            );
-
+                  (p) =>
+                      p.category?.toLowerCase() ===
+                      selectedCategory.toLowerCase()
+              );
 
     return (
-        <div className="flex flex-col h-full p-4 gap-4 overflow-hidden">
+        <div className="flex flex-col h-full p-6 gap-6 bg-gradient-to-br from-gray-50 to-gray-100">
 
-            {/* Header */}
-            <div className="shrink-0 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div className="shrink-0">
-                    <h1 className="text-xl sm:text-2xl font-bold">ALL PROBLEMS</h1>
-                    <p className="text-sm sm:text-base text-stone-600">
-                        Browse problems raised by the community.
-                    </p>
+{/* ================= ENHANCED HEADER ================= */}
+<div className="relative overflow-hidden rounded-2xl bg-white border border-gray-200 shadow-sm p-6 md:p-8">
+
+    {/* Background Accent */}
+    <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 rounded-full blur-2xl pointer-events-none" />
+
+    <div className="relative flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+
+        {/* Left Side */}
+        <div>
+<h1 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900">
+    Community{" "}
+    <span className="bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent">
+        Problems
+    </span>
+</h1>
+
+
+
+            <p className="text-gray-500 mt-2 text-sm md:text-base">
+                Explore, discuss, and solve real-world questions from the community.
+            </p>
+
+            {/* Small Stats Row */}
+            <div className="flex items-center gap-4 mt-4 text-sm text-gray-600">
+                <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-green-500 rounded-full" />
+                    <span>{filteredProblems.length} visible</span>
                 </div>
-                <div className="w-full sm:w-auto">
-                    <StarButton
-                        onClick={() => navigate("/dashboard/create")}
-                        starcolor="rgb(34, 197, 94)
-"
-                    />
-                </div>
+
+                {selectedCategory !== "all" && (
+                    <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium capitalize">
+                        {selectedCategory}
+                    </span>
+                )}
             </div>
+        </div>
 
-            {/* Scrollable container */}
-            <div className="flex-1 bg-white rounded-xl border-2 border-gray-300 flex flex-col overflow-hidden">
+        {/* Right Side CTA */}
+        <div className="flex items-center gap-4">
+            <StarButton
+                onClick={() => navigate("/dashboard/create")}
+                starcolor="rgb(79,70,229)"
+            />
+        </div>
 
-                {/* Top bar */}
-                <div className="px-4 py-3 flex justify-between items-center border-b shrink-0">
+    </div>
+</div>
 
-                    {/* Title row */}
-                    <div className="flex justify-between items-center gap-2 flex-wrap md:flex-nowrap">
-                        <div className="flex items-center gap-2 min-w-0">
-                            <h2 className="text-base md:text-lg font-bold truncate">
-                                Problems
-                            </h2>
-                            {selectedCategory !== "all" && (
-                                <button
-                                    onClick={() => setSelectedCategory("all")}
-                                    className="text-sm text-blue-600 hover:underline"
-                                >
-                                    Clear filter
-                                </button>
-                            )}
 
-                            <div className="h-5 w-5 bg-black text-white rounded-full flex justify-center items-center text-xs shrink-0">
-                                {filteredProblems.length}
-                            </div>
+            {/* Main Container */}
+            <div className="flex-1 bg-white/70 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-200 flex flex-col overflow-hidden">
+
+                {/* Top Bar */}
+                <div className="px-6 py-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b bg-white/60 backdrop-blur">
+
+                    <div className="flex items-center gap-3">
+                        <h2 className="text-lg font-semibold text-gray-800">
+                            Problems
+                        </h2>
+
+                        {selectedCategory !== "all" && (
+                            <button
+                                onClick={() => setSelectedCategory("all")}
+                                className="text-sm text-blue-600 hover:text-blue-800 transition"
+                            >
+                                Clear filter
+                            </button>
+                        )}
+
+                        <div className="px-2 py-0.5 bg-black text-white rounded-full text-xs font-medium">
+                            {filteredProblems.length}
                         </div>
-
-                        {/* <FaFilter className="w-5 h-5 cursor-pointer hidden md:block" /> */}
                     </div>
 
-                    {/* Pagination row */}
-                    <div className=" flex justify-center md:justify-end items-center gap-2">
-
+                    {/* Pagination */}
+                    <div className="flex items-center gap-3">
                         <button
                             disabled={page === 1}
                             onClick={() => setPage((p) => p - 1)}
-                            className={`px-3 py-1 text-sm rounded-md border
-                ${page === 1
-                                    ? "text-gray-400 border-gray-300 cursor-not-allowed"
-                                    : "hover:bg-gray-100"
+                            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200
+                                ${
+                                    page === 1
+                                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                        : "bg-gray-100 hover:bg-gray-200 hover:scale-105"
                                 }`}
                         >
                             Prev
                         </button>
 
-                        <span className="text-sm font-medium whitespace-nowrap">
+                        <span className="text-sm font-medium text-gray-600">
                             {page} / {totalPages}
                         </span>
 
                         <button
                             disabled={page === totalPages}
                             onClick={() => setPage((p) => p + 1)}
-                            className={`px-3 py-1 text-sm rounded-md border
-                ${page === totalPages
-                                    ? "text-gray-400 border-gray-300 cursor-not-allowed"
-                                    : "hover:bg-gray-100"
+                            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200
+                                ${
+                                    page === totalPages
+                                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                        : "bg-gray-100 hover:bg-gray-200 hover:scale-105"
                                 }`}
                         >
                             Next
                         </button>
-
-                        {/* <FaFilter className="w-5 h-5 cursor-pointer md:hidden ml-2" /> */}
                     </div>
                 </div>
 
                 {/* Cards */}
-                <div className="flex-1 overflow-y-auto px-4 py-3 space-y-4">
+                <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
 
-                    {loading ? (
-                        <p className="text-sm text-gray-500">Loading...</p>
-                    ) : (
-                        filteredProblems.map((problem) => (
-                            <div
-                                key={problem._id}
-                                onClick={() => navigate(`/problems/${problem._id}`)}
-                                className="bg-white rounded-lg w-full p-4 border-2 border-gray-300 flex flex-col gap-3 cursor-pointer"
-                            >
-
-                                {/* Meta */}
-                                <div className="flex justify-between text-xs md:text-sm text-gray-500">
-                                    <div className="flex items-center gap-2">
-                                        <span className="flex items-center gap-3 font-medium text-gray-700">
-                                            {problem.createdBy?.coverImage ? (
-                                                <img
-                                                    className="h-7 w-7 rounded-full object-cover"
-                                                    src={problem.createdBy.coverImage}
-                                                    alt={problem.createdBy.fullName}
-                                                />
-                                            ) : (
-                                                <div className="h-7 w-7 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold">
-                                                    {problem.createdBy?.fullName?.[0] || "U"}
-                                                </div>
-                                            )}
-
-                                            {problem.createdBy?.fullName ?? "Unknown"}
-                                        </span>
-
-                                        {problem.isPinned && (
-                                            <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded-full text-xs font-semibold">
-                                                PINNED
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    <span>
-                                        {new Date(problem.createdAt).toLocaleDateString("en-US", {
-                                            month: "short",
-                                            day: "numeric",
-                                            year: "numeric",
-                                        })}
+                    {filteredProblems.map((problem) => (
+                        <div
+                            key={problem._id}
+                            onClick={() => navigate(`/problems/${problem._id}`)}
+                            className="group bg-white rounded-2xl p-5 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 cursor-pointer"
+                        >
+                            {/* Meta */}
+                            <div className="flex justify-between items-center text-sm text-gray-500 mb-4">
+                                <div className="flex items-center gap-3">
+                                    {problem.createdBy?.coverImage ? (
+                                        <img
+                                            src={problem.createdBy.coverImage}
+                                            alt={problem.createdBy.fullName}
+                                            className="h-9 w-9 rounded-full object-cover ring-2 ring-gray-200"
+                                        />
+                                    ) : (
+                                        <div className="h-9 w-9 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-600">
+                                            {problem.createdBy?.fullName?.[0] || "U"}
+                                        </div>
+                                    )}
+                                    <span className="font-medium text-gray-700">
+                                        {problem.createdBy?.fullName ?? "Unknown"}
                                     </span>
+
+                                    {problem.isPinned && (
+                                        <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded-full text-xs font-semibold">
+                                            Pinned
+                                        </span>
+                                    )}
                                 </div>
 
-                                {/* Image + content */}
-                                <div className="flex flex-col md:flex-row gap-4">
-                                    <div className="w-full md:w-48 h-32 bg-gray-200 rounded-lg overflow-hidden shrink-0">
+                                <span>
+                                    {new Date(problem.createdAt).toLocaleDateString()}
+                                </span>
+                            </div>
+
+                            {/* Content */}
+                            <div className="flex flex-col md:flex-row gap-6">
+                                <div className="w-full md:w-56 shrink-0">
+                                    <div className="h-36 rounded-xl overflow-hidden bg-gray-100">
                                         {problem.bannerImage ? (
                                             <img
                                                 src={problem.bannerImage.url}
                                                 alt={problem.title}
-                                                className="w-full h-full object-cover"
+                                                className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
@@ -206,37 +219,37 @@ const AllProblems = () => {
                                         )}
                                     </div>
 
-                                    <div className="flex-1 flex flex-col gap-2">
-                                        <h3 className="text-lg font-bold text-gray-800">
-                                            {problem.title}
-                                        </h3>
-                                        <p className="text-sm text-gray-700 line-clamp-3">
-                                            {problem.description}
-                                        </p>
-                                        <p className="text-xs text-gray-500 capitalize">
-                                            Category: {problem.category}
-                                        </p>
+                                  
+                                    <div className="mt-3 flex items-center gap-2 p-2">
+                                        <span
+                                            className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+                                                problem.status === "solved"
+                                                    ? "bg-green-100 text-green-700"
+                                                    : "bg-orange-100 text-orange-600"
+                                            }`}
+                                        >
+                                            {problem.status.toUpperCase()}
+                                        </span>
                                     </div>
                                 </div>
 
-                                {/* Footer */}
-                                <div className="flex justify-between items-center flex-wrap gap-2 text-sm">
-                                    <span
-                                        className={`font-semibold ${problem.status === "solved"
-                                            ? "text-green-600"
-                                            : "text-orange-600"
-                                            }`}
-                                    >
-                                        {problem.status.toUpperCase()}
+                                <div className="flex flex-col flex-1 gap-3">
+                                    <h3 className="text-xl font-semibold text-gray-800 group-hover:text-black transition">
+                                        {problem.title}
+                                    </h3>
+
+                                    <p className="text-sm text-gray-600 line-clamp-3">
+                                        {problem.description}
+                                    </p>
+
+                                    <span className="text-xs text-gray-400 capitalize mt-2">
+                                        {problem.category}
                                     </span>
-
-                                    <ViewButton size="small" onClick={() => navigate(`/problems/${problem._id}`)} text="View " />
                                 </div>
-
                             </div>
-                        ))
-                    )}
 
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>

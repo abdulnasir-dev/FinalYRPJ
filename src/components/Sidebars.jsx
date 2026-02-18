@@ -138,7 +138,7 @@ export default function Sidebars({ open, onClose ,onCategorySelect}) {
         className={`fixed inset-0 z-40 lg:hidden transition-opacity duration-300
         ${open ? "visible opacity-100" : "invisible opacity-0"}`}
       >
-        <div
+        <div 
           onClick={onClose}
           className="absolute inset-0 bg-black/50"
         />
