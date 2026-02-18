@@ -21,6 +21,7 @@ const AllProblems = () => {
             try {
                 setLoading(true);
                 const res = await fetchAllProblems(page, LIMIT);
+                console.log("Fetched problems:", res.data);
                 setProblems(res.data.problems || []);
                 const calculatedTotalPages =
                     Math.ceil(res.data.total / res.data.limit) || 1;
@@ -173,21 +174,22 @@ const AllProblems = () => {
                                             src={problem.createdBy.coverImage}
                                             alt={problem.createdBy.fullName}
                                             className="h-9 w-9 rounded-full object-cover ring-2 ring-gray-200"
+                                            // ERROR HANDLING: If the URL is broken, hide the image and show the fallback
+                                            onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
                                         />
-                                    ) : (
-                                        <div className="h-9 w-9 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-600">
-                                            {problem.createdBy?.fullName?.[0] || "U"}
-                                        </div>
-                                    )}
+                                    ) : null}
+
+                                    {/* Fallback Avatar (Hidden by default if image exists) */}
+                                    <div
+                                        style={{ display: problem.createdBy?.coverImage ? 'none' : 'flex' }}
+                                        className="h-9 w-9 rounded-full bg-gray-200 items-center justify-center font-bold text-gray-600"
+                                    >
+                                        {problem.createdBy?.fullName?.[0] || "U"}
+                                    </div>
+
                                     <span className="font-medium text-gray-700">
                                         {problem.createdBy?.fullName ?? "Unknown"}
                                     </span>
-
-                                    {problem.isPinned && (
-                                        <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded-full text-xs font-semibold">
-                                            Pinned
-                                        </span>
-                                    )}
                                 </div>
 
                                 <span>
@@ -199,11 +201,15 @@ const AllProblems = () => {
                             <div className="flex flex-col md:flex-row gap-6">
                                 <div className="w-full md:w-56 shrink-0">
                                     <div className="h-36 rounded-xl overflow-hidden bg-gray-100">
-                                        {problem.bannerImage ? (
+                                        {problem.bannerImage?.url ? ( // Added Optional Chaining
                                             <img
                                                 src={problem.bannerImage.url}
                                                 alt={problem.title}
+                                                loading="lazy" // Optimization
                                                 className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                                                onError={(e) => {
+                                                    e.target.src = "https://via.placeholder.com/400x200?text=No+Preview"; // Fallback image
+                                                }}
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">

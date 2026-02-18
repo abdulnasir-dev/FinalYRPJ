@@ -61,10 +61,7 @@ const Problem = () => {
 
     return (
         <div className="h-full overflow-y-auto bg-gray-50">
-
-            {/* HERO SECTION */}
-            <div className="relative w-full h-[320px] md:h-[420px] overflow-hidden">
-
+            <div className="relative w-full h-[200px] md:h-[240px] lg:h-[300px] overflow-hidden">
                 {problem.bannerImage ? (
                     <>
                         <img
@@ -78,40 +75,39 @@ const Problem = () => {
                     <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300" />
                 )}
 
-                <div className="absolute bottom-0 left-0 w-full p-6 md:p-12 text-white">
-                    <h1 className="text-3xl md:text-5xl font-bold leading-tight mb-4 drop-shadow-md">
+                <div className="absolute bottom-0 left-0 w-full px-4 py-4 md:px-8 md:py-6 text-white">
+                    <h1 className="text-xl md:text-3xl font-bold leading-tight mb-2 drop-shadow-md">
                         {problem.title}
                     </h1>
 
-                    <div className="flex flex-wrap items-center gap-4 text-sm">
-                        <span className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full">
+                    <div className="flex flex-wrap items-center gap-2 text-xs md:text-sm">
+                        <span className="bg-white/20 px-2 py-0.5 rounded-full">
                             {problem.category}
                         </span>
 
                         <span
-                            className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                                problem.status === "solved"
-                                    ? "bg-green-500/80"
-                                    : "bg-orange-500/80"
-                            }`}
+                            className={`px-2 py-0.5 rounded-full text-xs font-semibold ${problem.status === "solved"
+                                ? "bg-green-500/80"
+                                : "bg-orange-500/80"
+                                }`}
                         >
                             {problem.status.toUpperCase()}
                         </span>
 
                         {problem.expertOnly && (
-                            <span className="bg-purple-500/80 px-3 py-1 rounded-full text-xs">
-                                Expert Only
+                            <span className="bg-purple-500/80 px-2 py-0.5 rounded-full text-xs">
+                                Expert
                             </span>
                         )}
 
                         {problem.isPinned && (
-                            <span className="bg-yellow-500/80 px-3 py-1 rounded-full text-xs">
+                            <span className="bg-yellow-500/80 px-2 py-0.5 rounded-full text-xs">
                                 Pinned
                             </span>
                         )}
                     </div>
 
-                    <div className="mt-4 text-sm text-gray-200">
+                    <div className="mt-2 text-xs md:text-sm text-gray-200">
                         Posted by{" "}
                         <span className="font-semibold">
                             {problem.createdBy.fullName}
@@ -120,9 +116,7 @@ const Problem = () => {
                 </div>
             </div>
 
-            {/* MAIN CONTENT */}
-            <div className="max-w-5xl mx-auto px-4 md:px-8 py-10 flex flex-col gap-8">
-
+            <div className="w-full px-4 md:px-6 lg:px-6 xl:px-6 py-4 flex flex-col gap-5">
                 <div className="flex justify-between items-center flex-wrap gap-3 text-sm text-gray-500">
                     <div className="flex items-center gap-6">
                         <span>
@@ -149,22 +143,21 @@ const Problem = () => {
                         )}
                 </div>
 
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8">
-                    <h2 className="text-lg font-semibold text-gray-800 mb-4">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+                    <h2 className="text-lg font-semibold text-gray-800 mb-3">
                         Description
                     </h2>
-
                     <p className="text-gray-700 leading-relaxed whitespace-pre-line">
                         {problem.description}
                     </p>
                 </div>
 
                 {problem.tags?.length > 0 && (
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap gap-2">
                         {problem.tags.map((tag, idx) => (
                             <span
                                 key={idx}
-                                className="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 transition rounded-full text-xs font-medium text-gray-700"
+                                className="px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-700"
                             >
                                 #{tag}
                             </span>
@@ -172,19 +165,26 @@ const Problem = () => {
                     </div>
                 )}
 
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8">
-                    <Solutions
-                        problemId={problem._id}
-                        problemOwnerId={
-                            problem.createdBy?._id || problem.createdBy
-                        }
-                        currentUserId={currentUserId}
-                        problemStatus={problem.status}
-                        currentUserRole={user?.role}
-                    />
-                </div>
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div className="px-4 md:px-6 py-3 border-b bg-gray-50 rounded-t-xl">
+                        <h2 className="text-sm md:text-base font-semibold text-gray-800">
+                            Solutions
+                        </h2>
+                    </div>
 
-                <div className="h-16" />
+                    <div className="px-4 md:px-6 py-4">
+                        <Solutions
+                            problemId={problem._id}
+                            problemOwnerId={
+                                problem.createdBy?._id ||
+                                problem.createdBy
+                            }
+                            currentUserId={currentUserId}
+                            problemStatus={problem.status}
+                            currentUserRole={user?.role}
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     );

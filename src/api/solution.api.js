@@ -25,4 +25,4 @@ export const createSolution = (problemId, answer) =>
 export const acceptSolution = (solutionId) =>
     API.patch(`/accept/${solutionId}`);
 
-export const reportSolution = (solutionId) => API.post(`${solutionId}/report`)
+export const reportSolution = (solutionId) => API.post(`/${solutionId}/report`)
