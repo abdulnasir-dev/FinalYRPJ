@@ -49,7 +49,8 @@ export default function Navbar({ onMenuClick }) {
     const fetchAvatar = async () => {
       try {
         const res = await userAvatar();
-        setAvatar(res.data.coverImage);
+        setAvatar(res.data);
+        console.log("Avatar URL:", res);
       } catch (error) {
         console.error(error);
       }
@@ -78,6 +79,8 @@ export default function Navbar({ onMenuClick }) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [openProfile]);
+
+  // console.log("Avatar URL in Navbar:", avatar);
 
   return (
     <nav className="w-full h-16 bg-white border-b border-gray-200 flex items-center px-4 sm:px-6 lg:px-8 shadow-sm">
@@ -186,6 +189,11 @@ export default function Navbar({ onMenuClick }) {
           <Bell className="w-5 h-5 text-gray-700" />
         </button>
 
+        <p className="text-base font-semibold text-gray-900">
+          {avatar?.fullName}
+        </p>
+
+
         {/* USER DROPDOWN */}
         <div className="relative" ref={dropdownRef}>
           <button
@@ -195,8 +203,8 @@ export default function Navbar({ onMenuClick }) {
             <div className="w-9 h-9 rounded-full bg-green-100 overflow-hidden flex items-center justify-center">
               {avatar ? (
                 <img
-                  src={avatar}
-                  alt="avatar"
+                  src={avatar.coverImage}
+                  alt="avatarCoverImage"
                   className="w-full h-full object-cover"
                 />
               ) : (
