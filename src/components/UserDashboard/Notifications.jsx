@@ -1,135 +1,168 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaFilter } from "react-icons/fa6";
-import { getNotifications, markNotificationRead } from "../../api/userDashboard";
+import {
+  getNotifications,
+  markNotificationRead,
+} from "../../api/userDashboard";
 import { LoaderOne } from "../ui/loader";
 
-
 const Notifications = () => {
-    const [notifications, setNotifications] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchNotifications = async () => {
-            try {
-                setLoading(true);
-                const res = await getNotifications();
-                console.log(res.data)
-                setNotifications(res.data.notifications);
-            } catch (err) {
-                console.error("Failed to fetch notifications", err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchNotifications();
-    }, []);
-
-    const handleRead = async (notificationId, problemId) => {
-        try {
-            console.log(notificationId)
-            await markNotificationRead(notificationId);
-            setNotifications((prev) =>
-                prev.map((n) =>
-                    n._id === notificationId ? { ...n, isRead: true } : n
-                )
-            );
-            navigate(`/problems/${problemId}`);
-        } catch (err) {
-            console.error("Failed to mark notification as read", err);
-        }
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        setLoading(true);
+        const res = await getNotifications();
+        setNotifications(res.data.notifications);
+      } catch (err) {
+        console.error("Failed to fetch notifications", err);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    if (loading) {
-        return (
-            <div className="flex h-full w-full items-center justify-center">
-                <LoaderOne />
-            </div>
-        );
+    fetchNotifications();
+  }, []);
+
+  const handleRead = async (notificationId, problemId) => {
+    try {
+      await markNotificationRead(notificationId);
+
+      setNotifications((prev) =>
+        prev.map((n) =>
+          n._id === notificationId ? { ...n, isRead: true } : n
+        )
+      );
+
+      if (problemId) {
+        navigate(`/problems/${problemId}`);
+      }
+    } catch (err) {
+      console.error("Failed to mark notification as read", err);
     }
+  };
 
+  if (loading) {
     return (
-        <div className="flex flex-col gap-4 h-full">
-            {/* Header */}
-            <div className="p-1 flex flex-col gap-2">
-                <h1 className="text-2xl font-bold">NOTIFICATIONS</h1>
-                <p className="text-stone-600">
-                    Stay updated on problems related to your expertise.
-                </p>
-            </div>
-
-            <div className="bg-white rounded-xl w-full py-3 px-4 flex flex-col gap-4 border-2 border-gray-300">
-                {/* Top bar */}
-                <div className="flex justify-between items-center">
-                    <div className="flex gap-3 items-center">
-                        <h1 className="text-base md:text-lg font-bold">
-                            All Notifications -
-                        </h1>
-                        <div className="h-5 w-5 bg-black text-white rounded-full flex justify-center items-center text-xs">
-                            {notifications.length}
-                        </div>
-                    </div>
-                    <FaFilter size={20} className="md:w-6 md:h-6" />
-                </div>
-
-                {/* Notifications list */}
-                {notifications.map((notification) => {
-                    const problem = notification.problemId;
-
-                    const isGlobal = !problem;
-
-                    return (
-                        <div
-                        onClick={()=> handleRead(notification._id, problem)}
-                            key={notification._id}
-                            className={`rounded-md w-full py-3 px-3 md:px-4 flex flex-col md:flex-row md:justify-between md:items-center gap-3 border-2 
-        ${notification.isRead
-                                    ? "bg-gray-50 border-gray-200"
-                                    : "bg-white border-blue-400"
-                                }`}
-                        >
-                            {/* Left */}
-                            <div className="flex flex-col gap-2 flex-1">
-                                <h3 className="text-base md:text-lg font-semibold text-gray-800">
-                                    {isGlobal ? "System Notification" : problem.title}
-                                </h3>
-
-                                <p className="text-sm text-gray-700">
-                                    {notification.message}
-                                </p>
-
-                                {!notification.isRead && (
-                                    <span className="w-fit px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
-                                        New
-                                    </span>
-                                )}
-                            </div>
-
-                            {/* Right */}
-                            {!isGlobal && (
-                                <button
-                                    onClick={() => handleRead(notification._id, problem._id)}
-                                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-xs md:text-sm font-semibold"
-                                >
-                                    View Problem
-                                </button>
-                            )}
-                        </div>
-                    );
-                })}
-
-
-
-                {notifications.length === 0 && (
-                    <p className="text-center text-gray-500 py-6">
-                        No notifications found.
-                    </p>
-                )}
-            </div>
-        </div>
+      <div className="flex h-full w-full items-center justify-center">
+        <LoaderOne />
+      </div>
     );
+  }
+
+  return (
+    <div className="flex flex-col gap-8 h-full bg-gradient-to-br from-slate-50 to-white p-6">
+
+      {/* HEADER */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm px-8 py-7">
+        <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-br from-emerald-900 to-teal-400 bg-clip-text text-transparent">
+          Notifications
+        </h1>
+
+        <p className="text-slate-500 text-sm mt-3">
+          Stay updated on activity related to your problems and solutions.
+        </p>
+      </div>
+
+      {/* MAIN CONTAINER */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-md p-8 flex flex-col gap-6">
+
+        {/* TOP BAR */}
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <h2 className="text-lg font-semibold text-slate-800">
+              All Notifications
+            </h2>
+
+            <span className="px-3 py-1 text-xs font-semibold bg-slate-900 text-white rounded-full">
+              {notifications.length}
+            </span>
+          </div>
+
+          <FaFilter size={18} className="text-slate-400" />
+        </div>
+
+        {/* LIST */}
+        <div className="flex flex-col gap-5">
+
+          {notifications.length === 0 && (
+            <div className="text-center py-14 text-slate-400 text-sm">
+              No notifications found.
+            </div>
+          )}
+
+          {notifications.map((notification) => {
+            const problem = notification.problemId;
+            const isGlobal = !problem;
+
+            return (
+              <div
+                key={notification._id}
+                onClick={() =>
+                  handleRead(
+                    notification._id,
+                    problem?._id
+                  )
+                }
+                className={`cursor-pointer p-6 rounded-xl border transition-all duration-200 
+                ${
+                  notification.isRead
+                    ? "bg-slate-50 border-slate-200"
+                    : "bg-white border-emerald-400 shadow-sm hover:shadow-md"
+                }`}
+              >
+
+                <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+
+                  {/* LEFT */}
+                  <div className="flex flex-col gap-2 flex-1">
+
+                    <h3 className="text-base font-semibold text-slate-900 leading-snug">
+                      {isGlobal
+                        ? "System Notification"
+                        : problem.title}
+                    </h3>
+
+                    <p className="text-sm text-slate-600 leading-relaxed">
+                      {notification.message}
+                    </p>
+
+                    {!notification.isRead && (
+                      <span className="w-fit px-3 py-1 text-xs font-semibold uppercase tracking-wide bg-emerald-100 text-emerald-700 rounded-full">
+                        New
+                      </span>
+                    )}
+                  </div>
+
+                  {/* RIGHT */}
+                  {!isGlobal && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRead(
+                          notification._id,
+                          problem._id
+                        );
+                      }}
+                      className="px-5 py-2 text-sm font-semibold bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition"
+                    >
+                      View Problem
+                    </button>
+                  )}
+
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+      </div>
+    </div>
+  );
 };
 
 export default Notifications;

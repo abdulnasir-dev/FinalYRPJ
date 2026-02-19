@@ -103,7 +103,7 @@ return (
 
     {/* HEADER */}
     <div className="bg-white/70 backdrop-blur-md border border-gray-100 rounded-2xl shadow-sm px-6 py-6">
-      <h1 className="text-3xl font-semibold text-gray-900 tracking-tight">
+      <h1 className="text-3xl font-semibold bg-gradient-to-br from-emerald-900 to-teal-400 bg-clip-text text-transparent tracking-tight">
         Overview
       </h1>
       <p className="text-gray-500 text-sm mt-1">
