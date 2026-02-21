@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { LoaderOne } from "../ui/loader";
 import { Check, Briefcase, Globe, Info, Award } from "lucide-react";
+import { toast } from "react-hot-toast";
 import { getMyExpertApplication, submitExpertApplication } from "@/api/expert.api";
 
 const CATEGORY_OPTIONS = [
@@ -12,7 +13,7 @@ const ExpertApply = () => {
     const [formData, setFormData] = useState({
         bio: "",
         experience: "",
-        expertCategories: [], // Backend expects an array, so we store the single choice in an array
+        expertCategories: [], // Backend expects an array
         portfolioLink: "",
     });
 
@@ -20,7 +21,7 @@ const ExpertApply = () => {
     const [loading, setLoading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
 
-    // PERSISTED: Fetching your application status
+    // Fetch application status
     useEffect(() => {
         const fetchApplication = async () => {
             try {
@@ -43,27 +44,42 @@ const ExpertApply = () => {
         }));
     };
 
-    // UPDATED: Single Selection Logic
     const handleSingleSelect = (category) => {
         setFormData((prev) => ({
             ...prev,
-            expertCategories: [category], // Wraps the single string in an array for API compatibility
+            expertCategories: [category],
         }));
     };
 
     const handleSubmit = async () => {
+        // Validation
         if (!formData.bio || !formData.experience || !formData.expertCategories.length || !formData.portfolioLink) {
-            alert("All fields are required");
+            toast.error("All fields are required");
             return;
         }
+
+        const payload = {
+            ...formData,
+            experience: Number(formData.experience)
+        };
+
         try {
             setSubmitting(true);
-            const payload = { ...formData, experience: Number(formData.experience) };
-            const res = await submitExpertApplication(payload);
-            setApplication(res.data.application);
-            alert("Application submitted successfully");
+
+            // Integrated Toast Promise
+            await toast.promise(
+                submitExpertApplication (payload),
+                {
+                    loading: "Submitting your application...",
+                    success: (res) => {
+                        setApplication(res.data.application);
+                        return "Application submitted successfully! 🚀";
+                    },
+                    error: (err) => err.response?.data?.message || "Submission failed. Please try again.",
+                }
+            );
         } catch (error) {
-            alert(error.response?.data?.message || "Submission failed");
+            console.error("Submission error:", error);
         } finally {
             setSubmitting(false);
         }
@@ -73,7 +89,6 @@ const ExpertApply = () => {
 
     return (
         <div className="w-full min-h-screen bg-slate-50 p-4 md:p-5">
-            {/* FULL WIDTH WRAPPER */}
             <div className="w-full mx-auto flex flex-col gap-4">
 
                 {/* Header */}
@@ -88,7 +103,7 @@ const ExpertApply = () => {
                     <div className="w-full bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
                         <div className="p-6 md:p-12 space-y-10">
 
-                            {/* Category Selection - Single Choice Grid */}
+                            {/* Category Selection */}
                             <div className="space-y-4">
                                 <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-[0.2em]">
                                     <Award size={14} className="text-emerald-500" /> Primary Expertise Area
@@ -102,8 +117,8 @@ const ExpertApply = () => {
                                                 type="button"
                                                 onClick={() => handleSingleSelect(cat)}
                                                 className={`group relative py-4 px-2 rounded-2xl text-sm font-semibold transition-all duration-300 border-2 flex flex-col items-center justify-center gap-2 ${isSelected
-                                                        ? "bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-100"
-                                                        : "bg-slate-50 border-slate-100 text-slate-600 hover:border-emerald-300 hover:bg-white"
+                                                    ? "bg-emerald-600 border-emerald-600 text-white shadow-lg shadow-emerald-100"
+                                                    : "bg-slate-50 border-slate-100 text-slate-600 hover:border-emerald-300 hover:bg-white"
                                                     }`}
                                             >
                                                 <span className="capitalize">{cat}</span>
@@ -171,7 +186,7 @@ const ExpertApply = () => {
                         </div>
                     </div>
                 ) : (
-                    /* Persistent Application Status View */
+                    /* Status View */
                     <div className="w-full bg-white rounded-3xl p-12 border border-slate-200 text-center flex flex-col items-center gap-6">
                         <div className={`w-20 h-20 rounded-full flex items-center justify-center ${application.status === 'approved' ? 'bg-emerald-100 text-emerald-600' : 'bg-orange-100 text-orange-600'
                             }`}>

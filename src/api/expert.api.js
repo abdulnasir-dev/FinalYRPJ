@@ -20,3 +20,9 @@ export const submitExpertApplication = (data) =>
 
 export const getMyExpertApplication = () =>
     API.get("/my-application");
+
+export const reviewExpertApplication = (applicationId, action) =>
+    API.patch(`/${applicationId}/review`, { action });
+
+export const fetchAllExpertApplications = () =>
+    API.get("/");
