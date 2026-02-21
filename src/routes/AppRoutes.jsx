@@ -29,6 +29,7 @@ import Profile from "@/components/UserDashboard/Profile";
 import MyProfile from "@/components/UserDashboard/MyProfile";
 import EditProblem from "@/components/EditProblem";
 import VerifyOTP from "@/pages/VerifyOTP";
+import ExpertApply from "@/components/UserDashboard/ExpertApply";
 
 const RequireAdmin = ({ children }) => {
   const role = localStorage.getItem("role");
@@ -56,7 +57,7 @@ export default function AppRoutes() {
       {/* ================= USER / PUBLIC LAYOUT ================= */}
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
-        
+
         <Route path="/leaderboard" element={<Leaderboard />} />
 
         {/* Problem detail (PUBLIC but authenticated) */}
@@ -72,8 +73,9 @@ export default function AppRoutes() {
           <Route path="redemption" element={<Redemption />} />
           <Route path="settings" element={<Settings />} />
           <Route path="create" element={<CreateProblem />} />
+          <Route path="apply" element={<ExpertApply />} />
           <Route path="notifications" element={<Notifications />} />
-          
+
 =======
           <Route path="profile/:userId" element={<Profile />} />
           <Route path="my-profile" element={<MyProfile />} />
