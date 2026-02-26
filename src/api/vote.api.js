@@ -6,8 +6,6 @@ const API = axios.create({
     baseURL: "https://impacthub-jqm3.onrender.com/api/v1/votes",
 });
 
-
-
 API.interceptors.request.use((config) => {
     const token = getToken();
     if (token) {
@@ -16,4 +14,5 @@ API.interceptors.request.use((config) => {
     return config;
 });
 
-export const likeDislikeSolution = (solutionId) => API.patch(`/toggle/${solutionId}`)
+export const toggleLikeSolution = (solutionId) =>
+    API.patch(`/toggle/${solutionId}`);

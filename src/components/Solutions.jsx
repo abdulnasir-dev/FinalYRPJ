@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { createSolution, fetchSolutionsForProblem, acceptSolution, reportSolution } from "../api/solution.api";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { ThumbsUp, ThumbsDown } from "lucide-react";
-import { likeDislikeSolution } from "@/api/vote.api";
+import { motion } from "framer-motion";
+import { ThumbsUp } from "lucide-react";
+import { toggleLikeSolution } from "@/api/vote.api";
+
 
 const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus, currentUserRole }) => {
     const navigate = useNavigate();
@@ -13,7 +14,6 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus, cu
     const [answer, setAnswer] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const [acceptingId, setAcceptingId] = useState(null);
-    const [votes, setVotes] = useState("")
 
     useEffect(() => {
         const getSolutions = async () => {
@@ -22,10 +22,8 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus, cu
                 console.log("Fetched solutions:", res.data.solutions);
                 const enriched = (res.data.solutions || []).map(sol => ({
                     ...sol,
-                    liked: false,
-                    disliked: false,
-                    likesCount: sol.likesCount || 0,
-                    dislikesCount: sol.dislikesCount || 0,
+                    liked: sol.currentUserVote === "up",
+                    likesCount: sol.votes?.upvotes || 0,
                 }));
                 setSolutions(enriched);
             } catch (err) {
@@ -56,15 +54,27 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus, cu
         }
     };
 
-    const toggleLikeHandler = async (solutionId) => {
+    const toggleLike = async (solutionId) => {
         try {
-            const res = await likeDislikeSolution(solutionId)
-            setVotes(res.data)
-            console.log(res.data)
+            const res = await toggleLikeSolution(solutionId, "up");
+            const { likesCount, currentUserVote } = res.data;
+
+            setSolutions((prev) =>
+                prev.map((sol) =>
+                    sol._id === solutionId
+                        ? {
+                            ...sol,
+                            likesCount,
+                            liked: currentUserVote === "up",
+                        }
+                        : sol
+                )
+            );
         } catch (error) {
-            console.error(error)
+            console.error(error);
+            toast.error("Failed to register vote");
         }
-    }
+    };
 
     const handleSubmit = async () => {
         const trimmed = answer.trim();
@@ -86,9 +96,7 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus, cu
             const newSolution = {
                 ...res.data.solution,
                 liked: false,
-                disliked: false,
                 likesCount: res.data.solution.likesCount || 0,
-                dislikesCount: res.data.solution.dislikesCount || 0,
             };
 
             setSolutions(prev => [newSolution, ...prev]);
@@ -194,14 +202,12 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus, cu
                                                     alt={solution.answeredBy.fullName}
                                                     className="w-full h-full object-cover"
                                                     onError={(e) => {
-                                                        // Fallback if image fails to load
                                                         e.target.style.display = 'none';
                                                         e.target.nextSibling.style.display = 'flex';
                                                     }}
                                                 />
                                             ) : null}
 
-                                            {/* This div acts as the fallback (Initial letter) if coverImage is null or fails */}
                                             <div
                                                 style={{ display: solution.answeredBy?.coverImage ? 'none' : 'flex' }}
                                                 className="w-full h-full bg-gradient-to-br from-indigo-500 to-purple-500 text-white items-center justify-center font-semibold"
@@ -267,15 +273,12 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus, cu
 
                                 <div className="mt-6 flex items-center gap-8">
                                     <button
-                                        onClick={() => toggleLikeHandler(solution._id)}
+                                        onClick={() => toggleLike(solution._id)}
                                         className="flex items-center gap-2 group transition"
                                     >
                                         <motion.div
-                                            animate={
-                                                solution.liked
-                                                    ? { scale: [1, 1.3, 1] }
-                                                    : { scale: 1 }
-                                            }
+                                            key={solution.liked ? "liked" : "not-liked"}
+                                            animate={{ scale: [1, 1.3, 1] }}
                                             transition={{ duration: 0.25 }}
                                         >
                                             <ThumbsUp
@@ -289,32 +292,6 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus, cu
                                         </motion.div>
                                         <span className="text-sm font-semibold text-gray-800">
                                             {solution.likesCount}
-                                        </span>
-                                    </button>
-
-                                    <button
-                                        onClick={() => toggleDislike(solution._id)}
-                                        className="flex items-center gap-2 group transition"
-                                    >
-                                        <motion.div
-                                            animate={
-                                                solution.disliked
-                                                    ? { scale: [1, 1.3, 1] }
-                                                    : { scale: 1 }
-                                            }
-                                            transition={{ duration: 0.25 }}
-                                        >
-                                            <ThumbsDown
-                                                size={20}
-                                                strokeWidth={2.5}
-                                                className={`transition-colors ${solution.disliked
-                                                    ? "fill-black text-black"
-                                                    : "text-gray-600 group-hover:text-black"
-                                                    }`}
-                                            />
-                                        </motion.div>
-                                        <span className="text-sm font-semibold text-gray-800">
-                                            {solution.dislikesCount}
                                         </span>
                                     </button>
                                 </div>
