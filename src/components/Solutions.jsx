@@ -94,7 +94,11 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus, cu
             setSolutions(prev => [newSolution, ...prev]);
             setAnswer("");
         } catch (err) {
-            toast.error("Failed to post solution");
+            const message =
+                err?.response?.data?.message ||
+                "Failed to post solution";
+
+            toast.error(message);
         } finally {
             setSubmitting(false);
         }
@@ -268,7 +272,7 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus, cu
                                     >
                                         <motion.div
                                             animate={
-                                                  solution.liked
+                                                solution.liked
                                                     ? { scale: [1, 1.3, 1] }
                                                     : { scale: 1 }
                                             }
