@@ -294,6 +294,16 @@ const Solutions = ({ problemId, problemOwnerId, currentUserId, problemStatus, cu
                                             {solution.likesCount}
                                         </span>
                                     </button>
+
+                                    {/* Chat button — visible on accepted solutions for the problem owner or solution provider */}
+                                    {solution.isAccepted && (isProblemOwner || isOwnSolution) && (
+                                        <button
+                                            onClick={() => navigate(`/chat/${problemId}/${solution._id}`)}
+                                            className="flex items-center gap-1.5 px-4 py-1.5 bg-emerald-600 text-white text-sm font-semibold rounded-xl hover:bg-emerald-700 transition"
+                                        >
+                                            💬 Chat
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         );

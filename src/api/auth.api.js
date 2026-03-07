@@ -3,7 +3,7 @@ import axios from "axios";
 const getToken = () => localStorage.getItem("accessToken")
 
 const API = axios.create({
-    baseURL: "https://impacthub-jqm3.onrender.com/api/v1", 
+    baseURL: "https://impacthub-jqm3.onrender.com/api/v1",
 });
 
 API.interceptors.request.use((config) => {
@@ -21,7 +21,7 @@ export const registerUser = (data) => {
     return API.post("/auth/register", data);
 };
 
-export const getLeaderboard = (range = "all") => 
-    API.get("/reputations/leaderboards", { params: { range } }); 
+export const getLeaderboard = (range = "all") =>
+    API.get("/reputations/leaderboards", { params: { range } });
 
 export const verifyOTP = (data) => API.post("/auth/verify-otp", data)

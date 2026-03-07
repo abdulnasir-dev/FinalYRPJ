@@ -30,6 +30,8 @@ import MyProfile from "@/components/UserDashboard/MyProfile";
 import EditProblem from "@/components/EditProblem";
 import VerifyOTP from "@/pages/VerifyOTP";
 import ExpertApply from "@/components/UserDashboard/ExpertApply";
+import ChatPage from "@/components/chat/ChatPage";
+import ChatSidebar from "@/components/chat/ChatSidebar";
 
 const RequireAdmin = ({ children }) => {
   const role = localStorage.getItem("role");
@@ -64,6 +66,7 @@ export default function AppRoutes() {
 =======
         <Route path="/problems/:problemId" element={<Problem />} />
         <Route path="/problems/:problemId/edit" element={<EditProblem />} />
+        <Route path="/chat/:problemId/:solutionId" element={<ChatPage />} />
 
         <Route path="/dashboard" element={<UserDashboard />}>
           <Route index element={<Overview />} />
@@ -75,6 +78,7 @@ export default function AppRoutes() {
           <Route path="create" element={<CreateProblem />} />
           <Route path="apply" element={<ExpertApply />} />
           <Route path="notifications" element={<Notifications />} />
+          <Route path="chat" element={<ChatSidebar />} />
 
 =======
           <Route path="profile/:userId" element={<Profile />} />

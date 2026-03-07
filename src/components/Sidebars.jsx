@@ -10,6 +10,8 @@ import { PiPottedPlantLight } from "react-icons/pi";
 import { GiFarmer } from "react-icons/gi";
 import { TbWorld } from "react-icons/tb";
 
+import { IoChatbubblesOutline } from "react-icons/io5";
+
 const role = localStorage.getItem("role"); // "admin" | "user"
 
 const discover = [
@@ -19,6 +21,7 @@ const discover = [
   ...(role === "admin"
     ? [{ label: "Admin Panel", icon: FiShield, path: "/admin" }]
     : []),
+  { label: "Chats", icon: IoChatbubblesOutline, path: "/dashboard/chat" },
 ];
 
 
