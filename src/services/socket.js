@@ -9,12 +9,12 @@ import { io } from "socket.io-client";
  *   the latest token is always sent.
  */
 
-// Prefer an explicit Socket URL in production, but fall back gracefully
-// to the API base URL or localhost for local development.
+// Prefer an explicit Socket URL, then the API base, then the known
+// production backend, and finally localhost for local development.
 const SOCKET_URL =
   import.meta.env.VITE_SOCKET_URL ||
   import.meta.env.VITE_API_BASE_URL ||
-  "http://localhost:8080";
+  "https://impacthub-jqm3.onrender.com";
 
 let socket = null;
 
