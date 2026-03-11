@@ -11,11 +11,13 @@ import { fetchMessages } from "@/api/conversation.api";
  * 4. Listens for `new-message` to append incoming messages.
  * 5. Exposes `sendMessage(content)` with optimistic UI update.
  * 6. Returns `otherUser` (name + avatar of the other participant).
+ * 7. Handles errors and timeouts so the UI never hangs forever.
  */
 export default function useChat({ socket, problemId, solutionId, isConnected }) {
   const [conversationId, setConversationId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [otherUser, setOtherUser] = useState(null);
 
   // Decode current user id from JWT
@@ -34,7 +36,12 @@ export default function useChat({ socket, problemId, solutionId, isConnected }) 
   useEffect(() => {
     if (!socket || !isConnected) return;
 
+    let timeoutId = null;
+
     const onConversationStarted = async (conversation) => {
+      // Clear timeout since we got a response
+      if (timeoutId) clearTimeout(timeoutId);
+
       setConversationId(conversation._id);
 
       // Load historical messages + participant info via REST
@@ -51,8 +58,16 @@ export default function useChat({ socket, problemId, solutionId, isConnected }) 
         }
       } catch (err) {
         console.error("Failed to load message history", err);
+        setError("Failed to load messages. Please try again.");
       }
 
+      setLoading(false);
+    };
+
+    const onConversationError = ({ message }) => {
+      if (timeoutId) clearTimeout(timeoutId);
+      console.error("conversation-error:", message);
+      setError(message || "Could not start conversation.");
       setLoading(false);
     };
 
@@ -67,11 +82,23 @@ export default function useChat({ socket, problemId, solutionId, isConnected }) 
     };
 
     socket.on("conversation-started", onConversationStarted);
+    socket.on("conversation-error", onConversationError);
     socket.on("new-message", onNewMessage);
     socket.emit("start-conversation", { problemId, solutionId });
 
+    // Timeout: if no response within 15s, stop loading and show an error.
+    // This handles Render cold-starts or silent backend failures.
+    timeoutId = setTimeout(() => {
+      if (loading) {
+        setError("Connection timed out. The server may be waking up — please try again in a moment.");
+        setLoading(false);
+      }
+    }, 15000);
+
     return () => {
+      if (timeoutId) clearTimeout(timeoutId);
       socket.off("conversation-started", onConversationStarted);
+      socket.off("conversation-error", onConversationError);
       socket.off("new-message", onNewMessage);
     };
   }, [socket, isConnected, problemId, solutionId]);
@@ -95,5 +122,6 @@ export default function useChat({ socket, problemId, solutionId, isConnected }) 
     [socket, conversationId, currentUserId]
   );
 
-  return { conversationId, messages, loading, sendMessage, currentUserId, otherUser };
+  return { conversationId, messages, loading, error, sendMessage, currentUserId, otherUser };
 }
+

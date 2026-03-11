@@ -17,8 +17,8 @@ import ChatInput from "./ChatInput";
  */
 export default function ChatPage() {
   const { problemId, solutionId } = useParams();
-  const { socket, isConnected } = useSocket();
-  const { conversationId, messages, loading, sendMessage, currentUserId, otherUser } =
+  const { socket, isConnected, connectionError } = useSocket();
+  const { conversationId, messages, loading, error, sendMessage, currentUserId, otherUser } =
     useChat({ socket, problemId, solutionId, isConnected });
 
   // --- auto-scroll to bottom on new messages ---
@@ -26,6 +26,33 @@ export default function ChatPage() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // --- Error state ---
+  if (error || connectionError) {
+    return (
+      <div className="flex flex-col h-screen bg-gray-100">
+        <ChatHeader isConnected={isConnected} otherUser={null} />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4 px-6 text-center max-w-sm">
+            <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center text-2xl">
+              ⚠️
+            </div>
+            <p className="text-sm text-gray-700 font-medium">
+              {connectionError === "Unauthorized"
+                ? "Your session has expired. Please log in again."
+                : error || connectionError}
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-5 py-2 bg-emerald-500 text-white text-sm font-medium rounded-full hover:bg-emerald-600 transition-colors cursor-pointer"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // --- Loading skeleton ---
   if (loading) {
@@ -85,3 +112,4 @@ export default function ChatPage() {
     </div>
   );
 }
+
