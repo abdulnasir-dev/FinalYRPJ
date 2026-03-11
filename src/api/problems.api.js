@@ -1,34 +1,19 @@
-import axios from "axios";
-
-const getToken = () => localStorage.getItem("accessToken");
-
-const API = axios.create({
-    baseURL: "https://impacthub-jqm3.onrender.com/api/v1/problems",
-});
-
-
-
-API.interceptors.request.use((config) => {
-    const token = getToken();
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-});
+import { API } from "./axiosInstance";
 
 /* ===================== PROBLEMS ===================== */
 
 export const fetchAllProblems = (page = 1, limit = 10) =>
-    API.get(`/?page=${page}&limit=${limit}`);
+  API.get(`/problems?page=${page}&limit=${limit}`);
 
 export const fetchProblemById = (problemId) =>
-    API.get(`/${problemId}`);
+  API.get(`/problems/${problemId}`);
 
 export const createProblem = (formData) =>
-    API.post("/create", formData, {
-        headers: {
-            "Content-Type": "multipart/form-data",
-        },
-    });
+  API.post("/problems/create", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 
-export const editProblem = (problemId, formData) => API.patch(`/${problemId}/edit`, formData);
+export const editProblem = (problemId, formData) =>
+  API.patch(`/problems/${problemId}/edit`, formData);

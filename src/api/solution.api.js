@@ -1,29 +1,15 @@
-import axios from "axios";
-
-const getToken = () => localStorage.getItem("accessToken");
-
-const API = axios.create({
-    baseURL: "https://impacthub-jqm3.onrender.com/api/v1/solutions",
-});
+import { API } from "./axiosInstance";
 
 
-
-API.interceptors.request.use((config) => {
-    const token = getToken();
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-});
-
-
-export const fetchSolutionsForProblem = (problemId) => API.get(`${problemId}`)
+export const fetchSolutionsForProblem = (problemId) =>
+  API.get(`/solutions/${problemId}`);
 
 export const createSolution = (problemId, answer) =>
-    API.post(`/create/${problemId}`, { answer });
+  API.post(`/solutions/create/${problemId}`, { answer });
 
 export const acceptSolution = (solutionId) =>
-    API.patch(`/accept/${solutionId}`);
+  API.patch(`/solutions/accept/${solutionId}`);
 
-export const reportSolution = (solutionId) => API.post(`/${solutionId}/report`)
+export const reportSolution = (solutionId) =>
+  API.post(`/solutions/${solutionId}/report`);
 

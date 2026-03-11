@@ -9,7 +9,12 @@ import { io } from "socket.io-client";
  *   the latest token is always sent.
  */
 
-const SOCKET_URL = import.meta.env.VITE_API_BASE_URL;
+// Prefer an explicit Socket URL in production, but fall back gracefully
+// to the API base URL or localhost for local development.
+const SOCKET_URL =
+  import.meta.env.VITE_SOCKET_URL ||
+  import.meta.env.VITE_API_BASE_URL ||
+  "http://localhost:8080";
 
 let socket = null;
 
@@ -21,7 +26,8 @@ export function getSocket() {
   if (!socket) {
     socket = io(SOCKET_URL, {
       autoConnect: false,
-      transports: ["websocket"],
+      // Allow websocket + polling so it works reliably behind proxies/CDNs
+      transports: ["websocket", "polling"],
       auth: {
         token: localStorage.getItem("accessToken"),
       },
