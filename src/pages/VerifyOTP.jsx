@@ -26,7 +26,7 @@ const VerifyOTP = () => {
         }
 
         try {
-            await toast.promise(
+            const res = await toast.promise(
                 verifyOTP({ email, otp }),
                 {
                     loading: "Verifying OTP...",
@@ -36,7 +36,13 @@ const VerifyOTP = () => {
                 }
             );
 
-            navigate("/signin"); // UNCOMMENTED - Navigate after success
+            const { accessToken } = res.data;
+
+            localStorage.setItem("accessToken", accessToken);
+            localStorage.setItem("userId", res.data.userId);
+
+            navigate("/");
+
         } catch (error) {
             console.error("OTP verification failed:", error);
         }
