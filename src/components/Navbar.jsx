@@ -85,7 +85,7 @@ export default function Navbar({ onMenuClick }) {
   return (
     <nav className="w-full h-16 bg-white border-b border-gray-200 flex items-center px-4 sm:px-6 lg:px-8 shadow-sm">
       {/* LEFT */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-1">
         <button
           onClick={onMenuClick}
           className="lg:hidden p-2 rounded-md hover:bg-gray-100 transition"
@@ -96,11 +96,9 @@ export default function Navbar({ onMenuClick }) {
         {/* Brand */}
         <div
           onClick={() => navigate("/dashboard")}
-          className="flex items-center gap-2 cursor-pointer"
+          className="flex items-center  cursor-pointer"
         >
-          <div className="w-9 h-9 rounded-lg bg-green-600 flex items-center justify-center text-white">
-            <Leaf className="w-5 h-5" />
-          </div>
+          <img src="/favicon.png" alt="ImpactHub" className="w-15 h-15 rounded-lg object-contain" />
           <span className="text-lg font-semibold text-gray-900 hidden sm:block">
             ImpactHub
           </span>
