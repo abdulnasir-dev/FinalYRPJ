@@ -41,3 +41,5 @@ export const toggleSolutionVisibility = (solutionId) =>
 
 export const banningUsers = (userId, banTime, reason) =>
   API.patch(`/admin/ban/${userId}`, { banTime, reason });
+
+export const getAnalyticsData = () => API.get("/admin/analytics");
