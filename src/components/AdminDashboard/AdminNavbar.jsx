@@ -72,7 +72,8 @@ export default function AdminNavbar({ onMenuClick }) {
         const fetchAvatar = async () => {
             try {
                 const res = await userAvatar();
-                setAvatar(res.data.coverImage);
+                setAvatar(res.data);
+                console.log(res.data)
             } catch (error) {
                 console.error(error);
             }
@@ -109,14 +110,12 @@ export default function AdminNavbar({ onMenuClick }) {
                 </button>
 
                 <div
-                    onClick={() => navigate("/admin")}
-                    className="flex items-center gap-2 cursor-pointer"
+                    onClick={() => navigate("/dashboard")}
+                    className="flex items-center  cursor-pointer"
                 >
-                    <div className="w-9 h-9 rounded-lg bg-green-600 flex items-center justify-center text-white">
-                        <Leaf className="w-5 h-5" />
-                    </div>
+                    <img src="/favicon.png" alt="ImpactHub" className="w-15 h-15 rounded-lg object-contain" />
                     <span className="text-lg font-semibold text-gray-900 hidden sm:block">
-                        ImpactHub Admin
+                        ImpactHub
                     </span>
                 </div>
             </div>
@@ -202,6 +201,19 @@ export default function AdminNavbar({ onMenuClick }) {
                     <Bell className="w-5 h-5 text-gray-700" />
                 </button>
 
+
+                <div className="flex flex-col items-center justify-center w-full text-center">
+                    <p className="text-base font-semibold text-gray-900">
+                        {avatar?.fullName}
+                    </p>
+                    <p
+                        className={`text-xs font-medium uppercase text-bold tracking-wide ${avatar?.role === "admin" ? "text-red-500" : "text-green-500"
+                            }`}
+                    >
+                        {avatar?.role}
+                    </p>
+                </div>
+
                 {/* PROFILE */}
                 <div className="relative" ref={dropdownRef}>
                     <button
@@ -211,7 +223,7 @@ export default function AdminNavbar({ onMenuClick }) {
                         <div className="w-9 h-9 rounded-full bg-green-100 overflow-hidden flex items-center justify-center">
                             {avatar ? (
                                 <img
-                                    src={avatar}
+                                    src={avatar.coverImage}
                                     alt="avatar"
                                     className="w-full h-full object-cover"
                                 />

@@ -187,9 +187,17 @@ export default function Navbar({ onMenuClick }) {
           <Bell className="w-5 h-5 text-gray-700" />
         </button>
 
-        <p className="text-base font-semibold text-gray-900">
-          {avatar?.fullName}
-        </p>
+        <div className="flex flex-col items-center justify-center w-full text-center">
+          <p className="text-base font-semibold text-gray-900">
+            {avatar?.fullName}
+          </p>
+          <p
+            className={`text-xs font-medium uppercase text-bold tracking-wide ${avatar?.role === "admin" ? "text-red-500" : "text-green-500"
+              }`}
+          >
+            {avatar?.role}
+          </p>
+        </div>
 
 
         {/* USER DROPDOWN */}
