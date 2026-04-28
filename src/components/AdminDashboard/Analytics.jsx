@@ -7,7 +7,8 @@ import { LoaderOne } from "../ui/loader";
 const Analytics = () => {
     const [loading, setLoading] = useState(true);
     const [totalUsers, setTotalUsers] = useState(0);
-    const [proUsers, setProUsers] = useState(0);
+    const [admins, setAdmins] = useState(0);
+    const [experts, setExperts] = useState(0);
     const [usersOverTime, setUsersOverTime] = useState([]);
 
     useEffect(() => {
@@ -16,7 +17,8 @@ const Analytics = () => {
                 setLoading(true);
                 const res = await getAllUsers();
                 setTotalUsers(res.data.count);
-                setProUsers(res.data.proUsers);
+                setAdmins(res.data.admins);
+                setExperts(res.data.experts);
                 setUsersOverTime(res.data.usersGraph);
             } catch (err) {
                 console.error(err);
@@ -46,20 +48,6 @@ const Analytics = () => {
         { value: Math.floor(finalValue * 0.8) },
         { value: finalValue },
     ];
-
-    if (loading) {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-screen">
-                <div className="relative w-20 h-20">
-                    <div className="absolute inset-0 border-4 border-gray-200 rounded-full"></div>
-                    <div className="absolute inset-0 border-4 border-t-blue-500 rounded-full animate-spin"></div>
-                </div>
-                <p className="mt-4 text-lg font-semibold text-gray-600">
-                    Loading admin dashboard...
-                </p>
-            </div>
-        );
-    }
 
     return (
         <div className="flex flex-col gap-5">
@@ -91,14 +79,14 @@ const Analytics = () => {
 
                 <div className="bg-white rounded-xl lg:w-1/3 h-32 py-3 px-4 flex border-2 border-gray-300">
                     <div className="w-1/2 flex flex-col justify-between">
-                        <h3 className="font-bold text-sm text-[#848484]">Pro Users</h3>
-                        <p className="text-4xl font-bold py-2 pl-2">{proUsers}</p>
-                        <p className="text-sm font-bold text-[#848484]">Subscribed</p>
+                        <h3 className="font-bold text-sm text-[#848484]">Admins</h3>
+                        <p className="text-4xl font-bold py-2 pl-2">{admins}</p>
+                        <p className="text-sm font-bold text-[#848484]">Administrators</p>
                     </div>
 
                     <div className="w-1/2">
                         <MiniLineChart
-                            data={getFakeData(proUsers)}
+                            data={getFakeData(admins)}
                             stroke="#10b981"
                         />
                     </div>
@@ -106,16 +94,14 @@ const Analytics = () => {
 
                 <div className="bg-white rounded-xl lg:w-1/3 h-32 py-3 px-4 flex border-2 border-gray-300">
                     <div className="w-1/2 flex flex-col justify-between">
-                        <h3 className="font-bold text-sm text-[#848484]">Free Users</h3>
-                        <p className="text-4xl font-bold py-2 pl-2">
-                            {totalUsers - proUsers}
-                        </p>
-                        <p className="text-sm font-bold text-[#848484]">Non-paid</p>
+                        <h3 className="font-bold text-sm text-[#848484]">Experts</h3>
+                        <p className="text-4xl font-bold py-2 pl-2">{experts}</p>
+                        <p className="text-sm font-bold text-[#848484]">Verified Experts</p>
                     </div>
 
                     <div className="w-1/2">
                         <MiniLineChart
-                            data={getFakeData(totalUsers - proUsers)}
+                            data={getFakeData(experts)}
                             stroke="#f59e0b"
                         />
                     </div>
