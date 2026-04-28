@@ -29,6 +29,8 @@ import Profile from "@/components/UserDashboard/Profile";
 import MyProfile from "@/components/UserDashboard/MyProfile";
 import EditProblem from "@/components/EditProblem";
 import VerifyOTP from "@/pages/VerifyOTP";
+import ForgotPassword from "@/pages/ForgotPassword";
+import ResetPassword from "@/pages/ResetPassword";
 import ExpertApply from "@/components/UserDashboard/ExpertApply";
 import ChatPage from "@/components/chat/ChatPage";
 import ChatSidebar from "@/components/chat/ChatSidebar";
@@ -49,6 +51,8 @@ export default function AppRoutes() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/verify-otp" element={<VerifyOTP />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="*" element={<Navigate to="/signin" replace />} />
       </Routes>
     );
